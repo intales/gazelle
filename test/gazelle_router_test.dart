@@ -1,5 +1,13 @@
+import 'dart:io';
+
+import 'package:gazelle/gazelle.dart';
 import 'package:gazelle/src/gazelle_router.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
+
+class GazelleContextMock extends Mock implements GazelleContext {}
+
+class HttpRequestMock extends Mock implements HttpRequest {}
 
 void main() {
   group("GazelleRouter tests", () {
@@ -11,12 +19,12 @@ void main() {
       String? result;
 
       // Act
-      trie.insert(strings, () => result = "Hello, World!");
+      trie.insert(strings, (_, __) => result = "Hello, World!");
 
       final value = trie.search(strings);
       if (value == null) fail("Value should not be null");
 
-      value();
+      value(GazelleContextMock(), HttpRequestMock());
 
       // Expect
       expect(result, expected);
@@ -32,13 +40,13 @@ void main() {
       String? result;
 
       // Act
-      router.insertHandler(route, () => result = "Hello, World!");
-      router.insertHandler(secondRoute, () => result = "Goodbye, World!");
+      router.insertHandler(route, (_, __) => result = "Hello, World!");
+      router.insertHandler(secondRoute, (_, __) => result = "Goodbye, World!");
 
       final handler = router.searchHandler(route);
       if (handler == null) fail("Handler should not be null");
 
-      handler();
+      handler(GazelleContextMock(), HttpRequestMock());
 
       // Assert
       expect(result, expected);

@@ -1,16 +1,23 @@
+import 'package:gazelle/src/gazelle_router.dart';
+
 part 'gazelle_plugin.dart';
 
 class GazelleContext {
+  final GazelleRouter router;
   final Map<Type, GazellePlugin> _plugins;
   final GazelleContext? _context;
 
   GazelleContext({
+    required this.router,
     required Map<Type, GazellePlugin> plugins,
     GazelleContext? context,
   })  : _context = context,
         _plugins = plugins;
 
-  static GazelleContext create() => GazelleContext(plugins: {});
+  static GazelleContext create() => GazelleContext(
+        router: GazelleRouter(),
+        plugins: {},
+      );
 
   T getPlugin<T extends GazellePlugin>() {
     final plugin = _plugins[T] as T?;
@@ -23,6 +30,7 @@ class GazelleContext {
 
   Future<void> register<T extends GazellePlugin>(T plugin) async {
     final newContext = GazelleContext(
+      router: router,
       plugins: {T: plugin},
       context: this,
     );

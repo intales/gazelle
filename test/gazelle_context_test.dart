@@ -36,6 +36,7 @@ void main() {
       // Arrange
       final parentContext = GazelleContext.create();
       final childContext = GazelleContext(
+        router: parentContext.router,
         plugins: {},
         context: parentContext,
       );

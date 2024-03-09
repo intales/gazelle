@@ -1,4 +1,11 @@
-typedef GazelleRouteHandler = void Function();
+import 'dart:io';
+
+import 'package:gazelle/src/gazelle_context.dart';
+
+typedef GazelleRouteHandler = void Function(
+  GazelleContext context,
+  HttpRequest request,
+);
 
 class GazelleRouter {
   static const _routeSeparator = "/";
