@@ -11,45 +11,64 @@ class HttpRequestMock extends Mock implements HttpRequest {}
 
 void main() {
   group("GazelleRouter tests", () {
-    test("Should insert and search a value inside the trie", () {
+    test("Should insert and search a value inside the trie", () async {
       // Arrange
       final trie = Trie<GazelleRouteHandler>();
       final strings = "/user/profile".split("/");
       const expected = "Hello, World!";
-      String? result;
 
       // Act
-      trie.insert(strings, (_, __) => result = "Hello, World!");
+      trie.insert(
+        strings,
+        (_, __) async => GazelleRouteHandlerResult(
+          statusCode: 200,
+          response: "Hello, World!",
+        ),
+      );
 
       final value = trie.search(strings);
       if (value == null) fail("Value should not be null");
 
-      value(GazelleContextMock(), HttpRequestMock());
+      final result = await value(GazelleContextMock(), HttpRequestMock());
 
       // Expect
-      expect(result, expected);
+      expect(result.response, expected);
     });
 
-    test("Should insert and search a route handler inside the router", () {
+    test("Should insert and search a route handler inside the router",
+        () async {
       // Arrange
       final router = GazelleRouter();
       final route = "/user/profile";
       final secondRoute = "/user/profile/change_username";
 
       const expected = "Hello, World!";
-      String? result;
 
       // Act
-      router.insertHandler(route, (_, __) => result = "Hello, World!");
-      router.insertHandler(secondRoute, (_, __) => result = "Goodbye, World!");
+      router.insertHandler(
+        GazelleHttpMethod.get,
+        route,
+        (_, __) async => GazelleRouteHandlerResult(
+          statusCode: 200,
+          response: "Hello, World!",
+        ),
+      );
+      router.insertHandler(
+        GazelleHttpMethod.get,
+        secondRoute,
+        (_, __) async => GazelleRouteHandlerResult(
+          statusCode: 200,
+          response: "Goodbye, World!",
+        ),
+      );
 
       final handler = router.searchHandler(route);
       if (handler == null) fail("Handler should not be null");
 
-      handler(GazelleContextMock(), HttpRequestMock());
+      final result = await handler(GazelleContextMock(), HttpRequestMock());
 
       // Assert
-      expect(result, expected);
+      expect(result.response, expected);
     });
   });
 }

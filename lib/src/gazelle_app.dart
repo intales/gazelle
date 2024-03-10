@@ -32,14 +32,34 @@ class GazelleApp {
   Future<void> registerPlugin(GazellePlugin plugin) =>
       _context.register(plugin);
 
-  void insertRoute(String route, GazelleRouteHandler handler) =>
-      _context.router.insertHandler(route, handler);
+  void insertRoute(
+    GazelleHttpMethod method,
+    String route,
+    GazelleRouteHandler handler,
+  ) =>
+      _context.router.insertHandler(method, route, handler);
+
+  void get(String route, GazelleRouteHandler handler) =>
+      _context.router.get(route, handler);
+
+  void post(String route, GazelleRouteHandler handler) =>
+      _context.router.post(route, handler);
+
+  void put(String route, GazelleRouteHandler handler) =>
+      _context.router.put(route, handler);
+
+  void patch(String route, GazelleRouteHandler handler) =>
+      _context.router.patch(route, handler);
+
+  void delete(String route, GazelleRouteHandler handler) =>
+      _context.router.delete(route, handler);
 
   Future<void> start() async {
     _server = await _createServer();
 
-    _server.listen((request) {
-      final handler = _context.router.searchHandler(request.uri.path);
+    _server.listen((request) async {
+      final route = _routeFromRequest(request);
+      final handler = _context.router.searchHandler(route);
 
       if (handler == null) {
         request.response.statusCode = 404;
@@ -49,7 +69,13 @@ class GazelleApp {
         return;
       }
 
-      return handler(_context, request);
+      final result = await handler(_context, request);
+
+      request.response.statusCode = result.statusCode;
+      request.response.write(result.response);
+      request.response.close();
+
+      return;
     });
   }
 
@@ -66,6 +92,13 @@ class GazelleApp {
     }
 
     return HttpServer.bind(address, port);
+  }
+
+  String _routeFromRequest(HttpRequest request) {
+    final method = GazelleHttpMethod.fromString(request.method).name;
+    final path = request.uri.path;
+
+    return "$method/$path";
   }
 
   String _get404ErrorMessage(String path) => "Resource [$path] not found.";
