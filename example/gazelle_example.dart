@@ -38,5 +38,4 @@ void main() async {
   });
 
   await app.start();
-  print("Server started!");
 }
