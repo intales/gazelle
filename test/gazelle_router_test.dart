@@ -14,7 +14,7 @@ void main() {
     test("Should insert and search a value inside the trie", () async {
       // Arrange
       final trie = Trie<GazelleRouteHandler>();
-      final strings = "/user/profile".split("/");
+      final strings = "/user/profile/:id".split("/");
       const expected = "Hello, World!";
 
       // Act
@@ -26,7 +26,7 @@ void main() {
         ),
       );
 
-      final value = trie.search(strings);
+      final value = trie.search("/user/profile/123".split("/"));
       if (value == null) fail("Value should not be null");
 
       final result = await value(GazelleContextMock(), HttpRequestMock());
@@ -62,7 +62,8 @@ void main() {
         ),
       );
 
-      final handler = router.searchHandler(route);
+      final handler =
+          router.searchHandler("${GazelleHttpMethod.get.name}/$route");
       if (handler == null) fail("Handler should not be null");
 
       final result = await handler(GazelleContextMock(), HttpRequestMock());

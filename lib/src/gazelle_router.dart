@@ -79,12 +79,22 @@ class TrieNode<T> {
 }
 
 class Trie<T> {
+  static const wildcard = ":";
+
   TrieNode<T> root = TrieNode<T>();
 
   void insert(List<String> strings, T value) {
     TrieNode<T> current = root;
 
     for (final string in strings) {
+      if (string.startsWith(wildcard)) {
+        if (!current.children.containsKey(wildcard)) {
+          current.children[wildcard] = TrieNode<T>();
+        }
+        current = current.children[wildcard]!;
+        continue;
+      }
+
       if (!current.children.containsKey(string)) {
         current.children[string] = TrieNode<T>();
       }
@@ -97,10 +107,13 @@ class Trie<T> {
   T? search(List<String> strings) {
     TrieNode<T> current = root;
     for (final string in strings) {
-      if (!current.children.containsKey(string)) {
+      if (current.children.containsKey(string)) {
+        current = current.children[string]!;
+      } else if (current.children.containsKey(wildcard)) {
+        current = current.children[wildcard]!;
+      } else {
         return null;
       }
-      current = current.children[string]!;
     }
 
     return current.value;
