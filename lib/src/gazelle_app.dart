@@ -37,7 +37,7 @@ class GazelleApp {
     String route,
     GazelleRouteHandler handler,
   ) =>
-      _context.router.insertHandler(method, route, handler);
+      _context.router.insert(method, route, handler);
 
   void get(String route, GazelleRouteHandler handler) =>
       _context.router.get(route, handler);
@@ -58,10 +58,9 @@ class GazelleApp {
     _server = await _createServer();
 
     _server.listen((request) async {
-      final route = _routeFromRequest(request);
-      final handler = _context.router.searchHandler(route);
+      final searchResult = _context.router.search(request);
 
-      if (handler == null) {
+      if (searchResult.handler == null) {
         request.response.statusCode = 404;
         request.response.write(_get404ErrorMessage(request.uri.path));
         request.response.close();
@@ -69,7 +68,10 @@ class GazelleApp {
         return;
       }
 
-      final result = await handler(_context, request);
+      final result = await searchResult.handler!(
+        _context,
+        searchResult.request,
+      );
 
       request.response.statusCode = result.statusCode;
       request.response.write(result.response);
@@ -92,13 +94,6 @@ class GazelleApp {
     }
 
     return HttpServer.bind(address, port);
-  }
-
-  String _routeFromRequest(HttpRequest request) {
-    final method = GazelleHttpMethod.fromString(request.method).name;
-    final path = request.uri.path;
-
-    return "$method/$path";
   }
 
   String _get404ErrorMessage(String path) => "Resource [$path] not found.";

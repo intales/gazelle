@@ -1,16 +1,14 @@
 import 'package:gazelle/gazelle.dart';
 
 class HelloNamePlugin implements GazellePlugin {
-  final String name;
-
-  HelloNamePlugin(this.name);
+  HelloNamePlugin();
 
   @override
   Future<void> initialize(GazelleContext context) async {
-    context.router.get("/hello_name_plugin", (context, request) async {
+    context.router.get("/hello_name_plugin/:name", (context, request) async {
       return GazelleRouteHandlerResult(
         statusCode: 200,
-        response: "Hello, $name! (plugin)",
+        response: "Hello, ${request.pathParams["name"]}! (plugin)",
       );
     });
   }
@@ -19,7 +17,7 @@ class HelloNamePlugin implements GazellePlugin {
 class HelloWorldPlugin implements GazellePlugin {
   @override
   Future<void> initialize(GazelleContext context) async {
-    await context.register(HelloNamePlugin("Filippo"));
+    await context.register(HelloNamePlugin());
     context.router.get("/hello_world_plugin", (context, request) async {
       return GazelleRouteHandlerResult(
         statusCode: 200,

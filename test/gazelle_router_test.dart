@@ -1,19 +1,33 @@
 import 'dart:io';
 
 import 'package:gazelle/gazelle.dart';
+import 'package:gazelle/src/gazelle_base.dart';
 import 'package:gazelle/src/gazelle_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class GazelleContextMock extends Mock implements GazelleContext {}
 
-class HttpRequestMock extends Mock implements HttpRequest {}
+class HttpRequestMock extends Mock implements HttpRequest {
+  final String path;
+
+  @override
+  final String method;
+
+  HttpRequestMock({
+    required this.path,
+    required this.method,
+  });
+
+  @override
+  Uri get uri => Uri.parse("http://localhost$path");
+}
 
 void main() {
   group("GazelleRouter tests", () {
     test("Should insert and search a value inside the trie", () async {
       // Arrange
-      final trie = Trie<GazelleRouteHandler>();
+      final trie = Trie<GazelleRouteHandler>(wildcard: ":");
       final strings = "/user/profile/:id".split("/");
       const expected = "Hello, World!";
 
@@ -27,9 +41,17 @@ void main() {
       );
 
       final value = trie.search("/user/profile/123".split("/"));
-      if (value == null) fail("Value should not be null");
+      if (value.value == null) fail("Value should not be null");
 
-      final result = await value(GazelleContextMock(), HttpRequestMock());
+      final result = await value.value!(
+        GazelleContextMock(),
+        GazelleHttpRequest(
+          httpRequest: HttpRequestMock(
+            method: "GET",
+            path: "/user/profile/123",
+          ),
+        ),
+      );
 
       // Expect
       expect(result.response, expected);
@@ -45,7 +67,7 @@ void main() {
       const expected = "Hello, World!";
 
       // Act
-      router.insertHandler(
+      router.insert(
         GazelleHttpMethod.get,
         route,
         (_, __) async => GazelleRouteHandlerResult(
@@ -53,7 +75,7 @@ void main() {
           response: "Hello, World!",
         ),
       );
-      router.insertHandler(
+      router.insert(
         GazelleHttpMethod.get,
         secondRoute,
         (_, __) async => GazelleRouteHandlerResult(
@@ -62,11 +84,23 @@ void main() {
         ),
       );
 
-      final handler =
-          router.searchHandler("${GazelleHttpMethod.get.name}/$route");
+      final handler = router
+          .search(HttpRequestMock(
+            method: "GET",
+            path: "/user/profile",
+          ))
+          .handler;
       if (handler == null) fail("Handler should not be null");
 
-      final result = await handler(GazelleContextMock(), HttpRequestMock());
+      final result = await handler(
+        GazelleContextMock(),
+        GazelleHttpRequest(
+          httpRequest: HttpRequestMock(
+            method: "GET",
+            path: "/user/profile",
+          ),
+        ),
+      );
 
       // Assert
       expect(result.response, expected);
