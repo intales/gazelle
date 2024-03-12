@@ -14,11 +14,11 @@ class GazelleRouteHandlerResult {
 
 class GazelleHttpRequest {
   final HttpRequest httpRequest;
-  final Map<String, String> pathParams;
+  final Map<String, String> pathParameters;
 
   GazelleHttpRequest({
     required this.httpRequest,
-    this.pathParams = const {},
+    this.pathParameters = const {},
   });
 }
 
@@ -99,7 +99,7 @@ class GazelleRouter {
     return GazelleRouterSearchResult(
       request: GazelleHttpRequest(
         httpRequest: request,
-        pathParams: result.wildcardValues,
+        pathParameters: result.wildcardValues,
       ),
       handler: result.value,
     );

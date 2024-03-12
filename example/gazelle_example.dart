@@ -8,7 +8,8 @@ class HelloNamePlugin implements GazellePlugin {
     context.router.get("/hello_name_plugin/:name", (context, request) async {
       return GazelleRouteHandlerResult(
         statusCode: 200,
-        response: "Hello, ${request.pathParams["name"]}! (plugin)",
+        response:
+            "Hello, ${request.pathParameters["name"]} ${request.httpRequest.uri.queryParameters["surname"] ?? ""}! (plugin)",
       );
     });
   }
