@@ -68,10 +68,7 @@ class GazelleApp {
         return;
       }
 
-      final result = await searchResult.handler!(
-        _context,
-        searchResult.request,
-      );
+      final result = await searchResult.handler!(searchResult.request);
 
       request.response.statusCode = result.statusCode;
       request.response.write(result.response);

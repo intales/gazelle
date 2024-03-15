@@ -1,12 +1,8 @@
 import 'dart:io';
 
-import 'package:gazelle/gazelle.dart';
-import 'package:gazelle/src/gazelle_base.dart';
 import 'package:gazelle/src/gazelle_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
-
-class GazelleContextMock extends Mock implements GazelleContext {}
 
 class HttpRequestMock extends Mock implements HttpRequest {
   final String path;
@@ -34,7 +30,7 @@ void main() {
       // Act
       trie.insert(
         strings,
-        (_, __) async => GazelleRouteHandlerResult(
+        (_) async => GazelleRouteHandlerResult(
           statusCode: 200,
           response: "Hello, World!",
         ),
@@ -44,7 +40,6 @@ void main() {
       if (value.value == null) fail("Value should not be null");
 
       final result = await value.value!(
-        GazelleContextMock(),
         GazelleHttpRequest(
           httpRequest: HttpRequestMock(
             method: "GET",
@@ -70,7 +65,7 @@ void main() {
       router.insert(
         GazelleHttpMethod.get,
         route,
-        (_, __) async => GazelleRouteHandlerResult(
+        (_) async => GazelleRouteHandlerResult(
           statusCode: 200,
           response: "Hello, World!",
         ),
@@ -78,7 +73,7 @@ void main() {
       router.insert(
         GazelleHttpMethod.get,
         secondRoute,
-        (_, __) async => GazelleRouteHandlerResult(
+        (_) async => GazelleRouteHandlerResult(
           statusCode: 200,
           response: "Goodbye, World!",
         ),
@@ -93,7 +88,6 @@ void main() {
       if (handler == null) fail("Handler should not be null");
 
       final result = await handler(
-        GazelleContextMock(),
         GazelleHttpRequest(
           httpRequest: HttpRequestMock(
             method: "GET",

@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:gazelle/src/gazelle_context.dart';
-
 class GazelleRouteHandlerResult {
   final int statusCode;
   final String response;
@@ -23,7 +21,6 @@ class GazelleHttpRequest {
 }
 
 typedef GazelleRouteHandler = Future<GazelleRouteHandlerResult> Function(
-  GazelleContext context,
   GazelleHttpRequest request,
 );
 
