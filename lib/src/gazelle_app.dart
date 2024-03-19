@@ -59,32 +59,11 @@ class GazelleApp {
     _server = await _createServer();
 
     _server.listen((httpRequest) async {
-      final searchResult = await _context.router.search(httpRequest);
-      if (searchResult == null) return _send404Error(httpRequest);
-
-      GazelleRequest request = searchResult.request;
-      final preRequestHooks = searchResult.route.preRequestHooks;
-      final postRequestHooks = searchResult.route.postRequestHooks;
-      final handler = searchResult.route.handler;
-
-      for (final hook in preRequestHooks) {
-        final message = await hook(request);
-        if (message is GazelleResponse) {
-          return _sendResponse(httpRequest, message);
-        }
-        request = message as GazelleRequest;
+      try {
+        await _handleHttpRequest(httpRequest);
+      } catch (_) {
+        return _send500Error(httpRequest);
       }
-
-      GazelleResponse result = await handler(request);
-
-      for (final hook in postRequestHooks) {
-        result = await hook(result);
-        if (result.statusCode >= 400 && result.statusCode <= 599) {
-          return _sendResponse(httpRequest, result);
-        }
-      }
-
-      return _sendResponse(httpRequest, result);
     });
   }
 
@@ -103,6 +82,35 @@ class GazelleApp {
     return HttpServer.bind(address, port);
   }
 
+  Future<void> _handleHttpRequest(HttpRequest httpRequest) async {
+    final searchResult = await _context.router.search(httpRequest);
+    if (searchResult == null) return _send404Error(httpRequest);
+
+    GazelleRequest request = searchResult.request;
+    final preRequestHooks = searchResult.route.preRequestHooks;
+    final postRequestHooks = searchResult.route.postRequestHooks;
+    final handler = searchResult.route.handler;
+
+    for (final hook in preRequestHooks) {
+      final message = await hook(request);
+      if (message is GazelleResponse) {
+        return _sendResponse(httpRequest, message);
+      }
+      request = message as GazelleRequest;
+    }
+
+    GazelleResponse result = await handler(request);
+
+    for (final hook in postRequestHooks) {
+      result = await hook(result);
+      if (result.statusCode >= 400 && result.statusCode <= 599) {
+        return _sendResponse(httpRequest, result);
+      }
+    }
+
+    return _sendResponse(httpRequest, result);
+  }
+
   void _sendResponse(HttpRequest request, GazelleResponse response) {
     request.response.statusCode = response.statusCode;
     request.response.write(response.body);
@@ -116,5 +124,14 @@ class GazelleApp {
         body: _get404ErrorMessage(request.uri.path),
       ));
 
+  void _send500Error(HttpRequest request) => _sendResponse(
+        request,
+        GazelleResponse(
+          statusCode: 500,
+          body: _get500ErrorMessage(),
+        ),
+      );
+
   String _get404ErrorMessage(String path) => "Resource [$path] not found.";
+  String _get500ErrorMessage() => "Internal server error.";
 }
