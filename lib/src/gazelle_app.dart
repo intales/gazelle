@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:gazelle/src/gazelle_context.dart';
+import 'package:gazelle/src/gazelle_message.dart';
 import 'package:gazelle/src/gazelle_router.dart';
 
 class GazelleSSLCertificate {
@@ -57,24 +58,33 @@ class GazelleApp {
   Future<void> start() async {
     _server = await _createServer();
 
-    _server.listen((request) async {
-      final searchResult = _context.router.search(request);
+    _server.listen((httpRequest) async {
+      final searchResult = await _context.router.search(httpRequest);
+      if (searchResult == null) return _send404Error(httpRequest);
 
-      if (searchResult.handler == null) {
-        request.response.statusCode = 404;
-        request.response.write(_get404ErrorMessage(request.uri.path));
-        request.response.close();
+      GazelleRequest request = searchResult.request;
+      final preRequestHooks = searchResult.route.preRequestHooks;
+      final postRequestHooks = searchResult.route.postRequestHooks;
+      final handler = searchResult.route.handler;
 
-        return;
+      for (final hook in preRequestHooks) {
+        final message = await hook(request);
+        if (message is GazelleResponse) {
+          return _sendResponse(httpRequest, message);
+        }
+        request = message as GazelleRequest;
       }
 
-      final result = await searchResult.handler!(searchResult.request);
+      GazelleResponse result = await handler(request);
 
-      request.response.statusCode = result.statusCode;
-      request.response.write(result.response);
-      request.response.close();
+      for (final hook in postRequestHooks) {
+        result = await hook(result);
+        if (result.statusCode >= 400 && result.statusCode <= 599) {
+          return _sendResponse(httpRequest, result);
+        }
+      }
 
-      return;
+      return _sendResponse(httpRequest, result);
     });
   }
 
@@ -92,6 +102,19 @@ class GazelleApp {
 
     return HttpServer.bind(address, port);
   }
+
+  void _sendResponse(HttpRequest request, GazelleResponse response) {
+    request.response.statusCode = response.statusCode;
+    request.response.write(response.body);
+    request.response.close();
+  }
+
+  void _send404Error(HttpRequest request) => _sendResponse(
+      request,
+      GazelleResponse(
+        statusCode: 404,
+        body: _get404ErrorMessage(request.uri.path),
+      ));
 
   String _get404ErrorMessage(String path) => "Resource [$path] not found.";
 }

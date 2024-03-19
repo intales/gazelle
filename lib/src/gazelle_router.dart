@@ -1,61 +1,38 @@
 import 'dart:io';
 
-class GazelleRouteHandlerResult {
-  final int statusCode;
-  final String response;
+import 'package:gazelle/src/gazelle_message.dart';
 
-  GazelleRouteHandlerResult({
-    required this.statusCode,
-    required this.response,
-  });
-}
-
-class GazelleHttpRequest {
-  final HttpRequest httpRequest;
-  final Map<String, String> pathParameters;
-
-  GazelleHttpRequest({
-    required this.httpRequest,
-    this.pathParameters = const {},
-  });
-}
-
-typedef GazelleRouteHandler = Future<GazelleRouteHandlerResult> Function(
-  GazelleHttpRequest request,
+typedef GazelleRouteHandler = Future<GazelleResponse> Function(
+  GazelleRequest request,
 );
 
-enum GazelleHttpMethod {
-  get,
-  post,
-  put,
-  patch,
-  delete;
+typedef GazellePreRequestHook = Future<GazelleMessage> Function(
+  GazelleRequest request,
+);
 
-  static GazelleHttpMethod fromString(String method) => switch (method) {
-        "GET" => GazelleHttpMethod.get,
-        "POST" => GazelleHttpMethod.post,
-        "PUT" => GazelleHttpMethod.put,
-        "PATCH" => GazelleHttpMethod.patch,
-        "DELETE" => GazelleHttpMethod.delete,
-        _ => throw "Unexpected method: $method",
-      };
+typedef GazellePostRequestHook = Future<GazelleResponse> Function(
+  GazelleResponse response,
+);
 
-  String get name => switch (this) {
-        GazelleHttpMethod.get => "GET",
-        GazelleHttpMethod.post => "POST",
-        GazelleHttpMethod.put => "PUT",
-        GazelleHttpMethod.patch => "PATCH",
-        GazelleHttpMethod.delete => "DELETE",
-      };
+class GazelleRoute {
+  final GazelleRouteHandler handler;
+  final List<GazellePreRequestHook> preRequestHooks;
+  final List<GazellePostRequestHook> postRequestHooks;
+
+  GazelleRoute(
+    this.handler, {
+    this.preRequestHooks = const [],
+    this.postRequestHooks = const [],
+  });
 }
 
 class GazelleRouterSearchResult {
-  final GazelleHttpRequest request;
-  final GazelleRouteHandler? handler;
+  final GazelleRequest request;
+  final GazelleRoute route;
 
   GazelleRouterSearchResult({
     required this.request,
-    this.handler,
+    required this.route,
   });
 }
 
@@ -63,42 +40,108 @@ class GazelleRouter {
   static const _routeSeparator = "/";
   static const _wildcard = ":";
 
-  Trie<GazelleRouteHandler> routes = Trie<GazelleRouteHandler>(
+  Trie<GazelleRoute> routes = Trie<GazelleRoute>(
     wildcard: _wildcard,
   );
 
-  void get(String route, GazelleRouteHandler handler) =>
-      insert(GazelleHttpMethod.get, route, handler);
+  void get(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostRequestHook> postRequestHooks = const [],
+  }) =>
+      insert(
+        GazelleHttpMethod.get,
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void post(String route, GazelleRouteHandler handler) =>
-      insert(GazelleHttpMethod.post, route, handler);
+  void post(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostRequestHook> postRequestHooks = const [],
+  }) =>
+      insert(
+        GazelleHttpMethod.post,
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void put(String route, GazelleRouteHandler handler) =>
-      insert(GazelleHttpMethod.put, route, handler);
+  void put(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostRequestHook> postRequestHooks = const [],
+  }) =>
+      insert(
+        GazelleHttpMethod.put,
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void patch(String route, GazelleRouteHandler handler) =>
-      insert(GazelleHttpMethod.patch, route, handler);
+  void patch(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostRequestHook> postRequestHooks = const [],
+  }) =>
+      insert(
+        GazelleHttpMethod.patch,
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void delete(String route, GazelleRouteHandler handler) =>
-      insert(GazelleHttpMethod.delete, route, handler);
+  void delete(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostRequestHook> postRequestHooks = const [],
+  }) =>
+      insert(
+        GazelleHttpMethod.delete,
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
   void insert(
     GazelleHttpMethod method,
     String route,
-    GazelleRouteHandler handler,
-  ) =>
-      routes.insert("${method.name}/$route".split(_routeSeparator), handler);
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostRequestHook> postRequestHooks = const [],
+  }) =>
+      routes.insert(
+        "${method.name}/$route".split(_routeSeparator),
+        GazelleRoute(
+          handler,
+          preRequestHooks: preRequestHooks,
+          postRequestHooks: postRequestHooks,
+        ),
+      );
 
-  GazelleRouterSearchResult search(HttpRequest request) {
+  Future<GazelleRouterSearchResult?> search(HttpRequest request) async {
     final route = _routeFromRequest(request);
     final result = routes.search(route.split(_routeSeparator));
 
+    if (result.value == null) return null;
+
     return GazelleRouterSearchResult(
-      request: GazelleHttpRequest(
-        httpRequest: request,
+      request: await GazelleRequest.fromHttpRequest(
+        request,
         pathParameters: result.wildcardValues,
       ),
-      handler: result.value,
+      route: result.value!,
     );
   }
 

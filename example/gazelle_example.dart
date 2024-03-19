@@ -1,4 +1,5 @@
 import 'package:gazelle/gazelle.dart';
+import 'package:gazelle/src/gazelle_message.dart';
 
 class HelloNamePlugin implements GazellePlugin {
   HelloNamePlugin();
@@ -6,10 +7,10 @@ class HelloNamePlugin implements GazellePlugin {
   @override
   Future<void> initialize(GazelleContext context) async {
     context.router.get("/hello_name_plugin/:name", (request) async {
-      return GazelleRouteHandlerResult(
+      return GazelleResponse(
         statusCode: 200,
-        response:
-            "Hello, ${request.pathParameters["name"]} ${request.httpRequest.uri.queryParameters["surname"] ?? ""}! (plugin)",
+        body:
+            "Hello, ${request.pathParameters["name"]} ${request.uri.queryParameters["surname"] ?? ""}! (plugin)",
       );
     });
   }
@@ -20,9 +21,9 @@ class HelloWorldPlugin implements GazellePlugin {
   Future<void> initialize(GazelleContext context) async {
     await context.register(HelloNamePlugin());
     context.router.get("/hello_world_plugin", (request) async {
-      return GazelleRouteHandlerResult(
+      return GazelleResponse(
         statusCode: 200,
-        response: "Hello, World! (plugin)",
+        body: "Hello, World! (plugin)",
       );
     });
   }
@@ -33,9 +34,9 @@ void main() async {
 
   app.registerPlugin(HelloWorldPlugin());
   app.get("/hello_world", (request) async {
-    return GazelleRouteHandlerResult(
+    return GazelleResponse(
       statusCode: 200,
-      response: "Hello, World!",
+      body: "Hello, World!",
     );
   });
 
