@@ -7,7 +7,7 @@ sealed class GazelleMessage {
   final Map<String, List<String>> headers;
   final String? body;
 
-  GazelleMessage({
+  const GazelleMessage({
     this.headers = const {},
     this.body,
   });
@@ -18,7 +18,7 @@ class GazelleRequest extends GazelleMessage {
   final GazelleHttpMethod method;
   final Map<String, String> pathParameters;
 
-  GazelleRequest({
+  const GazelleRequest({
     required this.uri,
     required this.method,
     required this.pathParameters,
@@ -55,13 +55,14 @@ class GazelleRequest extends GazelleMessage {
         method: method ?? this.method,
         pathParameters: pathParameters ?? this.pathParameters,
         headers: headers ?? this.headers,
+        body: body ?? this.body,
       );
 }
 
 class GazelleResponse extends GazelleMessage {
   final int statusCode;
 
-  GazelleResponse({
+  const GazelleResponse({
     required this.statusCode,
     super.headers = const {},
     super.body,

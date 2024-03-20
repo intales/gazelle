@@ -7,7 +7,7 @@ class GazelleContext {
   final Map<Type, GazellePlugin> _plugins;
   final GazelleContext? _context;
 
-  GazelleContext({
+  const GazelleContext({
     required this.router,
     required Map<Type, GazellePlugin> plugins,
     GazelleContext? context,

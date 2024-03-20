@@ -2,7 +2,7 @@ class GazelleTrieSearchResult<T> {
   final T? value;
   final Map<String, String> wildcardValues;
 
-  GazelleTrieSearchResult({
+  const GazelleTrieSearchResult({
     required this.value,
     this.wildcardValues = const {},
   });

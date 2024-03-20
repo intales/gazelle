@@ -14,7 +14,7 @@ class GazelleRoute {
   final List<GazellePreRequestHook> preRequestHooks;
   final List<GazellePostResponseHook> postRequestHooks;
 
-  GazelleRoute(
+  const GazelleRoute(
     this.handler, {
     this.preRequestHooks = const [],
     this.postRequestHooks = const [],
@@ -25,7 +25,7 @@ class GazelleRouterSearchResult {
   final GazelleRequest request;
   final GazelleRoute route;
 
-  GazelleRouterSearchResult({
+  const GazelleRouterSearchResult({
     required this.request,
     required this.route,
   });
@@ -35,9 +35,9 @@ class GazelleRouter {
   static const _routeSeparator = "/";
   static const _wildcard = ":";
 
-  GazelleTrie<GazelleRoute> routes = GazelleTrie<GazelleRoute>(
-    wildcard: _wildcard,
-  );
+  final GazelleTrie<GazelleRoute> _routes;
+
+  GazelleRouter() : _routes = GazelleTrie<GazelleRoute>(wildcard: _wildcard);
 
   void get(
     String route,
@@ -116,7 +116,7 @@ class GazelleRouter {
     List<GazellePreRequestHook> preRequestHooks = const [],
     List<GazellePostResponseHook> postRequestHooks = const [],
   }) =>
-      routes.insert(
+      _routes.insert(
         "${method.name}/$route".split(_routeSeparator),
         GazelleRoute(
           handler,
@@ -127,7 +127,7 @@ class GazelleRouter {
 
   Future<GazelleRouterSearchResult?> search(HttpRequest request) async {
     final route = _routeFromRequest(request);
-    final result = routes.search(route.split(_routeSeparator));
+    final result = _routes.search(route.split(_routeSeparator));
 
     if (result.value == null) return null;
 

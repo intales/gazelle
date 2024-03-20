@@ -3,7 +3,7 @@ class GazelleSSLCertificate {
   final String privateKeyPath;
   final String? privateKeyPassword;
 
-  GazelleSSLCertificate({
+  const GazelleSSLCertificate({
     required this.certificatePath,
     required this.privateKeyPath,
     this.privateKeyPassword,

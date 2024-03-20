@@ -3,8 +3,8 @@ import 'package:gazelle/src/gazelle_plugin.dart';
 import 'package:gazelle/src/gazelle_router.dart';
 import 'package:test/test.dart';
 
-class TestPlugin extends GazellePlugin {
-  const TestPlugin();
+class _TestPlugin extends GazellePlugin {
+  const _TestPlugin();
 
   @override
   Future<void> initialize(GazelleContext context) async {}
@@ -12,8 +12,8 @@ class TestPlugin extends GazellePlugin {
   bool get foo => true;
 }
 
-class TestPlugin2 extends GazellePlugin {
-  const TestPlugin2();
+class _TestPlugin2 extends GazellePlugin {
+  const _TestPlugin2();
 
   @override
   Future<void> initialize(GazelleContext context) async {}
@@ -28,10 +28,10 @@ void main() {
       final context = GazelleContext.create();
 
       // Act
-      await context.register(TestPlugin());
+      await context.register(_TestPlugin());
 
       // Assert
-      expect(context.getPlugin<TestPlugin>().foo, isTrue);
+      expect(context.getPlugin<_TestPlugin>().foo, isTrue);
     });
 
     test('Should find a plugin registered in a parent context', () async {
@@ -48,15 +48,15 @@ void main() {
       );
 
       // Act
-      await parentContext.register(TestPlugin());
-      await childContext.register(TestPlugin2());
+      await parentContext.register(_TestPlugin());
+      await childContext.register(_TestPlugin2());
 
       // Assert
-      expect(childContext.getPlugin<TestPlugin2>().foo, isTrue);
-      expect(childContext.getPlugin<TestPlugin>().foo, isTrue);
+      expect(childContext.getPlugin<_TestPlugin2>().foo, isTrue);
+      expect(childContext.getPlugin<_TestPlugin>().foo, isTrue);
 
       try {
-        parentContext.getPlugin<TestPlugin2>();
+        parentContext.getPlugin<_TestPlugin2>();
         fail('Should not be able to find plugin.');
       } catch (_) {}
     });

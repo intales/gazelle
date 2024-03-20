@@ -53,7 +53,7 @@ class GazelleApp {
       try {
         await _handleHttpRequest(httpRequest);
       } catch (_) {
-        return _send500Error(httpRequest);
+        return _send500Error(httpRequest.response);
       }
     });
   }
@@ -79,8 +79,9 @@ class GazelleApp {
   }
 
   Future<void> _handleHttpRequest(HttpRequest httpRequest) async {
+    final httpResponse = httpRequest.response;
     final searchResult = await _context.router.search(httpRequest);
-    if (searchResult == null) return _send404Error(httpRequest);
+    if (searchResult == null) return _send404Error(httpResponse);
 
     GazelleRequest request = searchResult.request;
     final preRequestHooks = searchResult.route.preRequestHooks;
@@ -90,7 +91,7 @@ class GazelleApp {
     for (final hook in preRequestHooks) {
       final message = await hook(request);
       if (message is GazelleResponse) {
-        return _sendResponse(httpRequest, message);
+        return _sendResponse(httpResponse, message);
       }
       request = message as GazelleRequest;
     }
@@ -100,34 +101,34 @@ class GazelleApp {
     for (final hook in postRequestHooks) {
       result = await hook(result);
       if (result.statusCode >= 400 && result.statusCode <= 599) {
-        return _sendResponse(httpRequest, result);
+        return _sendResponse(httpResponse, result);
       }
     }
 
-    return _sendResponse(httpRequest, result);
+    return _sendResponse(httpResponse, result);
   }
 
-  void _sendResponse(HttpRequest request, GazelleResponse response) {
-    request.response.statusCode = response.statusCode;
-    request.response.write(response.body);
-    request.response.close();
-  }
+  void _sendResponse(
+    HttpResponse httpResponseresponse,
+    GazelleResponse response,
+  ) =>
+      response.toHttpResponse(httpResponseresponse);
 
-  void _send404Error(HttpRequest request) => _sendResponse(
-      request,
+  void _send404Error(HttpResponse response) => _sendResponse(
+      response,
       GazelleResponse(
         statusCode: 404,
-        body: _get404ErrorMessage(request.uri.path),
+        body: _error404,
       ));
 
-  void _send500Error(HttpRequest request) => _sendResponse(
-        request,
+  void _send500Error(HttpResponse response) => _sendResponse(
+        response,
         GazelleResponse(
           statusCode: 500,
-          body: _get500ErrorMessage(),
+          body: _error500,
         ),
       );
 
-  String _get404ErrorMessage(String path) => "Resource [$path] not found.";
-  String _get500ErrorMessage() => "Internal server error.";
+  static const String _error404 = "Resource not found.";
+  static const String _error500 = "Internal server error.";
 }
