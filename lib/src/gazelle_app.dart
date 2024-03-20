@@ -5,18 +5,7 @@ import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
 import 'gazelle_plugin.dart';
 import 'gazelle_router.dart';
-
-class GazelleSSLCertificate {
-  final String certificatePath;
-  final String privateKeyPath;
-  final String? privateKeyPassword;
-
-  GazelleSSLCertificate({
-    required this.certificatePath,
-    required this.privateKeyPath,
-    this.privateKeyPassword,
-  });
-}
+import 'gazelle_ssl_certificate.dart';
 
 class GazelleApp {
   final String address;
@@ -68,6 +57,11 @@ class GazelleApp {
       }
     });
   }
+
+  Future<void> stop({
+    bool force = false,
+  }) =>
+      _server.close(force: force);
 
   Future<HttpServer> _createServer() async {
     if (sslCertificate != null) {

@@ -5,3 +5,4 @@ export 'gazelle_http_method.dart';
 export 'gazelle_message.dart';
 export 'gazelle_plugin.dart';
 export 'gazelle_router.dart';
+export 'gazelle_ssl_certificate.dart';
