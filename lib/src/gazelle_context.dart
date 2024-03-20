@@ -1,3 +1,4 @@
+import 'gazelle_http_method.dart';
 import 'gazelle_plugin.dart';
 import 'gazelle_router.dart';
 
@@ -17,6 +18,28 @@ class GazelleContext {
         router: GazelleRouter(),
         plugins: {},
       );
+
+  void insertRoute(
+    GazelleHttpMethod method,
+    String route,
+    GazelleRouteHandler handler,
+  ) =>
+      router.insert(method, route, handler);
+
+  void get(String route, GazelleRouteHandler handler) =>
+      router.get(route, handler);
+
+  void post(String route, GazelleRouteHandler handler) =>
+      router.post(route, handler);
+
+  void put(String route, GazelleRouteHandler handler) =>
+      router.put(route, handler);
+
+  void patch(String route, GazelleRouteHandler handler) =>
+      router.patch(route, handler);
+
+  void delete(String route, GazelleRouteHandler handler) =>
+      router.delete(route, handler);
 
   T getPlugin<T extends GazellePlugin>() {
     final plugin = _plugins[T] as T?;

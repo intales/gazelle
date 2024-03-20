@@ -29,22 +29,22 @@ class GazelleApp {
     String route,
     GazelleRouteHandler handler,
   ) =>
-      _context.router.insert(method, route, handler);
+      _context.insertRoute(method, route, handler);
 
   void get(String route, GazelleRouteHandler handler) =>
-      _context.router.get(route, handler);
+      _context.get(route, handler);
 
   void post(String route, GazelleRouteHandler handler) =>
-      _context.router.post(route, handler);
+      _context.post(route, handler);
 
   void put(String route, GazelleRouteHandler handler) =>
-      _context.router.put(route, handler);
+      _context.put(route, handler);
 
   void patch(String route, GazelleRouteHandler handler) =>
-      _context.router.patch(route, handler);
+      _context.patch(route, handler);
 
   void delete(String route, GazelleRouteHandler handler) =>
-      _context.router.delete(route, handler);
+      _context.delete(route, handler);
 
   Future<void> start() async {
     _server = await _createServer();

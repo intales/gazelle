@@ -1,5 +1,6 @@
 import 'package:gazelle/src/gazelle_context.dart';
 import 'package:gazelle/src/gazelle_plugin.dart';
+import 'package:gazelle/src/gazelle_router.dart';
 import 'package:test/test.dart';
 
 class TestPlugin extends GazellePlugin {
@@ -35,9 +36,13 @@ void main() {
 
     test('Should find a plugin registered in a parent context', () async {
       // Arrange
-      final parentContext = GazelleContext.create();
+      final router = GazelleRouter();
+      final parentContext = GazelleContext(
+        router: router,
+        plugins: {},
+      );
       final childContext = GazelleContext(
-        router: parentContext.router,
+        router: router,
         plugins: {},
         context: parentContext,
       );
