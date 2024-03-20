@@ -1,12 +1,14 @@
+import 'package:gazelle/src/gazelle_http_method.dart';
 import 'package:gazelle/src/gazelle_message.dart';
 import 'package:gazelle/src/gazelle_router.dart';
+import 'package:gazelle/src/gazelle_trie.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group("GazelleRouter tests", () {
+  group("GazelleTrie tests", () {
     test("Should insert and search a value inside the trie", () async {
       // Arrange
-      final trie = Trie<GazelleRouteHandler>(wildcard: ":");
+      final trie = GazelleTrie<GazelleRouteHandler>(wildcard: ":");
       final strings = "/user/profile/:id".split("/");
       const expected = "Hello, World!";
 

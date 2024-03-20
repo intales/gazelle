@@ -1,8 +1,10 @@
 import 'dart:io';
 
-import 'package:gazelle/src/gazelle_context.dart';
-import 'package:gazelle/src/gazelle_message.dart';
-import 'package:gazelle/src/gazelle_router.dart';
+import 'gazelle_context.dart';
+import 'gazelle_http_method.dart';
+import 'gazelle_message.dart';
+import 'gazelle_plugin.dart';
+import 'gazelle_router.dart';
 
 class GazelleSSLCertificate {
   final String certificatePath;

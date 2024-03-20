@@ -1,23 +1,18 @@
 import 'dart:io';
 
-import 'package:gazelle/src/gazelle_message.dart';
+import 'gazelle_hooks.dart';
+import 'gazelle_http_method.dart';
+import 'gazelle_message.dart';
+import 'gazelle_trie.dart';
 
 typedef GazelleRouteHandler = Future<GazelleResponse> Function(
   GazelleRequest request,
 );
 
-typedef GazellePreRequestHook = Future<GazelleMessage> Function(
-  GazelleRequest request,
-);
-
-typedef GazellePostRequestHook = Future<GazelleResponse> Function(
-  GazelleResponse response,
-);
-
 class GazelleRoute {
   final GazelleRouteHandler handler;
   final List<GazellePreRequestHook> preRequestHooks;
-  final List<GazellePostRequestHook> postRequestHooks;
+  final List<GazellePostResponseHook> postRequestHooks;
 
   GazelleRoute(
     this.handler, {
@@ -40,7 +35,7 @@ class GazelleRouter {
   static const _routeSeparator = "/";
   static const _wildcard = ":";
 
-  Trie<GazelleRoute> routes = Trie<GazelleRoute>(
+  GazelleTrie<GazelleRoute> routes = GazelleTrie<GazelleRoute>(
     wildcard: _wildcard,
   );
 
@@ -48,7 +43,7 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostRequestHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
   }) =>
       insert(
         GazelleHttpMethod.get,
@@ -62,7 +57,7 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostRequestHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
   }) =>
       insert(
         GazelleHttpMethod.post,
@@ -76,7 +71,7 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostRequestHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
   }) =>
       insert(
         GazelleHttpMethod.put,
@@ -90,7 +85,7 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostRequestHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
   }) =>
       insert(
         GazelleHttpMethod.patch,
@@ -104,7 +99,7 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostRequestHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
   }) =>
       insert(
         GazelleHttpMethod.delete,
@@ -119,7 +114,7 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostRequestHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
   }) =>
       routes.insert(
         "${method.name}/$route".split(_routeSeparator),
@@ -150,89 +145,5 @@ class GazelleRouter {
     final path = request.uri.path;
 
     return "$method/$path";
-  }
-}
-
-class TrieSearchResult<T> {
-  final T? value;
-  final Map<String, String> wildcardValues;
-
-  TrieSearchResult({
-    required this.value,
-    this.wildcardValues = const {},
-  });
-}
-
-class TrieNode<T> {
-  Map<String, TrieNode<T>> children = {};
-  T? value;
-
-  String? _wildcardName;
-  set wildcardName(String name) => _wildcardName = name;
-  String get wildcardName =>
-      _wildcardName == null ? throw "Wildcard name is null" : _wildcardName!;
-
-  bool get isWildcard => _wildcardName != null;
-  bool get hasWildcardChild => children.values.any((e) => e.isWildcard);
-
-  TrieNode<T> get wildcardChild =>
-      children.values.singleWhere((e) => e.isWildcard);
-}
-
-class Trie<T> {
-  final String wildcard;
-
-  TrieNode<T> root = TrieNode<T>();
-
-  Trie({
-    required this.wildcard,
-  });
-
-  void insert(List<String> strings, T value) {
-    TrieNode<T> current = root;
-
-    for (final string in strings) {
-      if (string.startsWith(wildcard)) {
-        final wildcardName = string.replaceAll(wildcard, "");
-        if (!current.children.containsKey(wildcardName)) {
-          current.children[wildcardName] = TrieNode<T>();
-        }
-        current = current.children[wildcardName]!;
-
-        current.wildcardName = wildcardName;
-        continue;
-      }
-
-      if (!current.children.containsKey(string)) {
-        current.children[string] = TrieNode<T>();
-      }
-      current = current.children[string]!;
-    }
-
-    current.value = value;
-  }
-
-  TrieSearchResult<T> search(List<String> strings) {
-    TrieNode<T> current = root;
-    Map<String, String> wildcards = {};
-
-    for (final string in strings) {
-      if (current.children.containsKey(string)) {
-        current = current.children[string]!;
-      } else if (current.hasWildcardChild) {
-        current = current.wildcardChild;
-        wildcards[current.wildcardName] = string;
-      } else {
-        return TrieSearchResult(
-          value: null,
-          wildcardValues: wildcards,
-        );
-      }
-    }
-
-    return TrieSearchResult(
-      value: current.value,
-      wildcardValues: wildcards,
-    );
   }
 }

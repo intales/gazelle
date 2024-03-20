@@ -1,4 +1,4 @@
-part of 'gazelle_context.dart';
+import 'gazelle_context.dart';
 
 abstract class GazellePlugin {
   const GazellePlugin();

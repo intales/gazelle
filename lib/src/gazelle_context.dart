@@ -1,6 +1,5 @@
-import 'package:gazelle/src/gazelle_router.dart';
-
-part 'gazelle_plugin.dart';
+import 'gazelle_plugin.dart';
+import 'gazelle_router.dart';
 
 class GazelleContext {
   final GazelleRouter router;
