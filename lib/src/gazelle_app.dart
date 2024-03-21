@@ -8,30 +8,111 @@ import 'gazelle_plugin.dart';
 import 'gazelle_router.dart';
 import 'gazelle_ssl_certificate.dart';
 
+/// A lightweight and flexible HTTP server framework for Dart.
+///
+/// Gazelle simplifies the development of web applications by providing an intuitive
+/// API for setting up APIs, web servers, and microservices with minimal configuration.
+///
+/// Usage:
+/// ```dart
+/// import 'package:gazelle/gazelle.dart';
+///
+/// void main() async {
+///   final app = GazelleApp();
+///
+///   // Define routes
+///   app.get('/', (request) async => GazelleResponse(
+///         statusCode: 200,
+///         body: 'Hello, Gazelle!',
+///       ));
+///
+///   // Start the server
+///   await app.start();
+///   print('Server is running at http://${app.address}:${app.port}');
+/// }
+/// ```
 class GazelleApp {
+  /// The default address for the server.
   static const _localhost = "localhost";
+
+  /// Error message for resource not found.
   static const _error404 = "Resource not found.";
+
+  /// Error message for internal server error.
   static const _error500 = "Internal server error.";
 
+  /// The address on which the server will listen.
   final String address;
+
+  /// The SSL certificate configuration for HTTPS support.
   final GazelleSSLCertificate? sslCertificate;
 
+  /// The context for managing routes and plugins.
   late final GazelleContext _context;
+
+  /// The HTTP server instance.
   late final HttpServer _server;
 
-  int port;
-  bool isListening = true;
+  /// The port on which the server will listen.
+  int get port => _port;
+  int _port;
 
+  /// Flag indicating whether the server is currently listening.
+  bool get isListening => _isListening;
+  bool _isListening = false;
+
+  /// Creates an instance of [GazelleApp].
+  ///
+  /// The [address] defaults to "localhost" and the [port] defaults to 0.
+  /// If [port] is not provided, the system will choose an available port.
+  /// Optionally, you can provide an [sslCertificate] for HTTPS support.
+  ///
+  /// Example:
+  /// ```dart
+  /// final sslCertificate = GazelleSSLCertificate(
+  ///   certificatePath: 'path/to/certificate.crt',
+  ///   privateKeyPath: 'path/to/privateKey.key',
+  /// );
+  ///
+  /// final app = GazelleApp(
+  ///   sslCertificate: sslCertificate,
+  /// );
+  /// ```
   GazelleApp({
     this.address = _localhost,
     int? port,
     this.sslCertificate,
   })  : _context = GazelleContext.create(),
-        port = port ?? 0;
+        _port = port ?? 0;
 
+  /// Registers a plugin with the application context.
+  ///
+  /// Plugins extend Gazelle's functionality, allowing integration of
+  /// authentication, logging, and other common features into the application.
   Future<void> registerPlugin(GazellePlugin plugin) =>
       _context.register(plugin);
 
+  /// Inserts a custom route with the specified HTTP [method], URL [route],
+  /// and request handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// final app = GazelleApp();
+  /// app.insertRoute(
+  ///   GazelleHttpMethod.get,
+  ///   '/hello',
+  ///   (request) async {
+  ///     return GazelleResponse(
+  ///       statusCode: 200,
+  ///       body: 'Hello, Gazelle!',
+  ///     );
+  ///   },
+  /// );
+  /// await app.start();
+  /// ```
   void insertRoute(
     GazelleHttpMethod method,
     String route,
@@ -47,6 +128,21 @@ class GazelleApp {
         postRequestHooks: postRequestHooks,
       );
 
+  /// Registers a GET route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// app.get('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// await app.start();
+  /// ```
   void get(
     String route,
     GazelleRouteHandler handler, {
@@ -60,6 +156,22 @@ class GazelleApp {
         postRequestHooks: postRequestHooks,
       );
 
+  /// Registers a POST route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// final app = GazelleApp();
+  /// app.post('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// await app.start();
+  /// ```
   void post(
     String route,
     GazelleRouteHandler handler, {
@@ -73,6 +185,22 @@ class GazelleApp {
         postRequestHooks: postRequestHooks,
       );
 
+  /// Registers a PUT route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// final app = GazelleApp();
+  /// app.put('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// await app.start();
+  /// ```
   void put(
     String route,
     GazelleRouteHandler handler, {
@@ -86,6 +214,22 @@ class GazelleApp {
         postRequestHooks: postRequestHooks,
       );
 
+  /// Registers a PATCH route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// final app = GazelleApp();
+  /// app.patch('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// await app.start();
+  /// ```
   void patch(
     String route,
     GazelleRouteHandler handler, {
@@ -99,6 +243,22 @@ class GazelleApp {
         postRequestHooks: postRequestHooks,
       );
 
+  /// Registers a DELETE route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// final app = GazelleApp();
+  /// app.delete('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// await app.start();
+  /// ```
   void delete(
     String route,
     GazelleRouteHandler handler, {
@@ -112,9 +272,14 @@ class GazelleApp {
         postRequestHooks: postRequestHooks,
       );
 
+  /// Starts the HTTP server.
+  ///
+  /// Binds the server to the specified [address] and [port], and listens for
+  /// incoming requests. Once the server is started, it will continue listening
+  /// until stopped using the [stop] method.
   Future<void> start() async {
     _server = await _createServer();
-    port = _server.port;
+    _port = _server.port;
 
     _server.listen((httpRequest) async {
       try {
@@ -124,13 +289,17 @@ class GazelleApp {
       }
     });
 
-    isListening = true;
+    _isListening = true;
   }
 
+  /// Stops the HTTP server.
+  ///
+  /// If [force] is true, the server will be forcefully stopped, closing all
+  /// connections immediately.
   Future<void> stop({
     bool force = false,
   }) =>
-      _server.close(force: force).then((_) => isListening = false);
+      _server.close(force: force).then((_) => _isListening = false);
 
   Future<HttpServer> _createServer() async {
     if (sslCertificate != null) {
@@ -147,6 +316,11 @@ class GazelleApp {
     return HttpServer.bind(address, port);
   }
 
+  /// Handles incoming HTTP requests by searching for the appropriate route,
+  /// executing pre-request hooks, handling the request, and executing
+  /// post-response hooks.
+  ///
+  /// If no route is found, a 404 error response is sent.
   Future<void> _handleHttpRequest(HttpRequest httpRequest) async {
     final httpResponse = httpRequest.response;
     final searchResult = await _context.searchRoute(httpRequest);
