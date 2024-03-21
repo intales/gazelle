@@ -1,17 +1,21 @@
+import 'dart:io';
+
+import 'gazelle_hooks.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_plugin.dart';
 import 'gazelle_router.dart';
 
 class GazelleContext {
-  final GazelleRouter router;
+  final GazelleRouter _router;
   final Map<Type, GazellePlugin> _plugins;
   final GazelleContext? _context;
 
   const GazelleContext({
-    required this.router,
+    required GazelleRouter router,
     required Map<Type, GazellePlugin> plugins,
     GazelleContext? context,
-  })  : _context = context,
+  })  : _router = router,
+        _context = context,
         _plugins = plugins;
 
   static GazelleContext create() => GazelleContext(
@@ -22,24 +26,85 @@ class GazelleContext {
   void insertRoute(
     GazelleHttpMethod method,
     String route,
-    GazelleRouteHandler handler,
-  ) =>
-      router.insert(method, route, handler);
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _router.insert(
+        method,
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void get(String route, GazelleRouteHandler handler) =>
-      router.get(route, handler);
+  Future<GazelleRouterSearchResult?> searchRoute(HttpRequest request) =>
+      _router.search(request);
 
-  void post(String route, GazelleRouteHandler handler) =>
-      router.post(route, handler);
+  void get(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _router.get(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void put(String route, GazelleRouteHandler handler) =>
-      router.put(route, handler);
+  void post(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _router.post(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void patch(String route, GazelleRouteHandler handler) =>
-      router.patch(route, handler);
+  void put(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _router.put(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void delete(String route, GazelleRouteHandler handler) =>
-      router.delete(route, handler);
+  void patch(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _router.patch(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
+
+  void delete(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _router.delete(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
   T getPlugin<T extends GazellePlugin>() {
     final plugin = _plugins[T] as T?;
@@ -52,7 +117,7 @@ class GazelleContext {
 
   Future<void> register<T extends GazellePlugin>(T plugin) async {
     final newContext = GazelleContext(
-      router: router,
+      router: _router,
       plugins: {T: plugin},
       context: this,
     );

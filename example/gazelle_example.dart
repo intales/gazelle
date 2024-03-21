@@ -5,7 +5,7 @@ class HelloNamePlugin implements GazellePlugin {
 
   @override
   Future<void> initialize(GazelleContext context) async {
-    context.router.get("/hello_name_plugin/:name", (request) async {
+    context.get("/hello_name_plugin/:name", (request) async {
       return GazelleResponse(
         statusCode: 200,
         body:
@@ -19,7 +19,7 @@ class HelloWorldPlugin implements GazellePlugin {
   @override
   Future<void> initialize(GazelleContext context) async {
     await context.register(HelloNamePlugin());
-    context.router.get("/hello_world_plugin", (request) async {
+    context.get("/hello_world_plugin", (request) async {
       return GazelleResponse(
         statusCode: 200,
         body: "Hello, World! (plugin)",

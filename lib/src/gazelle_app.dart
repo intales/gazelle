@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'gazelle_context.dart';
+import 'gazelle_hooks.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
 import 'gazelle_plugin.dart';
@@ -8,18 +9,25 @@ import 'gazelle_router.dart';
 import 'gazelle_ssl_certificate.dart';
 
 class GazelleApp {
+  static const _localhost = "localhost";
+  static const _error404 = "Resource not found.";
+  static const _error500 = "Internal server error.";
+
   final String address;
-  final int port;
   final GazelleSSLCertificate? sslCertificate;
 
   late final GazelleContext _context;
   late final HttpServer _server;
 
+  int port;
+  bool isListening = true;
+
   GazelleApp({
-    required this.address,
-    required this.port,
+    this.address = _localhost,
+    int? port,
     this.sslCertificate,
-  }) : _context = GazelleContext.create();
+  })  : _context = GazelleContext.create(),
+        port = port ?? 0;
 
   Future<void> registerPlugin(GazellePlugin plugin) =>
       _context.register(plugin);
@@ -27,27 +35,86 @@ class GazelleApp {
   void insertRoute(
     GazelleHttpMethod method,
     String route,
-    GazelleRouteHandler handler,
-  ) =>
-      _context.insertRoute(method, route, handler);
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _context.insertRoute(
+        method,
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void get(String route, GazelleRouteHandler handler) =>
-      _context.get(route, handler);
+  void get(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _context.get(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void post(String route, GazelleRouteHandler handler) =>
-      _context.post(route, handler);
+  void post(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _context.post(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void put(String route, GazelleRouteHandler handler) =>
-      _context.put(route, handler);
+  void put(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _context.put(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void patch(String route, GazelleRouteHandler handler) =>
-      _context.patch(route, handler);
+  void patch(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _context.patch(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
-  void delete(String route, GazelleRouteHandler handler) =>
-      _context.delete(route, handler);
+  void delete(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _context.delete(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
 
   Future<void> start() async {
     _server = await _createServer();
+    port = _server.port;
 
     _server.listen((httpRequest) async {
       try {
@@ -56,12 +123,14 @@ class GazelleApp {
         return _send500Error(httpRequest.response);
       }
     });
+
+    isListening = true;
   }
 
   Future<void> stop({
     bool force = false,
   }) =>
-      _server.close(force: force);
+      _server.close(force: force).then((_) => isListening = false);
 
   Future<HttpServer> _createServer() async {
     if (sslCertificate != null) {
@@ -80,7 +149,7 @@ class GazelleApp {
 
   Future<void> _handleHttpRequest(HttpRequest httpRequest) async {
     final httpResponse = httpRequest.response;
-    final searchResult = await _context.router.search(httpRequest);
+    final searchResult = await _context.searchRoute(httpRequest);
     if (searchResult == null) return _send404Error(httpResponse);
 
     GazelleRequest request = searchResult.request;
@@ -122,13 +191,9 @@ class GazelleApp {
       ));
 
   void _send500Error(HttpResponse response) => _sendResponse(
-        response,
-        GazelleResponse(
-          statusCode: 500,
-          body: _error500,
-        ),
-      );
-
-  static const String _error404 = "Resource not found.";
-  static const String _error500 = "Internal server error.";
+      response,
+      GazelleResponse(
+        statusCode: 500,
+        body: _error500,
+      ));
 }
