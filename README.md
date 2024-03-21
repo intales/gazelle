@@ -63,7 +63,7 @@ For more advanced usage and detailed documentation, check out the Gazelle docume
 At Gazelle, we believe in the power of community collaboration.
 Our plugin system not only helps scale your codebase but also empowers developers to
 contribute to the community without relying solely on the core maintainers.
-Whether you're interested in fixing bugs, adding new features,improving documentation, or leaving a feedback
+Whether you're interested in fixing bugs, adding new features, improving documentation, or leaving a feedback,
 your contributions are welcome and valued.
 
 We encourage you to get involved by opening issues, submitting pull requests,
