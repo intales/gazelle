@@ -32,10 +32,10 @@ void main() async {
   final app = GazelleApp(address: "localhost", port: 8080);
 
   app.registerPlugin(HelloWorldPlugin());
-  app.get("/hello_world", (request) async {
+  app.get("/", (request) async {
     return GazelleResponse(
       statusCode: 200,
-      body: "Hello, World!",
+      body: "Hello, Gazelle!",
     );
   });
 
