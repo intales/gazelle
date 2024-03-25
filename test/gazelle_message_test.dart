@@ -17,7 +17,7 @@ void main() {
         GazelleRequest? request;
         server.listen(
           (httpRequest) async {
-            request = await GazelleRequest.fromHttpRequest(httpRequest);
+            request = GazelleRequest.fromHttpRequest(httpRequest);
             httpRequest.response.statusCode = 200;
             httpRequest.response.write("OK");
             httpRequest.response.close();
@@ -32,10 +32,10 @@ void main() {
         expect(request?.uri.path, uri.path);
         expect(request?.headers.isNotEmpty, isTrue);
         expect(request?.method, GazelleHttpMethod.post);
-        expect(request?.body, "test");
+        expect(await request?.body, "test");
       });
 
-      test('Should copy request with given params', () {
+      test('Should copy request with given params', () async {
         // Arrange
         final request = GazelleRequest(
           uri: Uri.parse("/test"),
@@ -58,7 +58,7 @@ void main() {
           method: method,
           headers: headers,
           pathParameters: pathParameters,
-          body: body,
+          body: Future.value(body),
         );
 
         // Assert
@@ -66,7 +66,7 @@ void main() {
         expect(result.method, method);
         expect(result.headers, headers);
         expect(result.pathParameters, pathParameters);
-        expect(result.body, body);
+        expect(await result.body, body);
       });
     });
 

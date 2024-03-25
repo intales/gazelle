@@ -323,7 +323,7 @@ class GazelleApp {
   /// If no route is found, a 404 error response is sent.
   Future<void> _handleHttpRequest(HttpRequest httpRequest) async {
     final httpResponse = httpRequest.response;
-    final searchResult = await _context.searchRoute(httpRequest);
+    final searchResult = _context.searchRoute(httpRequest);
     if (searchResult == null) return _send404Error(httpResponse);
 
     GazelleRequest request = searchResult.request;

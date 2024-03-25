@@ -81,9 +81,9 @@ class GazelleContext {
   /// Example:
   /// ```dart
   /// final context = GazelleContext.create();
-  /// final result = await context.searchRoute(httpRequest);
+  /// final result = context.searchRoute(httpRequest);
   /// ```
-  Future<GazelleRouterSearchResult?> searchRoute(HttpRequest request) =>
+  GazelleRouterSearchResult? searchRoute(HttpRequest request) =>
       _router.search(request);
 
   void get(

@@ -10,12 +10,8 @@ abstract class GazelleMessage {
   /// The headers of the message.
   final Map<String, List<String>> headers;
 
-  /// The body of the message.
-  final String? body;
-
   const GazelleMessage({
     this.headers = const {},
-    this.body,
   });
 }
 
@@ -33,24 +29,26 @@ class GazelleRequest extends GazelleMessage {
   /// The path parameters extracted from the request URI.
   final Map<String, String> pathParameters;
 
+  final Future<String>? body;
+
   const GazelleRequest({
     required this.uri,
     required this.method,
     required this.pathParameters,
+    this.body,
     Map<String, List<String>> headers = const {},
-    String? body,
-  }) : super(headers: headers, body: body);
+  }) : super(headers: headers);
 
   /// Constructs a [GazelleRequest] instance from an [HttpRequest].
   ///
   /// Optionally accepts a map of path parameters.
-  static Future<GazelleRequest> fromHttpRequest(
+  static GazelleRequest fromHttpRequest(
     HttpRequest request, {
     Map<String, String> pathParameters = const {},
-  }) async {
+  }) {
     final headers = <String, List<String>>{};
     request.headers.forEach((key, value) => headers[key] = value);
-    final body = await utf8.decodeStream(request);
+    final body = utf8.decodeStream(request);
 
     return GazelleRequest(
       uri: request.uri,
@@ -67,7 +65,7 @@ class GazelleRequest extends GazelleMessage {
     GazelleHttpMethod? method,
     Map<String, String>? pathParameters,
     Map<String, List<String>>? headers,
-    String? body,
+    Future<String>? body,
   }) =>
       GazelleRequest(
         uri: uri ?? this.uri,
@@ -86,11 +84,14 @@ class GazelleResponse extends GazelleMessage {
   /// The HTTP status code of the response.
   final int statusCode;
 
+  // The body of the response.
+  final String? body;
+
   const GazelleResponse({
     required this.statusCode,
+    this.body,
     Map<String, List<String>> headers = const {},
-    String? body,
-  }) : super(headers: headers, body: body);
+  }) : super(headers: headers);
 
   /// Writes this [GazelleResponse] to an [HttpResponse].
   void toHttpResponse(HttpResponse response) => response

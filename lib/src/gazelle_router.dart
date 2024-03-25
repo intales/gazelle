@@ -125,14 +125,14 @@ class GazelleRouter {
   /// Searches for a route that matches the specified [request].
   ///
   /// Returns a [GazelleRouterSearchResult] if a match is found, otherwise returns `null`.
-  Future<GazelleRouterSearchResult?> search(HttpRequest request) async {
+  GazelleRouterSearchResult? search(HttpRequest request) {
     final route = _routeFromRequest(request);
     final result = _routes.search(route.split(_routeSeparator));
 
     if (result.value == null) return null;
 
     return GazelleRouterSearchResult(
-      request: await GazelleRequest.fromHttpRequest(
+      request: GazelleRequest.fromHttpRequest(
         request,
         pathParameters: result.wildcardValues,
       ),

@@ -15,7 +15,7 @@ void main() {
 
       GazelleRouterSearchResult? result;
       server.listen((httpRequest) async {
-        result = await router.search(httpRequest);
+        result = router.search(httpRequest);
         httpRequest.response.statusCode = 200;
         httpRequest.response.write('OK');
         httpRequest.response.close();
