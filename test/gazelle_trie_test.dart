@@ -1,6 +1,6 @@
 import 'package:gazelle/src/gazelle_http_method.dart';
 import 'package:gazelle/src/gazelle_message.dart';
-import 'package:gazelle/src/gazelle_router.dart';
+import 'package:gazelle/src/gazelle_route.dart';
 import 'package:gazelle/src/gazelle_trie.dart';
 import 'package:test/test.dart';
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'gazelle_hooks.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_plugin.dart';
+import 'gazelle_route.dart';
 import 'gazelle_router.dart';
 
 /// Manages the context for Gazelle applications, including routing and plugin management.

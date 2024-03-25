@@ -5,7 +5,7 @@ import 'gazelle_hooks.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
 import 'gazelle_plugin.dart';
-import 'gazelle_router.dart';
+import 'gazelle_route.dart';
 import 'gazelle_ssl_certificate.dart';
 
 /// A lightweight and flexible HTTP server framework for Dart.
