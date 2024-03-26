@@ -46,6 +46,9 @@ void main() {
         const headers = {
           'Content-Type': ['application/json'],
         };
+        const metadata = {
+          'test': 123,
+        };
         const pathParameters = {
           'testID': '123',
         };
@@ -58,6 +61,7 @@ void main() {
           headers: headers,
           pathParameters: pathParameters,
           body: Future.value(body),
+          metadata: metadata,
         );
 
         // Assert
@@ -66,6 +70,7 @@ void main() {
         expect(result.headers, headers);
         expect(result.pathParameters, pathParameters);
         expect(await result.body, body);
+        expect(result.metadata, metadata);
       });
     });
 
@@ -95,6 +100,9 @@ void main() {
         const headers = {
           'Content-Type': ['application/json'],
         };
+        const metadata = {
+          'test': 123,
+        };
         const body = "OK";
 
         // Act
@@ -102,12 +110,14 @@ void main() {
           statusCode: statusCode,
           headers: headers,
           body: body,
+          metadata: metadata,
         );
 
         // Assert
         expect(result.statusCode, statusCode);
         expect(result.headers, headers);
         expect(result.body, body);
+        expect(result.metadata, metadata);
       });
     });
   });

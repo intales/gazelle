@@ -10,8 +10,12 @@ abstract class GazelleMessage {
   /// The headers of the message.
   final Map<String, List<String>> headers;
 
+  /// Request's metadata.
+  final Map<String, dynamic> metadata;
+
   const GazelleMessage({
     this.headers = const {},
+    this.metadata = const {},
   });
 }
 
@@ -37,7 +41,8 @@ class GazelleRequest extends GazelleMessage {
     required this.pathParameters,
     this.body,
     Map<String, List<String>> headers = const {},
-  }) : super(headers: headers);
+    Map<String, dynamic> metadata = const {},
+  }) : super(headers: headers, metadata: metadata);
 
   /// Constructs a [GazelleRequest] instance from an [HttpRequest].
   ///
@@ -66,12 +71,14 @@ class GazelleRequest extends GazelleMessage {
     Map<String, String>? pathParameters,
     Map<String, List<String>>? headers,
     Future<String>? body,
+    Map<String, dynamic>? metadata,
   }) =>
       GazelleRequest(
         uri: uri ?? this.uri,
         method: method ?? this.method,
         pathParameters: pathParameters ?? this.pathParameters,
         headers: headers ?? this.headers,
+        metadata: metadata ?? this.metadata,
         body: body ?? this.body,
       );
 }
@@ -91,7 +98,8 @@ class GazelleResponse extends GazelleMessage {
     required this.statusCode,
     this.body,
     Map<String, List<String>> headers = const {},
-  }) : super(headers: headers);
+    Map<String, dynamic> metadata = const {},
+  }) : super(headers: headers, metadata: metadata);
 
   /// Writes this [GazelleResponse] to an [HttpResponse].
   void toHttpResponse(HttpResponse response) => response
@@ -103,11 +111,13 @@ class GazelleResponse extends GazelleMessage {
   GazelleResponse copyWith({
     int? statusCode,
     Map<String, List<String>>? headers,
+    Map<String, dynamic>? metadata,
     String? body,
   }) =>
       GazelleResponse(
         statusCode: statusCode ?? this.statusCode,
         headers: headers ?? this.headers,
+        metadata: metadata ?? this.metadata,
         body: body ?? this.body,
       );
 }
