@@ -1,4 +1,4 @@
-import 'package:gazelle/gazelle.dart';
+import 'package:gazelle_core/gazelle_core.dart';
 
 class HelloNamePlugin implements GazellePlugin {
   HelloNamePlugin();

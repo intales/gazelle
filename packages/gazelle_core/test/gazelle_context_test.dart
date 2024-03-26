@@ -1,6 +1,4 @@
-import 'package:gazelle/src/gazelle_context.dart';
-import 'package:gazelle/src/gazelle_plugin.dart';
-import 'package:gazelle/src/gazelle_router.dart';
+import 'package:gazelle_core/gazelle_core.dart';
 import 'package:test/test.dart';
 
 class _TestPlugin extends GazellePlugin {

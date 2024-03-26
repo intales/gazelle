@@ -14,8 +14,11 @@ jobs:
       - name: Dart setup
         uses: dart-lang/setup-dart@v1
 
-      - name: Install dependencies
-        run: dart pub get
+      - name: Melos setup
+        run: dart pub global activate melos
+
+      - name: Melos bootstrap
+        run: melos bootstrap
 
       - name: Run tests
-        run: dart test
+        run: melos run test

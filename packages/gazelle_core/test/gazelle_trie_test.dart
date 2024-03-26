@@ -1,7 +1,5 @@
-import 'package:gazelle/src/gazelle_http_method.dart';
-import 'package:gazelle/src/gazelle_message.dart';
-import 'package:gazelle/src/gazelle_route.dart';
-import 'package:gazelle/src/gazelle_trie.dart';
+import 'package:gazelle_core/gazelle_core.dart';
+import 'package:gazelle_core/src/gazelle_trie.dart';
 import 'package:test/test.dart';
 
 void main() {

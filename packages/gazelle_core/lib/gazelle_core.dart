@@ -11,4 +11,4 @@
 /// blazing-fast and scalable server-side applications with ease. Let's embark on this exciting adventure together!
 library;
 
-export 'src/gazelle_base.dart';
+export 'src/gazelle_core_base.dart';

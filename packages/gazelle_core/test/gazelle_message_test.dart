@@ -1,5 +1,4 @@
-import 'package:gazelle/src/gazelle_http_method.dart';
-import 'package:gazelle/src/gazelle_message.dart';
+import 'package:gazelle_core/gazelle_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 

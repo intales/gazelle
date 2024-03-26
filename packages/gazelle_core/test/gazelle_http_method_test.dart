@@ -1,4 +1,4 @@
-import 'package:gazelle/src/gazelle_http_method.dart';
+import 'package:gazelle_core/gazelle_core.dart';
 import 'package:test/test.dart';
 
 void main() {
