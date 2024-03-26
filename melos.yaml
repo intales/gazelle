@@ -1,10 +1,11 @@
 name: gazelle
+repository: https://github.com/intales/gazelle
 
 packages:
   - packages/**
 
 scripts:
-  analyze:
-    exec: dart analyze .
   test:
     exec: dart test .
+  fix:
+    exec: dart fix . --apply
