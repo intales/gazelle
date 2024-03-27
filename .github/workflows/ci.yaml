@@ -15,10 +15,10 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Dart coverage setup
-        uses: dart pub global activate coverage
+        run: dart pub global activate coverage
 
       - name: Dart combine coverage setup
-        uses: dart pub global activate combine_coverage
+        run: dart pub global activate combine_coverage
 
       - name: Melos setup
         run: dart pub global activate melos
