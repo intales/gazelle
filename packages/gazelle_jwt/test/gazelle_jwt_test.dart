@@ -1,5 +1,7 @@
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_jwt/gazelle_jwt.dart';
+import 'package:gazelle_jwt/src/gazelle_jwt_consts.dart';
+import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
 void main() {
@@ -32,7 +34,7 @@ void main() {
           method: GazelleHttpMethod.get,
           pathParameters: {},
           headers: {
-            "Authorization": ["Bearer $token"],
+            "authorization": ["Bearer $token"],
           });
 
       // Act
@@ -61,7 +63,7 @@ void main() {
       // Assert
       expect(result.runtimeType, GazelleResponse);
       expect((result as GazelleResponse).statusCode, 401);
-      expect(result.body, "Unauthorized");
+      expect(result.body, missingAuthHeaderMessage);
     });
 
     test('Should return a response when header schema is invalid', () async {
@@ -77,7 +79,7 @@ void main() {
           method: GazelleHttpMethod.get,
           pathParameters: {},
           headers: {
-            "Authorization": [" $token"],
+            "authorization": [" $token"],
           });
 
       // Act
@@ -86,7 +88,7 @@ void main() {
       // Assert
       expect(result.runtimeType, GazelleResponse);
       expect((result as GazelleResponse).statusCode, 401);
-      expect(result.body, "Unauthorized");
+      expect(result.body, badBearerSchemaMessage);
     });
 
     test('Should return a response when token is invalid', () async {
@@ -102,7 +104,7 @@ void main() {
           method: GazelleHttpMethod.get,
           pathParameters: {},
           headers: {
-            "Authorization": [" $token aaaa"],
+            "authorization": ["Bearer $token aaaa"],
           });
 
       // Act
@@ -111,7 +113,50 @@ void main() {
       // Assert
       expect(result.runtimeType, GazelleResponse);
       expect((result as GazelleResponse).statusCode, 401);
-      expect(result.body, "Unauthorized");
+      expect(result.body, invalidTokenMessage);
+    });
+
+    test('Should integrate with gazelle core', () async {
+      // Arrange
+      final app = GazelleApp();
+      final jwtPlugin = GazelleJwtPlugin("supersecret");
+      await app.registerPlugin(jwtPlugin);
+
+      app
+        ..post(
+          "/login",
+          (request) async {
+            return GazelleResponse(
+              statusCode: 200,
+              body: jwtPlugin.sign({"test": "123"}),
+            );
+          },
+        )
+        ..get(
+          "/test",
+          (request) async {
+            return GazelleResponse(
+              statusCode: 200,
+              body: "Hello, World!",
+            );
+          },
+          preRequestHooks: [jwtPlugin.authenticationHook],
+        );
+
+      await app.start();
+
+      // Act
+      final baseUrl = "http://${app.address}:${app.port}";
+      final token =
+          await http.post(Uri.parse("$baseUrl/login")).then((e) => e.body);
+
+      final result = await http.get(Uri.parse("$baseUrl/test"), headers: {
+        "authorization": "Bearer $token",
+      });
+
+      // Assert
+      expect(result.statusCode, 200);
+      expect(result.body, "Hello, World!");
     });
   });
 }

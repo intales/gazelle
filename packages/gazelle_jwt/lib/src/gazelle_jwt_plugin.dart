@@ -3,10 +3,6 @@ import 'package:gazelle_core/gazelle_core.dart';
 import 'gazelle_jwt_consts.dart';
 
 class GazelleJwtPlugin implements GazellePlugin {
-  static const _authHeaderName = "Authorization";
-  static const _bearerSchema = "Bearer ";
-  static const _unauthorized = "Unauthorized";
-
   final String _secret;
   late final SecretKey _secretKey;
 
@@ -22,27 +18,27 @@ class GazelleJwtPlugin implements GazellePlugin {
   JWT? verify(String token) => JWT.tryVerify(token, _secretKey);
 
   GazellePreRequestHook get authenticationHook => (request) async {
-        final authHeader = request.headers[_authHeaderName]?.first;
+        final authHeader = request.headers[authHeaderName]?.first;
         if (authHeader == null) {
           return GazelleResponse(
             statusCode: 401,
-            body: _unauthorized,
+            body: missingAuthHeaderMessage,
           );
         }
 
-        if (!authHeader.startsWith(_bearerSchema)) {
+        if (!authHeader.startsWith(bearerSchema)) {
           return GazelleResponse(
             statusCode: 401,
-            body: _unauthorized,
+            body: badBearerSchemaMessage,
           );
         }
 
-        final token = authHeader.replaceAll(_bearerSchema, "");
+        final token = authHeader.replaceAll(bearerSchema, "");
         final jwt = verify(token);
         if (jwt == null) {
           return GazelleResponse(
             statusCode: 401,
-            body: _unauthorized,
+            body: invalidTokenMessage,
           );
         }
 
