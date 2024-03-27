@@ -7,5 +7,12 @@ packages:
 scripts:
   test:
     exec: dart test .
+  test_coverage:
+    run: |
+      dart test --coverage=./coverage
+      dart pub global run coverage:format_coverage --in="./coverage/test" --out="./coverage/lcov.info" --lcov --report-on="./lib"
+      dart pub global run combine_coverage --repo-path="../../"
+    exec:
+      concurrency: 1
   fix:
     exec: dart fix . --apply
