@@ -31,7 +31,7 @@ microservices, all with minimal configuration and maximum efficiency.
 To start using Gazelle in your Dart project, simply add it to your `pubspec.yaml` file:
 ```yaml
 dependencies:
-  gazelle: <latest-version> 
+  gazelle_core: <latest-version> 
 ```
 Then, run `dart pub get` or `flutter pub get` to install the package.
 
@@ -39,7 +39,7 @@ Then, run `dart pub get` or `flutter pub get` to install the package.
 
 Here's a quick example of how to create a simple Gazelle server:
 ```dart
-import 'package:gazelle/gazelle.dart';
+import 'package:gazelle_core/gazelle_core.dart';
 
 void main() async {
   final app = GazelleApp();
