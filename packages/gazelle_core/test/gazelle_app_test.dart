@@ -159,15 +159,40 @@ void main() {
         ],
       );
 
+      app.insertRoute(
+        GazelleHttpMethod.get,
+        "/test/test_2",
+        (request) async => GazelleResponse(
+          statusCode: 200,
+          body: "OK",
+        ),
+        preRequestHooks: [
+          (request) async {
+            preRequestHooksCount += 1;
+            return request;
+          },
+        ],
+        postRequestHooks: [
+          (response) async {
+            postResponseHooksCount += 1;
+            return response;
+          },
+        ],
+      );
+
       await app.start();
-      final result =
+      final test =
           await http.get(Uri.parse("http://${app.address}:${app.port}/test"));
+      final test2 = await http
+          .get(Uri.parse("http://${app.address}:${app.port}/test/test_2"));
 
       // Assert
-      expect(result.statusCode, 200);
-      expect(result.body, "OK");
-      expect(preRequestHooksCount, 1);
-      expect(postResponseHooksCount, 1);
+      expect(test.statusCode, 200);
+      expect(test.body, "OK");
+      expect(test2.statusCode, 200);
+      expect(test2.body, "OK");
+      expect(preRequestHooksCount, 3);
+      expect(postResponseHooksCount, 3);
       await app.stop(force: true);
     });
 

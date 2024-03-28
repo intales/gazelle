@@ -142,6 +142,15 @@ void main() {
           preRequestHooks: [
             app.getPlugin<GazelleJwtPlugin>().authenticationHook,
           ],
+        )
+        ..get(
+          "/test/test_2",
+          (request) async {
+            return GazelleResponse(
+              statusCode: 200,
+              body: "Hello, World!",
+            );
+          },
         );
 
       await app.start();
@@ -151,13 +160,19 @@ void main() {
       final token =
           await http.post(Uri.parse("$baseUrl/login")).then((e) => e.body);
 
-      final result = await http.get(Uri.parse("$baseUrl/test"), headers: {
+      final test = await http.get(Uri.parse("$baseUrl/test"), headers: {
+        "authorization": "Bearer $token",
+      });
+
+      final test2 = await http.get(Uri.parse("$baseUrl/test/test_2"), headers: {
         "authorization": "Bearer $token",
       });
 
       // Assert
-      expect(result.statusCode, 200);
-      expect(result.body, "Hello, World!");
+      expect(test.statusCode, 200);
+      expect(test.body, "Hello, World!");
+      expect(test2.statusCode, 200);
+      expect(test2.body, "Hello, World!");
     });
   });
 }

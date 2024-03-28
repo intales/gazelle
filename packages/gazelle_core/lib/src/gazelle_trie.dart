@@ -1,24 +1,38 @@
 /// Represents the result of a search operation in a Gazelle Trie.
 class GazelleTrieSearchResult<T> {
-  /// The value associated with the search result.
-  final T? value;
+  /// The node associated with the search result.
+  final GazelleTrieNode<T>? node;
 
   /// A map containing values of wildcard nodes encountered during the search.
   final Map<String, String> wildcardValues;
 
   /// Constructs a GazelleTrieSearchResult instance.
   ///
-  /// [value] is the value associated with the search result.
+  /// [node] is the node associated with the search result.
   ///
   /// [wildcardValues] is a map containing values of wildcard nodes encountered during the search.
   const GazelleTrieSearchResult({
-    required this.value,
+    required this.node,
     this.wildcardValues = const {},
   });
+
+  /// The value associated with the search result.
+  T? get value => node?.value;
 }
 
 /// Represents a node in a Gazelle Trie.
 class GazelleTrieNode<T> {
+  /// Parent node.
+  final GazelleTrieNode<T>? parent;
+
+  /// Node name.
+  final String name;
+
+  GazelleTrieNode({
+    this.name = "",
+    this.parent,
+  });
+
   /// The children nodes of this trie node.
   Map<String, GazelleTrieNode<T>> children = {};
 
@@ -64,7 +78,10 @@ class GazelleTrie<T> {
       if (string.startsWith(wildcard)) {
         final wildcardName = string.replaceAll(wildcard, "");
         if (!current.children.containsKey(wildcardName)) {
-          current.children[wildcardName] = GazelleTrieNode<T>();
+          current.children[wildcardName] = GazelleTrieNode<T>(
+            name: wildcardName,
+            parent: current,
+          );
         }
         current = current.children[wildcardName]!;
 
@@ -73,7 +90,10 @@ class GazelleTrie<T> {
       }
 
       if (!current.children.containsKey(string)) {
-        current.children[string] = GazelleTrieNode<T>();
+        current.children[string] = GazelleTrieNode<T>(
+          name: string,
+          parent: current,
+        );
       }
       current = current.children[string]!;
     }
@@ -97,14 +117,14 @@ class GazelleTrie<T> {
         wildcards[current.wildcardName] = string;
       } else {
         return GazelleTrieSearchResult(
-          value: null,
+          node: null,
           wildcardValues: wildcards,
         );
       }
     }
 
     return GazelleTrieSearchResult(
-      value: current.value,
+      node: current,
       wildcardValues: wildcards,
     );
   }

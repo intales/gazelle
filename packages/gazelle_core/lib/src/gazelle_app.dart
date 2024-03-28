@@ -339,7 +339,7 @@ class GazelleApp {
 
     GazelleRequest request = searchResult.request;
     final preRequestHooks = searchResult.route.preRequestHooks;
-    final postRequestHooks = searchResult.route.postRequestHooks;
+    final postRequestHooks = searchResult.route.postResponseHooks;
     final handler = searchResult.route.handler;
 
     for (final hook in preRequestHooks) {

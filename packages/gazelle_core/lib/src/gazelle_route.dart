@@ -14,11 +14,22 @@ typedef GazelleRouteHandler = Future<GazelleResponse> Function(
 class GazelleRoute {
   final GazelleRouteHandler handler;
   final List<GazellePreRequestHook> preRequestHooks;
-  final List<GazellePostResponseHook> postRequestHooks;
+  final List<GazellePostResponseHook> postResponseHooks;
 
   const GazelleRoute(
     this.handler, {
     this.preRequestHooks = const [],
-    this.postRequestHooks = const [],
+    this.postResponseHooks = const [],
   });
+
+  GazelleRoute copyWith({
+    GazelleRouteHandler? handler,
+    List<GazellePreRequestHook>? preRequestHooks,
+    List<GazellePostResponseHook>? postResponseHooks,
+  }) =>
+      GazelleRoute(
+        handler ?? this.handler,
+        preRequestHooks: preRequestHooks ?? this.preRequestHooks,
+        postResponseHooks: postResponseHooks ?? this.postResponseHooks,
+      );
 }
