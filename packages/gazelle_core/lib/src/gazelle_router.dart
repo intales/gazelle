@@ -35,14 +35,14 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       insert(
         GazelleHttpMethod.get,
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers a POST route with the specified [route], [handler], and optional hooks.
@@ -50,14 +50,14 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       insert(
         GazelleHttpMethod.post,
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers a PUT route with the specified [route], [handler], and optional hooks.
@@ -65,14 +65,14 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       insert(
         GazelleHttpMethod.put,
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers a PATCH route with the specified [route], [handler], and optional hooks.
@@ -80,14 +80,14 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       insert(
         GazelleHttpMethod.patch,
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers a DELETE route with the specified [route], [handler], and optional hooks.
@@ -95,14 +95,14 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       insert(
         GazelleHttpMethod.delete,
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Inserts a route with the specified [method], [route], [handler], and optional hooks.
@@ -111,14 +111,14 @@ class GazelleRouter {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       _routes.insert(
         "${method.name}/$route".split(_routeSeparator),
         GazelleRoute(
           handler,
           preRequestHooks: preRequestHooks,
-          postResponseHooks: postRequestHooks,
+          postResponseHooks: postResponseHooks,
         ),
       );
 

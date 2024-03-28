@@ -129,14 +129,14 @@ class GazelleApp {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       _context.insertRoute(
         method,
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers a GET route with the specified URL [route] and handler [handler].

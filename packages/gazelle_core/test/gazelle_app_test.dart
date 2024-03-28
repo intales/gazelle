@@ -154,7 +154,7 @@ void main() {
             shareWithChildRoutes: true,
           ),
         ],
-        postRequestHooks: [
+        postResponseHooks: [
           GazellePostResponseHook(
             (response) async {
               postResponseHooksCount += 1;
@@ -171,7 +171,7 @@ void main() {
           statusCode: 200,
           body: "OK",
         ),
-        postRequestHooks: [
+        postResponseHooks: [
           GazellePostResponseHook(
             (response) async {
               postResponseHooksCount += 1;

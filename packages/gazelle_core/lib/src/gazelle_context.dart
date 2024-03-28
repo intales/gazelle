@@ -64,14 +64,14 @@ class GazelleContext {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       _router.insert(
         method,
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Searches for a route that matches the provided HTTP request.
@@ -96,7 +96,7 @@ class GazelleContext {
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postRequestHooks,
       );
 
   void post(
@@ -109,7 +109,7 @@ class GazelleContext {
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postRequestHooks,
       );
 
   void put(
@@ -122,7 +122,7 @@ class GazelleContext {
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postRequestHooks,
       );
 
   void patch(
@@ -135,7 +135,7 @@ class GazelleContext {
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postRequestHooks,
       );
 
   void delete(
@@ -148,7 +148,7 @@ class GazelleContext {
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postRequestHooks: postRequestHooks,
+        postResponseHooks: postRequestHooks,
       );
 
   /// Retrieves a plugin of the specified type from the context.
