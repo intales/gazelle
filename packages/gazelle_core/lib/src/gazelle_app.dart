@@ -89,8 +89,19 @@ class GazelleApp {
   ///
   /// Plugins extend Gazelle's functionality, allowing integration of
   /// authentication, logging, and other common features into the application.
-  Future<void> registerPlugin(GazellePlugin plugin) =>
+  Future<void> registerPlugin<T extends GazellePlugin>(T plugin) =>
       _context.register(plugin);
+
+  /// Retrieves a plugin of the specified type from the context.
+  ///
+  /// Throws an exception if the plugin is not found.
+  ///
+  /// Example:
+  /// ```dart
+  /// final app = GazelleApp();
+  /// final authPlugin = app.getPlugin<AuthenticationPlugin>();
+  /// ```
+  T getPlugin<T extends GazellePlugin>() => _context.getPlugin<T>();
 
   /// Inserts a custom route with the specified HTTP [method], URL [route],
   /// and request handler [handler].

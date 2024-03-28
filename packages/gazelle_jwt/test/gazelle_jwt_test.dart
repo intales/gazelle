@@ -119,8 +119,7 @@ void main() {
     test('Should integrate with gazelle core', () async {
       // Arrange
       final app = GazelleApp();
-      final jwtPlugin = GazelleJwtPlugin("supersecret");
-      await app.registerPlugin(jwtPlugin);
+      await app.registerPlugin(GazelleJwtPlugin("supersecret"));
 
       app
         ..post(
@@ -128,7 +127,7 @@ void main() {
           (request) async {
             return GazelleResponse(
               statusCode: 200,
-              body: jwtPlugin.sign({"test": "123"}),
+              body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
             );
           },
         )
@@ -140,7 +139,9 @@ void main() {
               body: "Hello, World!",
             );
           },
-          preRequestHooks: [jwtPlugin.authenticationHook],
+          preRequestHooks: [
+            app.getPlugin<GazelleJwtPlugin>().authenticationHook,
+          ],
         );
 
       await app.start();

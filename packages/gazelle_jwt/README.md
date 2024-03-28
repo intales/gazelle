@@ -1,39 +1,48 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Gazelle JWT Plugin
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+The Gazelle JWT Plugin provides JSON Web Token (JWT) authentication capabilities
+for the Gazelle framework. This plugin allows you to easily secure your routes
+by integrating JWT-based authentication into your Gazelle application.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+### Installation
 
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
+To install the Gazelle JWT Plugin, add it to your pubspec.yaml file:
+```yaml
+dependencies:
+  gazelle_core: <latest-version>
+  gazelle_jwt: <latest-version> 
 ```
+Then, run `dart pub get` or ` flutter pub get`  to install  the package.
 
-## Additional information
+### Example usage
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+Here's a quick example on how to use the GazelleJwtPlugin:
+```dart
+  final app = GazelleApp();
+  await app.registerPlugin(GazelleJwtPlugin("supersecret"));
+
+  app
+    ..post(
+      "/login",
+      (request) async {
+        return GazelleResponse(
+          statusCode: 200,
+          body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+        );
+      },
+    )
+    ..get(
+      "/hello_world",
+      (request) async {
+        return GazelleResponse(
+          statusCode: 200,
+          body: "Hello, World!",
+        );
+      },
+      preRequestHooks: [app.getPlugin<GazelleJwtPlugin>().authenticationHook],
+    );
+
+  await app.start();
+```

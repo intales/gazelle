@@ -33,6 +33,7 @@ class GazelleRequest extends GazelleMessage {
   /// The path parameters extracted from the request URI.
   final Map<String, String> pathParameters;
 
+  /// The body of the request.
   final Future<String>? body;
 
   const GazelleRequest({
