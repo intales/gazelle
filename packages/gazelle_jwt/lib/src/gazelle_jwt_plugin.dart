@@ -17,34 +17,42 @@ class GazelleJwtPlugin implements GazellePlugin {
 
   JWT? verify(String token) => JWT.tryVerify(token, _secretKey);
 
-  GazellePreRequestHook get authenticationHook => (request) async {
-        final authHeader = request.headers[authHeaderName]?.first;
-        if (authHeader == null) {
-          return GazelleResponse(
-            statusCode: 401,
-            body: missingAuthHeaderMessage,
-          );
-        }
+  GazellePreRequestHook getAuthenticationHook({
+    bool shareWithChildRoutes = true,
+  }) =>
+      GazellePreRequestHook(
+        (request) async {
+          final authHeader = request.headers[authHeaderName]?.first;
+          if (authHeader == null) {
+            return GazelleResponse(
+              statusCode: 401,
+              body: missingAuthHeaderMessage,
+            );
+          }
 
-        if (!authHeader.startsWith(bearerSchema)) {
-          return GazelleResponse(
-            statusCode: 401,
-            body: badBearerSchemaMessage,
-          );
-        }
+          if (!authHeader.startsWith(bearerSchema)) {
+            return GazelleResponse(
+              statusCode: 401,
+              body: badBearerSchemaMessage,
+            );
+          }
 
-        final token = authHeader.replaceAll(bearerSchema, "");
-        final jwt = verify(token);
-        if (jwt == null) {
-          return GazelleResponse(
-            statusCode: 401,
-            body: invalidTokenMessage,
-          );
-        }
+          final token = authHeader.replaceAll(bearerSchema, "");
+          final jwt = verify(token);
+          if (jwt == null) {
+            return GazelleResponse(
+              statusCode: 401,
+              body: invalidTokenMessage,
+            );
+          }
 
-        return request.copyWith(metadata: {
-          ...request.metadata,
-          jwtKeyword: jwt,
-        });
-      };
+          return request.copyWith(metadata: {
+            ...request.metadata,
+            jwtKeyword: jwt,
+          });
+        },
+        shareWithChildRoutes: shareWithChildRoutes,
+      );
+
+  GazellePreRequestHook get authenticationHook => getAuthenticationHook();
 }

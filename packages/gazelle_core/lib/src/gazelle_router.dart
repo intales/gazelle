@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'gazelle_hooks.dart';
@@ -132,13 +131,21 @@ class GazelleRouter {
 
     if (result.value == null) return null;
 
-    List<GazellePreRequestHook> preRequestsHooks = [];
-    List<GazellePostResponseHook> postResponseHooks = [];
+    List<GazellePreRequestHook> preRequestsHooks = [
+      ...result.value!.preRequestHooks
+    ];
+    List<GazellePostResponseHook> postResponseHooks = [
+      ...result.value!.postResponseHooks
+    ];
 
     GazelleTrieNode<GazelleRoute>? currentNode = result.node;
     while (currentNode != null) {
-      preRequestsHooks.addAll(currentNode.value?.preRequestHooks ?? []);
-      postResponseHooks.addAll(currentNode.value?.postResponseHooks ?? []);
+      preRequestsHooks.addAll(currentNode.value?.preRequestHooks
+              .where((hook) => hook.shareWithChildRoutes) ??
+          []);
+      postResponseHooks.addAll(currentNode.value?.postResponseHooks
+              .where((hook) => hook.shareWithChildRoutes) ??
+          []);
 
       currentNode = currentNode.parent;
     }
@@ -149,8 +156,8 @@ class GazelleRouter {
         pathParameters: result.wildcardValues,
       ),
       route: result.value!.copyWith(
-        preRequestHooks: preRequestsHooks,
-        postResponseHooks: postResponseHooks,
+        preRequestHooks: preRequestsHooks.reversed.toList(),
+        postResponseHooks: postResponseHooks.reversed.toList(),
       ),
     );
   }

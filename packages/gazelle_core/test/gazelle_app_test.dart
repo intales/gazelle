@@ -146,16 +146,21 @@ void main() {
           body: "OK",
         ),
         preRequestHooks: [
-          (request) async {
-            preRequestHooksCount += 1;
-            return request;
-          },
+          GazellePreRequestHook(
+            (request) async {
+              preRequestHooksCount += 1;
+              return request;
+            },
+            shareWithChildRoutes: true,
+          ),
         ],
         postRequestHooks: [
-          (response) async {
-            postResponseHooksCount += 1;
-            return response;
-          },
+          GazellePostResponseHook(
+            (response) async {
+              postResponseHooksCount += 1;
+              return response;
+            },
+          ),
         ],
       );
 
@@ -166,17 +171,13 @@ void main() {
           statusCode: 200,
           body: "OK",
         ),
-        preRequestHooks: [
-          (request) async {
-            preRequestHooksCount += 1;
-            return request;
-          },
-        ],
         postRequestHooks: [
-          (response) async {
-            postResponseHooksCount += 1;
-            return response;
-          },
+          GazellePostResponseHook(
+            (response) async {
+              postResponseHooksCount += 1;
+              return response;
+            },
+          ),
         ],
       );
 
@@ -192,7 +193,7 @@ void main() {
       expect(test2.statusCode, 200);
       expect(test2.body, "OK");
       expect(preRequestHooksCount, 3);
-      expect(postResponseHooksCount, 3);
+      expect(postResponseHooksCount, 2);
       await app.stop(force: true);
     });
 
