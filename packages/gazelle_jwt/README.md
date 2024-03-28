@@ -4,6 +4,8 @@ The Gazelle JWT Plugin provides JSON Web Token (JWT) authentication capabilities
 for the Gazelle framework. This plugin allows you to easily secure your routes
 by integrating JWT-based authentication into your Gazelle application.
 
+This plugin is based on [dart_jsonwebtoken](https://pub.dev/packages/dart_jsonwebtoken).
+
 ## Getting started
 
 ### Installation

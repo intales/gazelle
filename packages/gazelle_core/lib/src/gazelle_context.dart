@@ -86,6 +86,20 @@ class GazelleContext {
   GazelleRouterSearchResult? searchRoute(HttpRequest request) =>
       _router.search(request);
 
+  /// Registers a GET route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// context.get('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// ```
   void get(
     String route,
     GazelleRouteHandler handler, {
@@ -99,6 +113,20 @@ class GazelleContext {
         postResponseHooks: postRequestHooks,
       );
 
+  /// Registers a POST route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// context.post('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// ```
   void post(
     String route,
     GazelleRouteHandler handler, {
@@ -112,6 +140,20 @@ class GazelleContext {
         postResponseHooks: postRequestHooks,
       );
 
+  /// Registers a PUT route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// context.put('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// ```
   void put(
     String route,
     GazelleRouteHandler handler, {
@@ -125,6 +167,20 @@ class GazelleContext {
         postResponseHooks: postRequestHooks,
       );
 
+  /// Registers a PATCH route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// context.patch('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// ```
   void patch(
     String route,
     GazelleRouteHandler handler, {
@@ -138,6 +194,20 @@ class GazelleContext {
         postResponseHooks: postRequestHooks,
       );
 
+  /// Registers a DELETE route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// context.delete('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// ```
   void delete(
     String route,
     GazelleRouteHandler handler, {

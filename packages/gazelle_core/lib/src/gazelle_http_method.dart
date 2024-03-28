@@ -11,7 +11,8 @@ enum GazelleHttpMethod {
   /// Converts a string representation of an HTTP method to a [GazelleHttpMethod] enum.
   ///
   /// Throws an error if the input string does not match any supported HTTP method.
-  static GazelleHttpMethod fromString(String method) => switch (method.toUpperCase()) {
+  static GazelleHttpMethod fromString(String method) =>
+      switch (method.toUpperCase()) {
         "GET" => GazelleHttpMethod.get,
         "POST" => GazelleHttpMethod.post,
         "PUT" => GazelleHttpMethod.put,

@@ -146,6 +146,7 @@ class GazelleApp {
   ///
   /// Example:
   /// ```dart
+  /// final app = GazelleApp();
   /// app.get('/hello', (request) async {
   ///   return GazelleResponse(
   ///     statusCode: 200,

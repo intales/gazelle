@@ -16,3 +16,5 @@ scripts:
       concurrency: 1
   fix:
     exec: dart fix . --apply
+  upgrade:
+    exec: dart pub upgrade .

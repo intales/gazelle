@@ -1,18 +1,14 @@
 name: gazelle_jwt
-description: A starting point for Dart libraries or applications.
+description: Simple and easy JWT plugin for Gazelle. 
 version: 0.1.0
-# repository: https://github.com/my_org/my_repo
-publish_to: none
+repository: https://github.com/intales/gazelle/tree/main/packages/gazelle_jwt
 
 environment:
   sdk: ^3.3.2
 
-# Add regular dependencies here.
 dependencies:
   dart_jsonwebtoken: ^2.13.0
-  gazelle_core:
-    path: ../gazelle_core
-  # path: ^1.8.0
+  gazelle_core: ^0.1.1
 
 dev_dependencies:
   http: ^1.2.1
