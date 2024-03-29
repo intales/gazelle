@@ -20,6 +20,8 @@ linter:
     avoid_relative_lib_imports: true
     prefer_relative_imports: true
     directives_ordering: true
+    package_api_docs: true
+    public_member_api_docs: true
 
 # analyzer:
 #   exclude:
