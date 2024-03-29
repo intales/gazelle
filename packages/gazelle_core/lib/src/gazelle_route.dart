@@ -12,16 +12,29 @@ typedef GazelleRouteHandler = Future<GazelleResponse> Function(
 ///
 /// Contains a [handler] for processing requests, along with optional pre-request and post-response hooks.
 class GazelleRoute {
+  /// The handler for the route.
   final GazelleRouteHandler handler;
+
+  /// The pre-request hooks associated with the route.
   final List<GazellePreRequestHook> preRequestHooks;
+
+  /// The post-response hooks associated with the route.
   final List<GazellePostResponseHook> postResponseHooks;
 
+  /// Constructs a GazelleRoute instance.
+  ///
+  /// The [handler] parameter represents the handler for the route.
+  /// The optional [preRequestHooks] parameter represents the pre-request hooks
+  /// associated with the route, defaulting to an empty list if not provided.
+  /// The optional [postResponseHooks] parameter represents the post-response hooks
+  /// associated with the route, defaulting to an empty list if not provided.
   const GazelleRoute(
     this.handler, {
     this.preRequestHooks = const [],
     this.postResponseHooks = const [],
   });
 
+  /// Creates a copy of this GazelleRoute with the specified attributes overridden.
   GazelleRoute copyWith({
     GazelleRouteHandler? handler,
     List<GazellePreRequestHook>? preRequestHooks,

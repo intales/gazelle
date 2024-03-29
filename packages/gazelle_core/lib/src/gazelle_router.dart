@@ -10,9 +10,16 @@ import 'gazelle_trie.dart';
 ///
 /// Contains the original request and the matched route.
 class GazelleRouterSearchResult {
+  /// The request associated with the search result.
   final GazelleRequest request;
+
+  /// The route associated with the search result.
   final GazelleRoute route;
 
+  /// Constructs a GazelleRouterSearchResult instance.
+  ///
+  /// The [request] parameter represents the request associated with the search result.
+  /// The [route] parameter represents the route associated with the search result.
   const GazelleRouterSearchResult({
     required this.request,
     required this.route,
@@ -28,6 +35,7 @@ class GazelleRouter {
 
   final GazelleTrie<GazelleRoute> _routes;
 
+  /// Constructs a GazelleRouter instance.
   GazelleRouter() : _routes = GazelleTrie<GazelleRoute>(wildcard: _wildcard);
 
   /// Registers a GET route with the specified [route], [handler], and optional hooks.

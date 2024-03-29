@@ -2,10 +2,19 @@
 ///
 /// Supported methods are: GET, POST, PUT, PATCH, and DELETE.
 enum GazelleHttpMethod {
+  /// HTTP GET method.
   get,
+
+  /// HTTP POST method.
   post,
+
+  /// HTTP PUT method.
   put,
+
+  /// HTTP PATCH method.
   patch,
+
+  /// HTTP DELETE method.
   delete;
 
   /// Converts a string representation of an HTTP method to a [GazelleHttpMethod] enum.

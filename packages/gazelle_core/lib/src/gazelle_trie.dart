@@ -22,16 +22,11 @@ class GazelleTrieSearchResult<T> {
 
 /// Represents a node in a Gazelle Trie.
 class GazelleTrieNode<T> {
-  /// Parent node.
+  /// The parent node of this trie node.
   final GazelleTrieNode<T>? parent;
 
-  /// Node name.
+  /// The name associated with this trie node.
   final String name;
-
-  GazelleTrieNode({
-    this.name = "",
-    this.parent,
-  });
 
   /// The children nodes of this trie node.
   Map<String, GazelleTrieNode<T>> children = {};
@@ -39,8 +34,22 @@ class GazelleTrieNode<T> {
   /// The value associated with this trie node.
   T? value;
 
+  /// The name of the wildcard associated with this trie node.
   String? _wildcardName;
+
+  /// Constructs a GazelleTrieNode instance.
+  ///
+  /// The [name] parameter represents the name associated with this trie node.
+  /// The [parent] parameter represents the parent node of this trie node.
+  GazelleTrieNode({
+    this.name = "",
+    this.parent,
+  });
+
+  /// Sets the wildcard name associated with this trie node.
   set wildcardName(String name) => _wildcardName = name;
+
+  /// Gets the wildcard name associated with this trie node.
   String get wildcardName =>
       _wildcardName == null ? throw "Wildcard name is null" : _wildcardName!;
 

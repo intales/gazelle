@@ -13,6 +13,13 @@ abstract class GazelleMessage {
   /// Request's metadata.
   final Map<String, dynamic> metadata;
 
+  /// Constructs a GazelleMessage instance.
+  ///
+  /// The optional parameter [headers] represents the headers of the message,
+  /// defaulting to an empty map if not provided.
+  ///
+  /// The optional parameter [metadata] represents additional metadata associated
+  /// with the message, defaulting to an empty map if not provided.
   const GazelleMessage({
     this.headers = const {},
     this.metadata = const {},
@@ -36,6 +43,18 @@ class GazelleRequest extends GazelleMessage {
   /// The body of the request.
   final Future<String>? body;
 
+  /// Constructs a GazelleRequest instance.
+  ///
+  /// The [uri] parameter represents the URI of the request.
+  /// The [method] parameter represents the HTTP method of the request.
+  /// The [pathParameters] parameter represents the path parameters extracted
+  /// from the request URI.
+  /// The optional [body] parameter represents the body of the request, which
+  /// is a future that completes with a string.
+  /// The optional [headers] parameter represents the headers of the request,
+  /// defaulting to an empty map if not provided.
+  /// The optional [metadata] parameter represents additional metadata associated
+  /// with the request, defaulting to an empty map if not provided.
   const GazelleRequest({
     required this.uri,
     required this.method,
@@ -92,9 +111,17 @@ class GazelleResponse extends GazelleMessage {
   /// The HTTP status code of the response.
   final int statusCode;
 
-  // The body of the response.
+  /// The body of the response.
   final String? body;
 
+  /// Constructs a GazelleResponse instance.
+  ///
+  /// The [statusCode] parameter represents the HTTP status code of the response.
+  /// The optional [body] parameter represents the body of the response.
+  /// The optional [headers] parameter represents the headers of the response,
+  /// defaulting to an empty map if not provided.
+  /// The optional [metadata] parameter represents additional metadata associated
+  /// with the response, defaulting to an empty map if not provided.
   const GazelleResponse({
     required this.statusCode,
     this.body,

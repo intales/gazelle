@@ -15,6 +15,7 @@ import 'gazelle_context.dart';
 /// final myPlugin = MyPlugin();
 /// await app.registerPlugin(myPlugin);// Plugins can be registered with a [GazelleApp] to extend its functionality.
 abstract class GazellePlugin {
+  /// Constructs a GazellePlugin instance.
   const GazellePlugin();
 
   /// Initializes the plugin with the provided [context].
