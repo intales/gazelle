@@ -95,5 +95,4 @@ class GazelleJwtPlugin implements GazellePlugin {
 
   /// Shortcut to get the authentication hook with default settings.
   GazellePreRequestHook get authenticationHook => getAuthenticationHook();
-
 }

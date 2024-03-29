@@ -1,6 +1,6 @@
 name: gazelle_jwt
-description: Simple and easy JWT plugin for Gazelle. 
-version: 0.1.0
+description: Plugin for JSON Web Token (JWT) authentication in Gazelle, providing functionality to sign, verify, and handle JWT tokens during HTTP request processing. 
+version: 0.1.1
 repository: https://github.com/intales/gazelle/tree/main/packages/gazelle_jwt
 
 environment:
