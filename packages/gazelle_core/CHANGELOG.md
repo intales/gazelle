@@ -1,3 +1,7 @@
+## 0.1.3
+
+- Fixed `GazelleCore` README.
+
 ## 0.1.2
 
 - Added missing docs.
