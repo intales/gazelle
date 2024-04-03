@@ -1,1 +1,44 @@
-# Example Docs!
+---
+title: Overview
+
+next: /getting_started
+nextTitle: Getting Started
+---
+
+# Gazelle Framework Documentation
+Welcome to the documentation for Gazelle, a lightweight and flexible backend framework written in Dart.
+Gazelle is designed to make it easy to build HTTP servers with lightning-fast routing,
+customizable request handling using hooks, and extendable functionality through plugins.
+
+## Goals
+Gazelle aims to achieve the following objectives:
+
+1. **Lightweight HTTP Server**: Gazelle provides a lightweight HTTP server with a blazing-fast router, enabling efficient request handling.
+
+2. **Flexible Request Handling**: The framework offers a system of hooks that allow you to execute functions before and after request handlers,
+enabling customization such as authorization and logging.
+
+3. **Extendable Architecture**: Gazelle features a plugin system that allows you to extend its functionality in a scalable and isolated manner.
+Plugins implement the `GazellePlugin` interface, providing a seamless way to add new features to the framework.
+
+## Key Concepts
+### Hooks
+Hooks in Gazelle are functions that can be executed before or after request handlers.
+They enable you to perform tasks such as authentication, authorization, logging, and more.
+With hooks, you can customize the behavior of your application at various stages of request processing.
+
+### Plugins
+Plugins are implementations of the `GazellePlugin` interface that extend the capabilities of the framework.
+Whether you need to add authentication methods, integrate with external services, or implement custom features,
+plugins offer a flexible and modular approach to enhancing Gazelle.
+
+## Getting Started
+To start using Gazelle in your projects, follow these simple steps:
+
+1. Install Gazelle as a dependency in your Dart project.
+2. Define your routes and request handlers using Gazelle's expressive API.
+3. Enhance your application's functionality by leveraging hooks and plugins.
+4. Deploy your Gazelle-powered server and enjoy its performance and flexibility.
+
+## Next Steps
+Explore the detailed documentation sections to learn more about Gazelle's features, APIs, and best practices for building robust backend applications.
