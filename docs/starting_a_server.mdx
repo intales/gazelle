@@ -1,0 +1,92 @@
+# Starting a server
+
+Starting a Gazelle server is pretty straight forward.
+The server is represented by the `GazelleApp` class and it can be initialized
+with a few parameters.
+Here's a basic example:
+```dart
+void main() async {
+  final app = GazelleApp();
+
+  // Define routes
+  app.get('/', (request) async => GazelleResponse(
+    statusCode: 200,
+    body: 'Hello, Gazelle!',
+  ));
+
+  // Start the server
+  await app.start();
+  print('Server is running at http://${app.address}:${app.port}');
+}
+```
+In the example above, a `GazelleApp` is started without a specific port or address.
+This can be useful locally to develop, test and debug your code; the default address
+is `localhost` while the port is self-assigned by the operating system.
+
+## Port and address settings
+If you want to specify an address and/or a port, you only need to pass them to
+`GazelleApp` constructor.
+```dart
+void main() async {
+  final app = GazelleApp(address: '127.0.0.1', port: 3000);
+
+  // Define routes
+  app.get('/', (request) async => GazelleResponse(
+    statusCode: 200,
+    body: 'Hello, Gazelle!',
+  ));
+
+  // Start the server
+  await app.start();
+  print('Server is running at http://${app.address}:${app.port}');
+}
+```
+
+## SSL Certificates
+HTTPS is supported out of the box by Dart, you only need to reference your certificate
+and private key files in the `GazelleSSLCertificate` class.
+```dart
+void main() async {
+  final sslCertificate = GazelleSSLCertificate(
+    certificatePath: 'path_to_cert.cert',
+    privateKeyPath: 'path_to_private_key.key',
+  );
+  final app = GazelleApp(port: 443, sslCertificate: sslCertificate);
+
+  // Define routes
+  app.get('/', (request) async => GazelleResponse(
+    statusCode: 200,
+    body: 'Hello, Gazelle!',
+  ));
+
+  // Start the server
+  await app.start();
+  print('Server is running at https://${app.address}:${app.port}');
+}
+```
+
+## Stopping a Sever
+To stop a server, just call the `stop()` method, this will terminate your application.
+```dart
+void main() async {
+  final sslCertificate = GazelleSSLCertificate(
+    certificatePath: 'path_to_cert.cert',
+    privateKeyPath: 'path_to_private_key.key',
+  );
+  final app = GazelleApp(port: 443, sslCertificate: sslCertificate);
+
+  // Define routes
+  app.get('/', (request) async => GazelleResponse(
+    statusCode: 200,
+    body: 'Hello, Gazelle!',
+  ));
+
+  // Start the server
+  await app.start();
+  print('Server is running at https://${app.address}:${app.port}');
+
+  // Stop the server
+  // If close is true, active connections will be close immediately.
+  await app.stop(force: true);
+}
+```
