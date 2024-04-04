@@ -6,7 +6,7 @@ void main() async {
   // Initialize your Gazelle app.
   final app = GazelleApp(port: 3000);
   // Register GazelleJwtPlugin.
-  await app.registerPlugin(GazelleJwtPlugin("supersecret"));
+  await app.registerPlugin(GazelleJwtPlugin(SecretKey("supersecret")));
 
   // Setup your routes.
   app

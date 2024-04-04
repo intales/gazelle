@@ -34,17 +34,17 @@ import 'gazelle_jwt_consts.dart';
 /// ```
 class GazelleJwtPlugin implements GazellePlugin {
   /// The secret used for JWT signing and verification.
-  final String _secret;
+  final JWTKey _secret;
 
   /// The secret key derived from the secret.
-  late final SecretKey _secretKey;
+  late final JWTKey _secretKey;
 
   /// Constructs a GazelleJwtPlugin instance with the provided [secret].
   GazelleJwtPlugin(this._secret);
 
   @override
   Future<void> initialize(GazelleContext context) async {
-    _secretKey = SecretKey(_secret);
+    _secretKey = _secret;
   }
 
   /// Signs a JWT with the provided [payload].
