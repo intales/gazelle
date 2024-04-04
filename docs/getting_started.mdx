@@ -1,0 +1,75 @@
+---
+name: Getting Started
+
+next: /routing
+nextTitle: Routing
+---
+
+# Getting Started with Gazelle
+This guide will walk you through the process of getting started with Gazelle and building your first HTTP server.
+
+## Installation
+To install Gazelle in your Dart project, add it as a dependency in your pubspec.yaml file:
+```yaml
+dependencies:
+  gazelle_core: <latest-version>
+```
+Then, run pub get to fetch and install the package.
+
+## Creating Your First Server
+Once Gazelle is installed, you can create a simple HTTP server with just a few lines of code.
+Here's an example:
+```dart
+import 'package:gazelle_core/gazelle_core.dart';
+
+void main() async {
+  final app = GazelleApp();
+
+  app.get('/', (request) async => GazelleResponse(
+    statusCode: 200,
+    body: 'Hello, Gazelle!',
+  ));
+
+  await app.start();
+  print('Server is running at http://${app.address}:${app.port}');
+}
+```
+In this example, we create a new instance of a `GazelleApp`, define a route for the root path `/`,
+and specify a request handler that returns a simple `Hello, Gazelle!` response.
+Finally, we start the server using the `start()` method.
+
+## Handling Requests
+Gazelle provides a powerful routing system that allows you to handle different HTTP methods and paths with ease.
+You can define routes using methods like get, post, put, delete, etc., and specify request handlers to process incoming requests.
+```dart
+app.get('/hello', (request) async => GazelleResponse(
+  statusCode: 200,
+  body: 'Hello, World!',
+));
+```
+In this example, we define a route for the path `/hello` using the get method and specify a request handler that returns a `Hello, World!` response.
+
+## Adding Hooks and Plugins
+Gazelle allows you to enhance your application's functionality using hooks and plugins.
+Hooks enable you to execute functions before and after request handlers, while plugins provide a way to extend Gazelle with custom features.
+```dart
+// Registering a plugin
+await app.registerPlugin(GazelleJwtPlugin("supersecret"));
+
+// Using a hook
+app.get(
+  "/protected",
+  (request) async {
+    return GazelleResponse(
+      statusCode: 200,
+      body: "Protected Route",
+    );
+  },
+  preRequestHooks: [app.getPlugin<GazelleJwtPlugin>().authenticationHook],
+);
+```
+In this example, we register a JWT authentication plugin and apply an authentication hook to a protected route.
+
+## Next Steps
+Congratulations! You've created your first Gazelle server. Now, explore the documentation further to learn about Gazelle's advanced features,
+including middleware, error handling, and more.

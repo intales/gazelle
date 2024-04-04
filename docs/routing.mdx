@@ -1,0 +1,85 @@
+---
+name: Routing
+---
+
+# Declaring Routes and Handlers
+
+In Gazelle, you can easily declare routes and define handlers to process incoming HTTP requests using the expressive API provided by the framework.
+
+## Declaring a Route
+<Warning>Gazelle currently supports only **GET**, **POST**, **PUT**, **PATCH**, and **DELETE** HTTP methods.</Warning>
+To declare a route, use one of the HTTP methods (`get`, `post`, `put`, `patch`, `delete`, etc.) provided by `GazelleApp` or `GazelleContext`.
+Here's how you can declare a route for handling GET requests:
+```dart
+final app = GazelleApp();
+
+// Declaring a GET route for the path '/hello'
+app.get('/hello', (request) async {
+  return GazelleResponse(
+    statusCode: 200,
+    body: 'Hello, Gazelle!',
+  );
+});
+```
+
+You can also use the more generic method `insertRoute()`.
+Here's an example:
+```dart
+final app = GazelleApp();
+
+// Declaring a GET route for the path '/hello'
+app.insertRoute(
+  GazelleHttpMethod.get,
+  '/hello',
+  (request) async => GazelleResponse(
+    statusCode: 200,
+    body: 'Hello, Gazelle!',
+  ),
+)
+```
+
+### Defining a Request Handler
+The request handler is a function that processes incoming requests and returns an appropriate response.
+You can define request handlers using anonymous functions or named functions.
+Here's an example of a request handler for the `/hello` route:
+```dart
+// Defining a request handler for the '/hello' route
+GazelleResponse helloHandler(GazelleRequest request) async {
+  return GazelleResponse(
+    statusCode: 200,
+    body: 'Hello, Gazelle!',
+  );
+}
+
+// Declaring a GET route with the defined handler
+app.get('/hello', helloHandler);
+```
+
+### Defining path parameters
+You can also define path parameters such as `/user/:userID`.
+Here's an example on how to do it:
+```dart
+// Defining a route with a path parameter
+app.get(
+  '/user/:userID', // Define the route path with the parameter :userID
+  (request) async {
+    // Access the value of the path parameter
+    final userID = request.pathParameters['userID'];
+
+    // Perform logic based on the userID
+    final userData = getUserData(userID);
+
+    if (userData != null) {
+      return GazelleResponse(
+        statusCode: 200,
+        body: 'User data for userID $userID: $userData',
+      );
+    } else {
+      return GazelleResponse(
+        statusCode: 404,
+        body: 'User not found for userID $userID',
+      );
+    }
+  },
+);
+```

@@ -1,0 +1,50 @@
+---
+name: Gazelle Plugin
+---
+
+# Gazelle Plugin
+
+Gazelle follows a modular architecture, and plugins play a central role in extending its capabilities.
+Each plugin encapsulates a specific functionality or feature set, providing a clean and organized way to enhance Gazelle-based applications.
+
+## How to create a plugin
+
+Creating a plugin is easy and straight forward.
+You only need to implement the `GazellePlugin` class and override the `initialize` method.
+This method is called during the initialization phase of the plugin,
+allowing it to perform any necessary setup or configuration, while giving you access to the
+`GazelleContext`. Think of it like the `build` method that you ovveride in Flutter widgets.
+Here's an example:
+```dart
+class MyPlugin extends GazellePlugin {
+  @override
+  Future<void> initialize(GazelleContext context) async {
+    // Plugin initialization logic
+  }
+}
+```
+
+Once the plugin is implemented, it can be registered with a Gazelle application using the `registerPlugin` method.
+This enables the plugin to extend the functionality of the application seamlessly.
+```dart
+final app = GazelleApp();
+final myPlugin = MyPlugin();
+await app.registerPlugin(myPlugin);
+```
+
+## Initialization
+During initialization, a plugin receives a reference to the GazelleContext object representing the application context.
+This context provides access to the router and other essential components of the Gazelle framework, allowing the plugin to interact with the application seamlessly.
+
+## Extensibility
+Plugins in Gazelle are designed to be highly extensible and customizable.
+They can interact with each other and with the application context, enabling developers to create complex and feature-rich applications with ease.
+
+## Benefits
+**Modularity**: Plugins promote modular design by encapsulating specific functionality, making it easier to maintain and extend Gazelle-based applications.
+
+**Flexibility**: Developers can mix and match plugins to tailor the application to their specific requirements, adding or removing features as needed.
+
+**Scalability**: The plugin architecture in Gazelle allows applications to scale gracefully as they grow in complexity, without sacrificing performance or maintainability.
+
+That's it! You now understand how to use and create plugins for Gazelle.
