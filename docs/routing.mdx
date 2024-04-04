@@ -22,6 +22,22 @@ app.get('/hello', (request) async {
 });
 ```
 
+You can also use the more generic method `insertRoute()`.
+Here's an example:
+```dart
+final app = GazelleApp();
+
+// Declaring a GET route for the path '/hello'
+app.insertRoute(
+  GazelleHttpMethod.get,
+  '/hello',
+  (request) async => GazelleResponse(
+    statusCode: 200,
+    body: 'Hello, Gazelle!',
+  ),
+)
+```
+
 ### Defining a Request Handler
 The request handler is a function that processes incoming requests and returns an appropriate response.
 You can define request handlers using anonymous functions or named functions.
