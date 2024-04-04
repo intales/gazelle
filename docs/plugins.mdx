@@ -1,0 +1,54 @@
+---
+name: Plugins
+---
+
+# Plugins
+
+Think of plugins in Gazelle as add-on modules that supercharge your application with extra functionality.
+They're like power-ups for your web server or API, giving you cool features without the hassle of building them from scratch.
+
+With plugins, you can do all sorts of cool stuff, like adding authentication, logging requests, or validating user input.
+They're like building blocks that you can mix and match to create the perfect setup for your project.
+
+Plugins are independent from each other, so you can use them however you want, think of them like lego bricks
+that can be used in multiple ways.
+
+## Registering a plugin
+Every plugin is a standalone package that depends on the `gazelle_core` package.
+To register a plugin, you need to import its package from [pub.dev](https://pub.dev/) or a git repository, then you need to register it inside
+your `GazelleApp`.
+Here's an example on how to do this using the `GazelleJwtPlugin`:
+```dart
+import 'package:gazelle_core/gazelle_core.dart';
+import 'package:gazelle_jwt/gazelle_jwt.dart';
+
+void main() async {
+  // Initialize your Gazelle app.
+  final app = GazelleApp();
+  // Register GazelleJwtPlugin.
+  await app.registerPlugin(GazelleJwtPlugin("supersecret"));
+}
+```
+The example above imports `GazelleJwtPlugin` from its package, then it gets registered from `GazelleApp`.
+
+## Using a plugin
+Using a plugin is pretty straight forward, `GazelleApp` and `GazelleContext` both have a `getPlugin` method that's really easy to use.
+Here's a quick example on how to use it:
+```dart
+// Assume we already set up our `GazelleApp`
+
+// Setup your routes.
+  app.post(
+      "/login",
+      (request) async {
+        // Use the request to get data sent from the client.
+        return GazelleResponse(
+          statusCode: 200,
+          // Sign a token and send it back to the client.
+          body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+        );
+      },
+    );
+```
+
+That's it! You just learned how to use a Gazelle plugin, you can learn how they work and how to write one [here](/ecosystem_overview)!

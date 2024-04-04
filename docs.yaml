@@ -16,10 +16,21 @@ sidebar:
       - "/"
     - - Getting Started
       - "/getting_started"
-- - Guides
+- - Basics 
   - - - Starting a Server
       - "/starting_a_server"
     - - Routing
       - "/routing"
     - - Hooks
       - "/hooks"
+    - - Plugins
+      - "/plugins"
+- - Ecosystem
+  - - - Overview
+      - "/ecosystem_overview"
+    - - Gazelle Context
+      - "/gazelle_context"
+    - - Gazelle Plugin
+      - "/gazelle_plugin"
+    - - Collaboration
+      - "/collaboration"
