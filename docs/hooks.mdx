@@ -66,15 +66,14 @@ Here's an example of using a post-response hook to add custom headers to the res
 // Creating a post-response hook to add custom headers
 final customHeadersHook = GazellePostResponseHook(
   (response) async {
-    // Add custom headers to the response
-    response.headers['X-Custom-Header'] = 'Value';
-
-    // Optionally modify the response body or status code
-    response.body += ' (modified)';
-    response.statusCode = 200;
-
     // Return the modified response
-    return response;
+    return response.copyWith(
+      // Add custom headers to the response
+      headers: {...response.headers, 'X-Custom-Header': 'Value'},
+      // Optionally modify the response body or status code
+      body: "${response.body} (modified)",
+      statusCode: 200,
+    )
   },
   shareWithChildRoutes: true, // Share this hook with child routes, false by default
 );
