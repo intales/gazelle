@@ -22,8 +22,12 @@ Then, run `dart pub get` or ` flutter pub get`  to install  the package.
 
 Here's a quick example on how to use the GazelleJwtPlugin:
 ```dart
+import 'package:gazelle_core/gazelle_core.dart';
+import 'package:gazelle_jwt/gazelle_jwt.dart';
+
+void main() async {
   final app = GazelleApp();
-  await app.registerPlugin(GazelleJwtPlugin("supersecret"));
+  await app.registerPlugin(GazelleJwtPlugin(SecretKey("supersecret")));
 
   app
     ..post(
@@ -47,4 +51,5 @@ Here's a quick example on how to use the GazelleJwtPlugin:
     );
 
   await app.start();
+}
 ```

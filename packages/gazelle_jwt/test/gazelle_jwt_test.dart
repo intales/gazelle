@@ -10,7 +10,7 @@ void main() {
       // Arrange
       const payload = {"test": "123"};
       final context = GazelleContext.create();
-      final plugin = GazelleJwtPlugin("supersecret");
+      final plugin = GazelleJwtPlugin(SecretKey("supersecret"));
       await plugin.initialize(context);
 
       // Act
@@ -24,7 +24,7 @@ void main() {
     test('Should return a request with a JWT', () async {
       // Arrange
       final context = GazelleContext.create();
-      final plugin = GazelleJwtPlugin("supersecret");
+      final plugin = GazelleJwtPlugin(SecretKey("supersecret"));
       await plugin.initialize(context);
       final token = plugin.sign({"test": "123"});
 
@@ -48,7 +48,7 @@ void main() {
     test('Should return a response when auth header is not set', () async {
       // Arrange
       final context = GazelleContext.create();
-      final plugin = GazelleJwtPlugin("supersecret");
+      final plugin = GazelleJwtPlugin(SecretKey("supersecret"));
       await plugin.initialize(context);
 
       final hook = plugin.authenticationHook;
@@ -69,7 +69,7 @@ void main() {
     test('Should return a response when header schema is invalid', () async {
       // Arrange
       final context = GazelleContext.create();
-      final plugin = GazelleJwtPlugin("supersecret");
+      final plugin = GazelleJwtPlugin(SecretKey("supersecret"));
       await plugin.initialize(context);
       final token = plugin.sign({"test": "123"});
 
@@ -94,7 +94,7 @@ void main() {
     test('Should return a response when token is invalid', () async {
       // Arrange
       final context = GazelleContext.create();
-      final plugin = GazelleJwtPlugin("supersecret");
+      final plugin = GazelleJwtPlugin(SecretKey("supersecret"));
       await plugin.initialize(context);
       final token = plugin.sign({"test": "123"});
 
@@ -119,7 +119,7 @@ void main() {
     test('Should integrate with gazelle core', () async {
       // Arrange
       final app = GazelleApp();
-      await app.registerPlugin(GazelleJwtPlugin("supersecret"));
+      await app.registerPlugin(GazelleJwtPlugin(SecretKey("supersecret")));
 
       app
         ..post(
