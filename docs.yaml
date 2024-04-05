@@ -32,5 +32,7 @@ sidebar:
       - "/gazelle_context"
     - - Gazelle Plugin
       - "/gazelle_plugin"
+    - - Benchmarks
+      - "/benchmarks"
     - - Collaboration
       - "/collaboration"
