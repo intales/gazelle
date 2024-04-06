@@ -53,6 +53,21 @@ class GazelleRouter {
         postResponseHooks: postResponseHooks,
       );
 
+  /// Registers a HEAD route with the specified [route], [handler], and optional hooks.
+  void head(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
+  }) =>
+      insert(
+        GazelleHttpMethod.head,
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postResponseHooks: postResponseHooks,
+      );
+
   /// Registers a POST route with the specified [route], [handler], and optional hooks.
   void post(
     String route,
@@ -120,15 +135,26 @@ class GazelleRouter {
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
     List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
+  }) {
+    if (method == GazelleHttpMethod.get) {
       _routes.insert(
-        "${method.name}/$route".split(_routeSeparator),
+        "${GazelleHttpMethod.head.name}/$route".split(_routeSeparator),
         GazelleRoute(
           handler,
           preRequestHooks: preRequestHooks,
           postResponseHooks: postResponseHooks,
         ),
       );
+    }
+    _routes.insert(
+      "${method.name}/$route".split(_routeSeparator),
+      GazelleRoute(
+        handler,
+        preRequestHooks: preRequestHooks,
+        postResponseHooks: postResponseHooks,
+      ),
+    );
+  }
 
   /// Searches for a route that matches the specified [request].
   ///

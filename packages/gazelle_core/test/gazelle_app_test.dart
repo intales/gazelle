@@ -217,6 +217,16 @@ void main() {
                 );
             sendRequest = () => http.get(uri);
             break;
+          case GazelleHttpMethod.head:
+            insertRoute = () => app.head(
+                  "/test",
+                  (request) async => GazelleResponse(
+                    statusCode: 200,
+                    body: "OK",
+                  ),
+                );
+            sendRequest = () => http.get(uri);
+            break;
           case GazelleHttpMethod.put:
             insertRoute = () => app.put(
                   "/test",
@@ -268,6 +278,34 @@ void main() {
         expect(result.statusCode, 200);
         expect(result.body, "OK");
       }
+
+      await app.stop(force: true);
+    });
+
+    test('Should send a response without a body when sending a HEAD request',
+        () async {
+      // Arrange
+      final app = GazelleApp();
+      app.get("/test", (request) async {
+        return GazelleResponse(
+          statusCode: 200,
+          body: "Hello, World!",
+        );
+      });
+
+      await app.start();
+
+      // Act
+      final uri = Uri.parse("http://${app.address}:${app.port}/test");
+      final getResponse = await http.get(uri);
+      final headResponse = await http.head(uri);
+
+      // Assert
+      expect(getResponse.statusCode, 200);
+      expect(getResponse.body, "Hello, World!");
+
+      expect(headResponse.statusCode, 200);
+      expect(headResponse.body.length, 0);
 
       await app.stop(force: true);
     });

@@ -130,10 +130,19 @@ class GazelleResponse extends GazelleMessage {
   }) : super(headers: headers, metadata: metadata);
 
   /// Writes this [GazelleResponse] to an [HttpResponse].
-  void toHttpResponse(HttpResponse response) => response
-    ..statusCode = statusCode
-    ..write(body)
-    ..close();
+  void toHttpResponse(HttpResponse response, {bool onlyHeaders = false}) {
+    response.statusCode = statusCode;
+
+    headers.forEach((key, value) {
+      response.headers.add(key, value);
+    });
+
+    if (!onlyHeaders) {
+      response.write(body);
+    }
+
+    response.close();
+  }
 
   /// Creates a copy of this [GazelleResponse] with the specified attributes overridden.
   GazelleResponse copyWith({

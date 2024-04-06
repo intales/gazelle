@@ -113,6 +113,33 @@ class GazelleContext {
         postResponseHooks: postRequestHooks,
       );
 
+  /// Registers a HEAD route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// context.head('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// ```
+  void head(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _router.head(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postResponseHooks: postRequestHooks,
+      );
+
   /// Registers a POST route with the specified URL [route] and handler [handler].
   ///
   /// Optionally, you can provide pre-request and post-response hooks to
