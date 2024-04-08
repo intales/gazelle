@@ -7,7 +7,7 @@ name: Routing
 In Gazelle, you can easily declare routes and define handlers to process incoming HTTP requests using the expressive API provided by the framework.
 
 ## Declaring a Route
-<Warning>Gazelle currently supports only **GET**, **POST**, **PUT**, **PATCH**, and **DELETE** HTTP methods.</Warning>
+<Info>Gazelle currently supports **GET**, **HEAD**, **POST**, **PUT**, **PATCH**, **DELETE** and **OPTIONS** HTTP methods.</Info>
 To declare a route, use one of the HTTP methods (`get`, `post`, `put`, `patch`, `delete`, etc.) provided by `GazelleApp` or `GazelleContext`.
 Here's how you can declare a route for handling GET requests:
 ```dart
@@ -38,7 +38,11 @@ app.insertRoute(
 )
 ```
 
-### Defining a Request Handler
+### HEAD and OPTIONS routes
+You can define **HEAD** and **OPTIONS** routes like any other route, but Gazelle automatically
+creates an **OPTIONS** route for every route, and a **HEAD** route for every **GET** route.
+
+## Defining a Request Handler
 The request handler is a function that processes incoming requests and returns an appropriate response.
 You can define request handlers using anonymous functions or named functions.
 Here's an example of a request handler for the `/hello` route:
@@ -55,7 +59,7 @@ GazelleResponse helloHandler(GazelleRequest request) async {
 app.get('/hello', helloHandler);
 ```
 
-### Defining path parameters
+## Defining path parameters
 You can also define path parameters such as `/user/:userID`.
 Here's an example on how to do it:
 ```dart
