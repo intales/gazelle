@@ -18,7 +18,10 @@ enum GazelleHttpMethod {
   patch,
 
   /// HTTP DELETE method.
-  delete;
+  delete,
+
+  /// HTTP OPTIONS method.
+  options;
 
   /// Converts a string representation of an HTTP method to a [GazelleHttpMethod] enum.
   ///
@@ -31,6 +34,7 @@ enum GazelleHttpMethod {
         "PUT" => GazelleHttpMethod.put,
         "PATCH" => GazelleHttpMethod.patch,
         "DELETE" => GazelleHttpMethod.delete,
+        "OPTIONS" => GazelleHttpMethod.options,
         _ => throw "Unexpected method: $method",
       };
 
@@ -42,5 +46,6 @@ enum GazelleHttpMethod {
         GazelleHttpMethod.put => "PUT",
         GazelleHttpMethod.patch => "PATCH",
         GazelleHttpMethod.delete => "DELETE",
+        GazelleHttpMethod.options => "OPTIONS",
       };
 }

@@ -267,6 +267,18 @@ void main() {
                 );
             sendRequest = () => http.delete(uri);
             break;
+          case GazelleHttpMethod.options:
+            insertRoute = () => app.options(
+                  "/test",
+                  (request) async => GazelleResponse(
+                    statusCode: 200,
+                    body: "OK",
+                  ),
+                );
+            sendRequest = () => http.Client()
+                .send(http.Request("OPTIONS", uri))
+                .then(http.Response.fromStream);
+            break;
           default:
             fail("Unexpected method.");
         }
@@ -306,6 +318,35 @@ void main() {
 
       expect(headResponse.statusCode, 200);
       expect(headResponse.body.length, 0);
+
+      await app.stop(force: true);
+    });
+
+    test(
+        'Should send a response with allow header when sending an OPTIONS request',
+        () async {
+      // Arrange
+      final app = GazelleApp();
+      app.get("/test", (request) async {
+        return GazelleResponse(
+          statusCode: 200,
+          body: "Hello, World!",
+        );
+      });
+
+      await app.start();
+
+      // Act
+      final uri = Uri.parse("http://${app.address}:${app.port}/test");
+      final response = await http.Client()
+          .send(http.Request("OPTIONS", uri))
+          .then(http.Response.fromStream);
+
+      // Assert
+      expect(response.statusCode, 200);
+      expect(response.headers["allow"]!.contains("GET"), true);
+      expect(response.headers["allow"]!.contains("HEAD"), true);
+      expect(response.headers["allow"]!.contains("OPTIONS"), true);
 
       await app.stop(force: true);
     });

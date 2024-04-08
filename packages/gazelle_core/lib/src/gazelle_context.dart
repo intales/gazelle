@@ -248,6 +248,33 @@ class GazelleContext {
         postResponseHooks: postRequestHooks,
       );
 
+  /// Registers an OPTIONS route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// context.options('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// ```
+  void options(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _router.options(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postResponseHooks: postRequestHooks,
+      );
+
   /// Retrieves a plugin of the specified type from the context.
   ///
   /// Throws an exception if the plugin is not found.

@@ -12,6 +12,7 @@ void main() {
         "PUT",
         "PATCH",
         "DELETE",
+        "OPTIONS",
       ];
 
       // Act
@@ -44,6 +45,7 @@ void main() {
         "PUT",
         "PATCH",
         "DELETE",
+        "OPTIONS",
       ];
 
       // Act

@@ -128,6 +128,21 @@ class GazelleRouter {
         postResponseHooks: postResponseHooks,
       );
 
+  /// Registers an OPTIONS route with the specified [route], [handler], and optional hooks.
+  void options(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
+  }) =>
+      insert(
+        GazelleHttpMethod.options,
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postResponseHooks: postResponseHooks,
+      );
+
   /// Inserts a route with the specified [method], [route], [handler], and optional hooks.
   void insert(
     GazelleHttpMethod method,
@@ -137,6 +152,7 @@ class GazelleRouter {
     List<GazellePostResponseHook> postResponseHooks = const [],
   }) {
     if (method == GazelleHttpMethod.get) {
+      // Automatically insert HEAD route for given route.
       _routes.insert(
         "${GazelleHttpMethod.head.name}/$route".split(_routeSeparator),
         GazelleRoute(
@@ -146,6 +162,23 @@ class GazelleRouter {
         ),
       );
     }
+
+    // Automatically insert OPTIONS route for given route.
+    _routes.insert(
+      "${GazelleHttpMethod.options.name}/$route".split(_routeSeparator),
+      GazelleRoute(
+        (request) async {
+          final availableMethods = _getAvailableMethodsForResource(request);
+          return GazelleResponse(
+            statusCode: 200,
+            headers: {
+              "Allow": availableMethods.map((method) => method.name).toList(),
+            },
+          );
+        },
+      ),
+    );
+
     _routes.insert(
       "${method.name}/$route".split(_routeSeparator),
       GazelleRoute(
@@ -202,5 +235,17 @@ class GazelleRouter {
     final path = request.uri.path;
 
     return "$method/$path";
+  }
+
+  List<GazelleHttpMethod> _getAvailableMethodsForResource(
+    GazelleRequest request,
+  ) {
+    final result = <GazelleHttpMethod>[];
+    for (final method in GazelleHttpMethod.values) {
+      final route = _routes
+          .search("${method.name}/${request.uri.path}".split(_routeSeparator));
+      if (route.value != null) result.add(method);
+    }
+    return result;
   }
 }

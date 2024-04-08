@@ -313,6 +313,35 @@ class GazelleApp {
         postRequestHooks: postRequestHooks,
       );
 
+  /// Registers an OPTIONS route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// final app = GazelleApp();
+  /// app.options('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// await app.start();
+  /// ```
+  void options(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _context.options(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
+
   /// Starts the HTTP server.
   ///
   /// Binds the server to the specified [address] and [port], and listens for
