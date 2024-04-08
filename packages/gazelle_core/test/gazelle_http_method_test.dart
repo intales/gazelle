@@ -7,10 +7,12 @@ void main() {
       // Arrange
       final methods = [
         "GET",
+        "HEAD",
         "POST",
         "PUT",
         "PATCH",
         "DELETE",
+        "OPTIONS",
       ];
 
       // Act
@@ -38,10 +40,12 @@ void main() {
       // Arrange
       final methods = [
         "GET",
+        "HEAD",
         "POST",
         "PUT",
         "PATCH",
         "DELETE",
+        "OPTIONS",
       ];
 
       // Act

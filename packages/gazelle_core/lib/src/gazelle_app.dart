@@ -168,6 +168,35 @@ class GazelleApp {
         postRequestHooks: postRequestHooks,
       );
 
+  /// Registers a HEAD route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// final app = GazelleApp();
+  /// app.head('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// await app.start();
+  /// ```
+  void head(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _context.head(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
+
   /// Registers a POST route with the specified URL [route] and handler [handler].
   ///
   /// Optionally, you can provide pre-request and post-response hooks to
@@ -284,6 +313,35 @@ class GazelleApp {
         postRequestHooks: postRequestHooks,
       );
 
+  /// Registers an OPTIONS route with the specified URL [route] and handler [handler].
+  ///
+  /// Optionally, you can provide pre-request and post-response hooks to
+  /// customize request handling.
+  ///
+  /// Example:
+  /// ```dart
+  /// final app = GazelleApp();
+  /// app.options('/hello', (request) async {
+  ///   return GazelleResponse(
+  ///     statusCode: 200,
+  ///     body: 'Hello, Gazelle!',
+  ///   );
+  /// });
+  /// await app.start();
+  /// ```
+  void options(
+    String route,
+    GazelleRouteHandler handler, {
+    List<GazellePreRequestHook> preRequestHooks = const [],
+    List<GazellePostResponseHook> postRequestHooks = const [],
+  }) =>
+      _context.options(
+        route,
+        handler,
+        preRequestHooks: preRequestHooks,
+        postRequestHooks: postRequestHooks,
+      );
+
   /// Starts the HTTP server.
   ///
   /// Binds the server to the specified [address] and [port], and listens for
@@ -338,6 +396,7 @@ class GazelleApp {
     final searchResult = _context.searchRoute(httpRequest);
     if (searchResult == null) return _send404Error(httpResponse);
 
+    final onlyHeaders = searchResult.request.method == GazelleHttpMethod.head;
     GazelleRequest request = searchResult.request;
     final preRequestHooks = searchResult.route.preRequestHooks;
     final postRequestHooks = searchResult.route.postResponseHooks;
@@ -356,18 +415,19 @@ class GazelleApp {
     for (final hook in postRequestHooks) {
       result = await hook(result);
       if (result.statusCode >= 400 && result.statusCode <= 599) {
-        return _sendResponse(httpResponse, result);
+        return _sendResponse(httpResponse, result, onlyHeaders: onlyHeaders);
       }
     }
 
-    return _sendResponse(httpResponse, result);
+    return _sendResponse(httpResponse, result, onlyHeaders: onlyHeaders);
   }
 
   void _sendResponse(
-    HttpResponse httpResponseresponse,
-    GazelleResponse response,
-  ) =>
-      response.toHttpResponse(httpResponseresponse);
+    HttpResponse httpResponse,
+    GazelleResponse response, {
+    bool onlyHeaders = false,
+  }) =>
+      response.toHttpResponse(httpResponse, onlyHeaders: onlyHeaders);
 
   void _send404Error(HttpResponse response) => _sendResponse(
       response,
