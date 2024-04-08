@@ -1,3 +1,7 @@
+## 0.1.4
+
+ - Added support for **HEAD** and **OPTIONS** HTTP methods.
+
 ## 0.1.3
 
 - Fixed `GazelleCore` README.
