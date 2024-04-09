@@ -1,3 +1,7 @@
+## 0.1.6
+
+ - Added missing `export` for `GazelleHeaders` in `GazelleCore`.
+
 ## 0.1.5
 
  - Added `GazelleHeaders` to represent default HTTP headers.

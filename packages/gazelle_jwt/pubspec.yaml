@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   dart_jsonwebtoken: ^2.13.0
-  gazelle_core: ^0.1.5
+  gazelle_core: ^0.1.6
 
 dev_dependencies:
   http: ^1.2.1
