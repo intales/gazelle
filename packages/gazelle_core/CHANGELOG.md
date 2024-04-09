@@ -1,3 +1,7 @@
+## 0.1.5
+
+ - Added `GazelleHeaders` to represent default HTTP headers.
+
 ## 0.1.4
 
  - Added support for **HEAD** and **OPTIONS** HTTP methods.
