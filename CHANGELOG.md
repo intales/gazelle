@@ -23,6 +23,23 @@ Packages with other changes:
 
 ## 2024-04-12
 
+- [`gazelle_core` - `v0.1.6`](#gazelle_core---v016)
+- [`gazelle_jwt` - `v0.1.2+1`](#gazelle_jwt---v0121)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+- `gazelle_jwt` - `v0.1.2+1`
+
+---
+
+#### `gazelle_core` - `v0.1.6`
+
+- Added missing `export` for `GazelleHeaders` in `GazelleCore`.
+
+## 2024-04-09
+
 ### Changes
 
 ---
@@ -34,6 +51,12 @@ Packages with breaking changes:
 Packages with other changes:
 
 - [`gazelle_core` - `v0.1.7`](#gazelle_core---v017)
+- [`gazelle_core` - `v0.1.5`](#gazelle_core---v015)
+- [`gazelle_jwt` - `v0.1.2+1`](#gazelle_jwt---v0121)
+- There are no breaking changes in this release.
+
+Packages with other changes:
+
 - [`gazelle_core` - `v0.1.5`](#gazelle_core---v015)
 - [`gazelle_jwt` - `v0.1.2+1`](#gazelle_jwt---v0121)
 
