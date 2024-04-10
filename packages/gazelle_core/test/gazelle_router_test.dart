@@ -23,7 +23,7 @@ void main() {
       router.insert(
         GazelleHttpMethod.get,
         '/test',
-        (request) async => GazelleResponse(statusCode: 200),
+        (request, response) async => response.copyWith(statusCode: 200),
       );
       await http.get(
           Uri.parse('http://${server.address.address}:${server.port}/test'));

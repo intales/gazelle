@@ -91,7 +91,7 @@ void main() {
       app.insertRoute(
         GazelleHttpMethod.get,
         "/test",
-        (request) async => throw Exception("error"),
+        (request, response) async => throw Exception("error"),
       );
       final result =
           await http.get(Uri.parse("http://${app.address}:${app.port}/test"));
@@ -112,7 +112,7 @@ void main() {
 
       app.get(
         "/test",
-        (request) async => GazelleResponse(
+        (request, response) async => GazelleResponse(
           statusCode: 200,
           body: "OK",
         ),
@@ -141,24 +141,24 @@ void main() {
       app.insertRoute(
         GazelleHttpMethod.get,
         "/test",
-        (request) async => GazelleResponse(
+        (request, response) async => response.copyWith(
           statusCode: 200,
           body: "OK",
         ),
         preRequestHooks: [
           GazellePreRequestHook(
-            (request) async {
+            (request, response) async {
               preRequestHooksCount += 1;
-              return request;
+              return (request, response);
             },
             shareWithChildRoutes: true,
           ),
         ],
         postResponseHooks: [
           GazellePostResponseHook(
-            (response) async {
+            (request, response) async {
               postResponseHooksCount += 1;
-              return response;
+              return (request, response);
             },
           ),
         ],
@@ -167,15 +167,15 @@ void main() {
       app.insertRoute(
         GazelleHttpMethod.get,
         "/test/test_2",
-        (request) async => GazelleResponse(
+        (request, response) async => response.copyWith(
           statusCode: 200,
           body: "OK",
         ),
         postResponseHooks: [
           GazellePostResponseHook(
-            (response) async {
+            (request, response) async {
               postResponseHooksCount += 1;
-              return response;
+              return (request, response);
             },
           ),
         ],
@@ -210,7 +210,7 @@ void main() {
           case GazelleHttpMethod.get:
             insertRoute = () => app.get(
                   "/test",
-                  (request) async => GazelleResponse(
+                  (request, response) async => response.copyWith(
                     statusCode: 200,
                     body: "OK",
                   ),
@@ -220,7 +220,7 @@ void main() {
           case GazelleHttpMethod.head:
             insertRoute = () => app.head(
                   "/test",
-                  (request) async => GazelleResponse(
+                  (request, response) async => response.copyWith(
                     statusCode: 200,
                     body: "OK",
                   ),
@@ -230,7 +230,7 @@ void main() {
           case GazelleHttpMethod.put:
             insertRoute = () => app.put(
                   "/test",
-                  (request) async => GazelleResponse(
+                  (request, response) async => response.copyWith(
                     statusCode: 200,
                     body: "OK",
                   ),
@@ -240,7 +240,7 @@ void main() {
           case GazelleHttpMethod.post:
             insertRoute = () => app.post(
                   "/test",
-                  (request) async => GazelleResponse(
+                  (request, response) async => response.copyWith(
                     statusCode: 200,
                     body: "OK",
                   ),
@@ -250,7 +250,7 @@ void main() {
           case GazelleHttpMethod.patch:
             insertRoute = () => app.patch(
                   "/test",
-                  (request) async => GazelleResponse(
+                  (request, response) async => GazelleResponse(
                     statusCode: 200,
                     body: "OK",
                   ),
@@ -260,7 +260,7 @@ void main() {
           case GazelleHttpMethod.delete:
             insertRoute = () => app.delete(
                   "/test",
-                  (request) async => GazelleResponse(
+                  (request, response) async => response.copyWith(
                     statusCode: 200,
                     body: "OK",
                   ),
@@ -270,7 +270,7 @@ void main() {
           case GazelleHttpMethod.options:
             insertRoute = () => app.options(
                   "/test",
-                  (request) async => GazelleResponse(
+                  (request, response) async => response.copyWith(
                     statusCode: 200,
                     body: "OK",
                   ),
@@ -298,8 +298,8 @@ void main() {
         () async {
       // Arrange
       final app = GazelleApp();
-      app.get("/test", (request) async {
-        return GazelleResponse(
+      app.get("/test", (request, response) async {
+        return response.copyWith(
           statusCode: 200,
           body: "Hello, World!",
         );
@@ -327,8 +327,8 @@ void main() {
         () async {
       // Arrange
       final app = GazelleApp();
-      app.get("/test", (request) async {
-        return GazelleResponse(
+      app.get("/test", (request, response) async {
+        return response.copyWith(
           statusCode: 200,
           body: "Hello, World!",
         );
@@ -343,7 +343,7 @@ void main() {
           .then(http.Response.fromStream);
 
       // Assert
-      expect(response.statusCode, 200);
+      expect(response.statusCode, 204);
       expect(response.headers["allow"]!.contains("GET"), true);
       expect(response.headers["allow"]!.contains("HEAD"), true);
       expect(response.headers["allow"]!.contains("OPTIONS"), true);

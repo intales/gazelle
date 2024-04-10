@@ -6,16 +6,22 @@ void main() {
     test('Should return a copy of GazelleRoute with given params', () {
       // Arrange
       final route = GazelleRoute(
-        (request) async => GazelleResponse(
+        (request, response) async => response.copyWith(
           statusCode: 200,
         ),
       );
 
       // Act
       final result = route.copyWith(
-        preRequestHooks: [GazellePreRequestHook((request) async => request)],
+        preRequestHooks: [
+          GazellePreRequestHook(
+            (request, response) async => (request, response),
+          )
+        ],
         postResponseHooks: [
-          GazellePostResponseHook((response) async => response)
+          GazellePostResponseHook(
+            (request, response) async => (request, response),
+          )
         ],
       );
 

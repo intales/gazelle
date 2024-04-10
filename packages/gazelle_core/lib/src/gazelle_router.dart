@@ -13,6 +13,12 @@ class GazelleRouterSearchResult {
   /// The request associated with the search result.
   final GazelleRequest request;
 
+  /// The response associated with the search result.
+  ///
+  /// This response is empty by default, it will be compiled by the user
+  /// in a handler function.
+  final GazelleResponse response;
+
   /// The route associated with the search result.
   final GazelleRoute route;
 
@@ -23,6 +29,7 @@ class GazelleRouterSearchResult {
   const GazelleRouterSearchResult({
     required this.request,
     required this.route,
+    this.response = const GazelleResponse(statusCode: 204),
   });
 }
 
@@ -167,14 +174,11 @@ class GazelleRouter {
     _routes.insert(
       "${GazelleHttpMethod.options.name}/$route".split(_routeSeparator),
       GazelleRoute(
-        (request) async {
+        (request, response) async {
           final availableMethods = _getAvailableMethodsForResource(request);
-          return GazelleResponse(
-            statusCode: 200,
-            headers: {
-              "Allow": availableMethods.map((method) => method.name).toList(),
-            },
-          );
+          return response.copyWith(statusCode: 204, headers: {
+            "allow": availableMethods.map((method) => method.name).toList(),
+          });
         },
       ),
     );

@@ -1,5 +1,11 @@
 import 'gazelle_message.dart';
 
+/// Represents the result of a [GazellePreRequestHookCallback] or a [GazellePostResponseHookCallback].
+typedef GazelleHookCallbackResult = (
+  GazelleRequest request,
+  GazelleResponse response,
+);
+
 /// A function type representing a pre-request hook, which is executed before handling an incoming request.
 ///
 /// It takes a [GazelleRequest] as input and returns a [GazelleMessage].
@@ -7,21 +13,23 @@ import 'gazelle_message.dart';
 ///
 /// Example:
 /// ```dart
-/// Future<GazelleMessage> myPreRequestHook(GazelleRequest request) async {
+/// Future<GazelleHookCallbackResult> myPreRequestHook(GazelleRequest request, GazelleResponse response) async {
 ///   // Perform some validation
 ///   if (!isValidRequest(request)) {
-///     return GazelleResponse(
+///     return (request, response.copyWith(
 ///       statusCode: 400,
 ///       body: 'Bad Request',
-///     );
+///     ));
 ///   }
 ///
 ///   // If validation passes, continue processing the request
-///   return request;
+///   return (request, response);
 /// }
 /// ```
-typedef GazellePreRequestHookCallback = Future<GazelleMessage> Function(
+typedef GazellePreRequestHookCallback = Future<GazelleHookCallbackResult>
+    Function(
   GazelleRequest request,
+  GazelleResponse response,
 );
 
 /// Represents a pre-request hook for Gazelle routes.
@@ -29,7 +37,7 @@ typedef GazellePreRequestHookCallback = Future<GazelleMessage> Function(
 /// A pre-request hook allows developers to execute custom logic before processing an incoming HTTP request.
 /// This can be used, for example, for authentication, authorization, request validation, or any other pre-processing task.
 ///
-/// The [hook] parameter is a callback function that takes a [GazelleRequest] as input and returns a [Future] of [GazelleMessage].
+/// The [hook] parameter is a callback function that takes a [GazelleRequest] as input and returns a [Future] of [GazelleHookCallbackResult].
 ///
 /// The optional parameter [shareWithChildRoutes] determines whether the hook should be shared with child routes.
 /// If set to true, the hook will be executed for all child routes of the route to which it is attached.
@@ -37,13 +45,13 @@ typedef GazellePreRequestHookCallback = Future<GazelleMessage> Function(
 ///
 /// Example:
 /// ```dart
-/// final preRequestHook = GazellePreRequestHook((request) async {
+/// final preRequestHook = GazellePreRequestHook((request, response) async {
 ///   // Perform custom pre-processing logic here, such as authentication or validation.
 /// }, shareWithChildRoutes: true,
 /// );
 ///
 /// final postRoute = GazelleRoute(
-///   (request) async {
+///   (request, response) async {
 ///     // Handle the request...
 ///   },
 ///   preRequestHooks: [preRequestHook],
@@ -70,29 +78,32 @@ class GazellePreRequestHook {
   ///
   /// Returns a future that completes with a [GazelleMessage] representing
   /// the result of the hook execution.
-  Future<GazelleMessage> call(GazelleRequest request) => hook(request);
+  Future<GazelleHookCallbackResult> call(
+    GazelleRequest request,
+    GazelleResponse response,
+  ) =>
+      hook(request, response);
 }
 
 /// A function type representing a post-response hook, which is executed after handling an incoming request.
 ///
-/// It takes a [GazelleResponse] as input and returns a [GazelleResponse].
+/// It takes a [GazelleRequest] and a [GazelleResponse] as input and returns a [GazelleHookCallbackResult].
 /// Post-response hooks can be used to modify the response before it is sent back to the client.
 ///
 /// Example:
 /// ```dart
-/// Future<GazelleResponse> myPostResponseHook(GazelleResponse response) async {
-///   // Add custom headers to the response
-///   response.headers['X-Custom-Header'] = 'Value';
-///
+/// Future<GazelleHookCallbackResult> myPostResponseHook(GazelleRequest request, GazelleResponse response) async {
 ///   // Optionally modify the response body or status code
-///   response.body += ' (modified)';
-///   response.statusCode = 200;
-///
 ///   // Return the modified response
-///   return response;
+///   return response.copyWith(
+///	statusCode: 200,
+///	body: "$body (modified)",
+///   );
 /// }
 /// ```
-typedef GazellePostResponseHookCallback = Future<GazelleResponse> Function(
+typedef GazellePostResponseHookCallback = Future<GazelleHookCallbackResult>
+    Function(
+  GazelleRequest request,
   GazelleResponse response,
 );
 
@@ -101,7 +112,7 @@ typedef GazellePostResponseHookCallback = Future<GazelleResponse> Function(
 /// A post-response hook allows developers to execute custom logic after processing an incoming HTTP request and generating a response.
 /// This can be used, for example, for logging, response modification, or any other post-processing task.
 ///
-/// The [hook] parameter is a callback function that takes a [GazelleRequest] and a [GazelleResponse] as input and returns a [Future] of [GazelleResponse].
+/// The [hook] parameter is a callback function that takes a [GazelleRequest] and a [GazelleResponse] as input and returns a [Future] of [GazelleHookCallbackResult].
 ///
 /// The optional parameter [shareWithChildRoutes] determines whether the hook should be shared with child routes.
 /// If set to true, the hook will be executed for all child routes of the route to which it is attached.
@@ -142,5 +153,9 @@ class GazellePostResponseHook {
   ///
   /// Returns a future that completes with a [GazelleResponse] representing
   /// the result of the hook execution.
-  Future<GazelleResponse> call(GazelleResponse response) => hook(response);
+  Future<GazelleHookCallbackResult> call(
+    GazelleRequest request,
+    GazelleResponse response,
+  ) =>
+      hook(request, response);
 }
