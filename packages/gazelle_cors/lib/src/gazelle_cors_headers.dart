@@ -24,33 +24,33 @@ enum GazelleCorsHeaders {
   /// Returns the HTTP header name of given [GazelleCorsHeaders].
   String get name => switch (this) {
         GazelleCorsHeaders.accessControlAllowOrigin =>
-          "Access-Control-Allow-Origin",
+          "access-control-allow-origin",
         GazelleCorsHeaders.accessControlExposeHeaders =>
-          "Access-Control-Expose-Headers",
+          "access-control-expose-headers",
         GazelleCorsHeaders.accessControlAllowCredentials =>
-          "Access-Control-Allow-Credentials",
+          "access-control-allow-credentials",
         GazelleCorsHeaders.accessControlAllowHeaders =>
-          "Access-Control-Allow-Headers",
+          "access-control-allow-headers",
         GazelleCorsHeaders.accessControlAllowMethods =>
-          "Access-Control-Allow-Methods",
-        GazelleCorsHeaders.accessControlMaxAge => "Access-Control-Max-Age",
-        GazelleCorsHeaders.vary => "Vary",
+          "access-control-allow-methods",
+        GazelleCorsHeaders.accessControlMaxAge => "access-control-max-age",
+        GazelleCorsHeaders.vary => "vary",
       };
 
   /// Returns a [GazelleCorsHeaders] from a given header.
   static GazelleCorsHeaders fromString(String header) => switch (header) {
-        "Access-Control-Allow-Origin" =>
+        "access-control-allow-origin" =>
           GazelleCorsHeaders.accessControlAllowOrigin,
-        "Access-Control-Expose-Headers" =>
+        "access-control-expose-headers" =>
           GazelleCorsHeaders.accessControlExposeHeaders,
-        "Access-Control-Allow-Credentials" =>
+        "access-control-allow-credentials" =>
           GazelleCorsHeaders.accessControlAllowCredentials,
-        "Access-Control-Allow-Headers" =>
+        "access-control-allow-headers" =>
           GazelleCorsHeaders.accessControlAllowHeaders,
-        "Access-Control-Allow-Methods" =>
+        "access-control-allow-methods" =>
           GazelleCorsHeaders.accessControlAllowMethods,
-        "Access-Control-Max-Age" => GazelleCorsHeaders.accessControlMaxAge,
-        "Vary" => GazelleCorsHeaders.vary,
+        "access-control-max-age" => GazelleCorsHeaders.accessControlMaxAge,
+        "vary" => GazelleCorsHeaders.vary,
         _ => throw "Unexpected header: $header",
       };
 }
