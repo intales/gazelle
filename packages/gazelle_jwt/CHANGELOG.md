@@ -1,3 +1,7 @@
+## 0.1.3
+
+ - Applied `gazell_core` breaking changes.
+
 ## 0.1.2
 
 - Fixed secret value type in plugin constructor.

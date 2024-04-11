@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gazelle_jwt` - `v0.1.3`](#gazelle_jwt---v013)
+
+---
+
+#### `gazelle_jwt` - `v0.1.3`
+
+ - Applied `gazell_core` breaking changes.
+
+
+## 2024-04-12
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gazelle_core` - `v0.1.7`](#gazelle_core---v017)
  - [`gazelle_jwt` - `v0.1.2+1`](#gazelle_jwt---v0121)
 
