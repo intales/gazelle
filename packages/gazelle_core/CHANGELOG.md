@@ -1,3 +1,7 @@
+## 0.1.7
+
+ - BREAKING CHANGES! Updated hooks and handler callback return type and parameters.
+
 ## 0.1.4
 
  - Added support for **HEAD** and **OPTIONS** HTTP methods.
