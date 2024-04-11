@@ -12,9 +12,9 @@ void main() async {
   app
     ..post(
       "/login",
-      (request) async {
+      (request, response) async {
         // Use the request to get data sent from the client.
-        return GazelleResponse(
+        return response.copyWith(
           statusCode: 200,
           // Sign a token and send it back to the client.
           body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
@@ -23,8 +23,8 @@ void main() async {
     )
     ..get(
       "/hello_world",
-      (request) async {
-        return GazelleResponse(
+      (request, response) async {
+        return response.copyWith(
           statusCode: 200,
           body: "Hello, World!",
         );
