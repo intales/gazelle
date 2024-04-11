@@ -137,7 +137,7 @@ class GazelleResponse extends GazelleMessage {
       response.headers.add(key, value);
     });
 
-    if (!onlyHeaders) {
+    if (!onlyHeaders || body == null) {
       response.write(body);
     }
 

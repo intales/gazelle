@@ -21,7 +21,7 @@ import 'gazelle_ssl_certificate.dart';
 ///   final app = GazelleApp();
 ///
 ///   // Define routes
-///   app.get('/', (request) async => GazelleResponse(
+///   app.get('/', (request, response) async => response.copyWith(
 ///         statusCode: 200,
 ///         body: 'Hello, Gazelle!',
 ///       ));
@@ -115,8 +115,8 @@ class GazelleApp {
   /// app.insertRoute(
   ///   GazelleHttpMethod.get,
   ///   '/hello',
-  ///   (request) async {
-  ///     return GazelleResponse(
+  ///   (request, response) async {
+  ///     return response.copyWith(
   ///       statusCode: 200,
   ///       body: 'Hello, Gazelle!',
   ///     );
@@ -147,8 +147,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.get('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.get('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -176,8 +176,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.head('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.head('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -205,8 +205,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.post('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.post('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -234,8 +234,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.put('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.put('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -263,8 +263,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.patch('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.patch('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -292,8 +292,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.delete('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.delete('/hello', (request, response) async {
+  ///   return respone.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -321,8 +321,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.options('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.options('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -398,28 +398,28 @@ class GazelleApp {
 
     final onlyHeaders = searchResult.request.method == GazelleHttpMethod.head;
     GazelleRequest request = searchResult.request;
+    GazelleResponse response = searchResult.response;
     final preRequestHooks = searchResult.route.preRequestHooks;
-    final postRequestHooks = searchResult.route.postResponseHooks;
+    final postResponseHooks = searchResult.route.postResponseHooks;
     final handler = searchResult.route.handler;
 
     for (final hook in preRequestHooks) {
-      final message = await hook(request);
-      if (message is GazelleResponse) {
-        return _sendResponse(httpResponse, message);
-      }
-      request = message as GazelleRequest;
-    }
-
-    GazelleResponse result = await handler(request);
-
-    for (final hook in postRequestHooks) {
-      result = await hook(result);
-      if (result.statusCode >= 400 && result.statusCode <= 599) {
-        return _sendResponse(httpResponse, result, onlyHeaders: onlyHeaders);
+      (request, response) = await hook(request, response);
+      if (response.statusCode >= 400 && response.statusCode <= 599) {
+        return _sendResponse(httpResponse, response, onlyHeaders: onlyHeaders);
       }
     }
 
-    return _sendResponse(httpResponse, result, onlyHeaders: onlyHeaders);
+    response = await handler(request, response);
+
+    for (final hook in postResponseHooks) {
+      (request, response) = await hook(request, response);
+      if (response.statusCode >= 400 && response.statusCode <= 599) {
+        return _sendResponse(httpResponse, response, onlyHeaders: onlyHeaders);
+      }
+    }
+
+    return _sendResponse(httpResponse, response, onlyHeaders: onlyHeaders);
   }
 
   void _sendResponse(
