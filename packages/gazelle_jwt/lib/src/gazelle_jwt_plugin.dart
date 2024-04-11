@@ -60,35 +60,47 @@ class GazelleJwtPlugin implements GazellePlugin {
     bool shareWithChildRoutes = true,
   }) =>
       GazellePreRequestHook(
-        (request) async {
+        (request, response) async {
           final authHeader = request.headers[authHeaderName]?.first;
           if (authHeader == null) {
-            return GazelleResponse(
-              statusCode: 401,
-              body: missingAuthHeaderMessage,
+            return (
+              request,
+              response.copyWith(
+                statusCode: 401,
+                body: missingAuthHeaderMessage,
+              )
             );
           }
 
           if (!authHeader.startsWith(bearerSchema)) {
-            return GazelleResponse(
-              statusCode: 401,
-              body: badBearerSchemaMessage,
+            return (
+              request,
+              response.copyWith(
+                statusCode: 401,
+                body: badBearerSchemaMessage,
+              )
             );
           }
 
           final token = authHeader.replaceAll(bearerSchema, "");
           final jwt = verify(token);
           if (jwt == null) {
-            return GazelleResponse(
-              statusCode: 401,
-              body: invalidTokenMessage,
+            return (
+              request,
+              response.copyWith(
+                statusCode: 401,
+                body: invalidTokenMessage,
+              )
             );
           }
 
-          return request.copyWith(metadata: {
-            ...request.metadata,
-            jwtKeyword: jwt,
-          });
+          return (
+            request.copyWith(metadata: {
+              ...request.metadata,
+              jwtKeyword: jwt,
+            }),
+            response,
+          );
         },
         shareWithChildRoutes: shareWithChildRoutes,
       );

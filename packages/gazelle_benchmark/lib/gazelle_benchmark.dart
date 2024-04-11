@@ -5,8 +5,8 @@ final app = GazelleApp(address: "0.0.0.0", port: 3000);
 
 /// Starts the Gazelle server for benchmark tests.
 Future<void> startGazelleServer() async {
-  app.get("/", (request) async {
-    return GazelleResponse(
+  app.get("/", (request, response) async {
+    return response.copyWith(
       statusCode: 200,
       body: "{ hello: 'world' }",
     );

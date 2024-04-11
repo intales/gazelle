@@ -21,7 +21,7 @@ import 'gazelle_ssl_certificate.dart';
 ///   final app = GazelleApp();
 ///
 ///   // Define routes
-///   app.get('/', (request) async => GazelleResponse(
+///   app.get('/', (request, response) async => response.copyWith(
 ///         statusCode: 200,
 ///         body: 'Hello, Gazelle!',
 ///       ));
@@ -115,8 +115,8 @@ class GazelleApp {
   /// app.insertRoute(
   ///   GazelleHttpMethod.get,
   ///   '/hello',
-  ///   (request) async {
-  ///     return GazelleResponse(
+  ///   (request, response) async {
+  ///     return response.copyWith(
   ///       statusCode: 200,
   ///       body: 'Hello, Gazelle!',
   ///     );
@@ -147,8 +147,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.get('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.get('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -176,8 +176,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.head('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.head('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -205,8 +205,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.post('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.post('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -234,8 +234,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.put('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.put('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -263,8 +263,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.patch('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.patch('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -292,8 +292,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.delete('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.delete('/hello', (request, response) async {
+  ///   return respone.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -321,8 +321,8 @@ class GazelleApp {
   /// Example:
   /// ```dart
   /// final app = GazelleApp();
-  /// app.options('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// app.options('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );

@@ -51,7 +51,7 @@ class GazelleContext {
   /// context.insertRoute(
   ///   GazelleHttpMethod.GET,
   ///   '/hello',
-  ///   (request) async => GazelleResponse(
+  ///   (request, response) async => response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, world!',
   ///   ),
@@ -93,8 +93,8 @@ class GazelleContext {
   ///
   /// Example:
   /// ```dart
-  /// context.get('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// context.get('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -120,8 +120,8 @@ class GazelleContext {
   ///
   /// Example:
   /// ```dart
-  /// context.head('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// context.head('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -147,8 +147,8 @@ class GazelleContext {
   ///
   /// Example:
   /// ```dart
-  /// context.post('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// context.post('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -174,8 +174,8 @@ class GazelleContext {
   ///
   /// Example:
   /// ```dart
-  /// context.put('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// context.put('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -201,8 +201,8 @@ class GazelleContext {
   ///
   /// Example:
   /// ```dart
-  /// context.patch('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// context.patch('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -228,8 +228,8 @@ class GazelleContext {
   ///
   /// Example:
   /// ```dart
-  /// context.delete('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// context.delete('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );
@@ -255,8 +255,8 @@ class GazelleContext {
   ///
   /// Example:
   /// ```dart
-  /// context.options('/hello', (request) async {
-  ///   return GazelleResponse(
+  /// context.options('/hello', (request, response) async {
+  ///   return response.copyWith(
   ///     statusCode: 200,
   ///     body: 'Hello, Gazelle!',
   ///   );

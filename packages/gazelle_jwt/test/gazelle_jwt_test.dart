@@ -29,20 +29,20 @@ void main() {
       final token = plugin.sign({"test": "123"});
 
       final hook = plugin.authenticationHook;
-      final request = GazelleRequest(
+      GazelleRequest request = GazelleRequest(
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
           headers: {
             "authorization": ["Bearer $token"],
           });
+      GazelleResponse response = GazelleResponse(statusCode: 204);
 
       // Act
-      final result = await hook(request);
+      (request, response) = await hook(request, response);
 
       // Assert
-      expect(result.runtimeType, GazelleRequest);
-      expect((result as GazelleRequest).jwt.payload["test"], "123");
+      expect(request.jwt.payload["test"], "123");
     });
 
     test('Should return a response when auth header is not set', () async {
@@ -52,18 +52,19 @@ void main() {
       await plugin.initialize(context);
 
       final hook = plugin.authenticationHook;
-      final request = GazelleRequest(
+      GazelleRequest request = GazelleRequest(
         uri: Uri.parse("http://localhost/test"),
         method: GazelleHttpMethod.get,
         pathParameters: {},
       );
+      GazelleResponse response = GazelleResponse(statusCode: 204);
+
       // Act
-      final result = await hook(request);
+      (request, response) = await hook(request, response);
 
       // Assert
-      expect(result.runtimeType, GazelleResponse);
-      expect((result as GazelleResponse).statusCode, 401);
-      expect(result.body, missingAuthHeaderMessage);
+      expect(response.statusCode, 401);
+      expect(response.body, missingAuthHeaderMessage);
     });
 
     test('Should return a response when header schema is invalid', () async {
@@ -74,21 +75,21 @@ void main() {
       final token = plugin.sign({"test": "123"});
 
       final hook = plugin.authenticationHook;
-      final request = GazelleRequest(
+      GazelleRequest request = GazelleRequest(
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
           headers: {
             "authorization": [" $token"],
           });
+      GazelleResponse response = GazelleResponse(statusCode: 204);
 
       // Act
-      final result = await hook(request);
+      (request, response) = await hook(request, response);
 
       // Assert
-      expect(result.runtimeType, GazelleResponse);
-      expect((result as GazelleResponse).statusCode, 401);
-      expect(result.body, badBearerSchemaMessage);
+      expect(response.statusCode, 401);
+      expect(response.body, badBearerSchemaMessage);
     });
 
     test('Should return a response when token is invalid', () async {
@@ -99,21 +100,21 @@ void main() {
       final token = plugin.sign({"test": "123"});
 
       final hook = plugin.authenticationHook;
-      final request = GazelleRequest(
+      GazelleRequest request = GazelleRequest(
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
           headers: {
             "authorization": ["Bearer $token aaaa"],
           });
+      GazelleResponse response = GazelleResponse(statusCode: 204);
 
       // Act
-      final result = await hook(request);
+      (request, response) = await hook(request, response);
 
       // Assert
-      expect(result.runtimeType, GazelleResponse);
-      expect((result as GazelleResponse).statusCode, 401);
-      expect(result.body, invalidTokenMessage);
+      expect(response.statusCode, 401);
+      expect(response.body, invalidTokenMessage);
     });
 
     test('Should integrate with gazelle core', () async {
@@ -124,8 +125,8 @@ void main() {
       app
         ..post(
           "/login",
-          (request) async {
-            return GazelleResponse(
+          (request, response) async {
+            return response.copyWith(
               statusCode: 200,
               body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
             );
@@ -133,8 +134,8 @@ void main() {
         )
         ..get(
           "/test",
-          (request) async {
-            return GazelleResponse(
+          (request, response) async {
+            return response.copyWith(
               statusCode: 200,
               body: "Hello, World!",
             );
@@ -145,8 +146,8 @@ void main() {
         )
         ..get(
           "/test/test_2",
-          (request) async {
-            return GazelleResponse(
+          (request, response) async {
+            return response.copyWith(
               statusCode: 200,
               body: "Hello, World!",
             );
