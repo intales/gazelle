@@ -9,7 +9,7 @@ void main() async {
   final app = GazelleApp();
 
   // Define routes
-  app.get('/', (request) async => GazelleResponse(
+  app.get('/', (request, response) async => response.copyWith(
     statusCode: 200,
     body: 'Hello, Gazelle!',
   ));
@@ -31,7 +31,7 @@ void main() async {
   final app = GazelleApp(address: '127.0.0.1', port: 3000);
 
   // Define routes
-  app.get('/', (request) async => GazelleResponse(
+  app.get('/', (request, response) async => response.copyWith(
     statusCode: 200,
     body: 'Hello, Gazelle!',
   ));
@@ -54,7 +54,7 @@ void main() async {
   final app = GazelleApp(port: 443, sslCertificate: sslCertificate);
 
   // Define routes
-  app.get('/', (request) async => GazelleResponse(
+  app.get('/', (request, response) async => response.copyWith(
     statusCode: 200,
     body: 'Hello, Gazelle!',
   ));
@@ -76,7 +76,7 @@ void main() async {
   final app = GazelleApp(port: 443, sslCertificate: sslCertificate);
 
   // Define routes
-  app.get('/', (request) async => GazelleResponse(
+  app.get('/', (request, response) async => response.copyWith(
     statusCode: 200,
     body: 'Hello, Gazelle!',
   ));

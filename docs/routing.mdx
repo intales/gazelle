@@ -14,8 +14,8 @@ Here's how you can declare a route for handling GET requests:
 final app = GazelleApp();
 
 // Declaring a GET route for the path '/hello'
-app.get('/hello', (request) async {
-  return GazelleResponse(
+app.get('/hello', (request, response) async {
+  return response.copyWith(
     statusCode: 200,
     body: 'Hello, Gazelle!',
   );
@@ -31,7 +31,7 @@ final app = GazelleApp();
 app.insertRoute(
   GazelleHttpMethod.get,
   '/hello',
-  (request) async => GazelleResponse(
+  (request, response) async => response.copyWith(
     statusCode: 200,
     body: 'Hello, Gazelle!',
   ),
@@ -48,8 +48,8 @@ You can define request handlers using anonymous functions or named functions.
 Here's an example of a request handler for the `/hello` route:
 ```dart
 // Defining a request handler for the '/hello' route
-GazelleResponse helloHandler(GazelleRequest request) async {
-  return GazelleResponse(
+GazelleResponse helloHandler(GazelleRequest request, GazelleResponse response) async {
+  return response.copyWith(
     statusCode: 200,
     body: 'Hello, Gazelle!',
   );
@@ -66,7 +66,7 @@ Here's an example on how to do it:
 // Defining a route with a path parameter
 app.get(
   '/user/:userID', // Define the route path with the parameter :userID
-  (request) async {
+  (request, response) async {
     // Access the value of the path parameter
     final userID = request.pathParameters['userID'];
 
@@ -74,12 +74,12 @@ app.get(
     final userData = getUserData(userID);
 
     if (userData != null) {
-      return GazelleResponse(
+      return response.copyWith(
         statusCode: 200,
         body: 'User data for userID $userID: $userData',
       );
     } else {
-      return GazelleResponse(
+      return response.copyWith(
         statusCode: 404,
         body: 'User not found for userID $userID',
       );

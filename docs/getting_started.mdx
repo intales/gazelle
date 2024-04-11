@@ -25,7 +25,7 @@ import 'package:gazelle_core/gazelle_core.dart';
 void main() async {
   final app = GazelleApp();
 
-  app.get('/', (request) async => GazelleResponse(
+  app.get('/', (request, response) async => response.copyWith(
     statusCode: 200,
     body: 'Hello, Gazelle!',
   ));
@@ -42,7 +42,7 @@ Finally, we start the server using the `start()` method.
 Gazelle provides a powerful routing system that allows you to handle different HTTP methods and paths with ease.
 You can define routes using methods like get, post, put, delete, etc., and specify request handlers to process incoming requests.
 ```dart
-app.get('/hello', (request) async => GazelleResponse(
+app.get('/hello', (request, response) async => response.copyWith(
   statusCode: 200,
   body: 'Hello, World!',
 ));
@@ -59,8 +59,8 @@ await app.registerPlugin(GazelleJwtPlugin("supersecret"));
 // Using a hook
 app.get(
   "/protected",
-  (request) async {
-    return GazelleResponse(
+  (request, response) async {
+    return response.copyWith(
       statusCode: 200,
       body: "Protected Route",
     );

@@ -2,6 +2,9 @@
 Hooks in Gazelle allow you to execute functions before and after request handlers,
 enabling you to customize the behavior of your application at various stages of request processing.
 
+<Warning>If you set the status code of the response between `400` and `599`, the server will stop processing
+hooks and handlers and will send the response to the client.</Warning>
+
 ### Pre-request Hooks
 Pre-request hooks are functions that are executed before a request is handled.
 They can be used for tasks such as authentication, authorization, logging, etc.
@@ -12,17 +15,17 @@ Here's an example of using a pre-request hook to authenticate requests:
 ```dart
 // Creating a pre-request hook for authentication
 final authenticationHook = GazellePreRequestHook(
-  (request) async {
+  (request, response) async {
     // Perform authentication logic here
     if (!isAuthenticated(request)) {
-      return GazelleResponse(
+      return (request,response.copyWith(
         statusCode: 401,
         body: 'Unauthorized',
-      );
+      ));
     }
 
     // If authentication succeeds, continue processing the request
-    return request;
+    return (request, response);
   },
   shareWithChildRoutes: true, // Share this hook with child routes, false by default
 );
@@ -30,8 +33,8 @@ final authenticationHook = GazellePreRequestHook(
 final app = GazelleApp();
 
 // Declaring a GET route for the path '/protected'
-app.get('/protected', (request) async {
-  return GazelleResponse(
+app.get('/protected', (request, response) async {
+  return response.copyWith(
     statusCode: 200,
     body: 'Protected',
   );
@@ -41,8 +44,8 @@ app.get('/protected', (request) async {
 
 // Declaring a GET route for the path '/protected/user_info'
 // Automatically inherits authentication hook from parent route
-app.get('/protected/user_info', (request) async {
-  return GazelleResponse(
+app.get('/protected/user_info', (request, response) async {
+  return response.copyWith(
     statusCode: 200,
     body: 'User Info',
   );
@@ -58,22 +61,19 @@ Post-response hooks are functions that are executed after a response is generate
 They can be used for tasks such as logging, response modification, etc.
 Post-response hooks receive the generated response and can modify it before it's sent back to the client.
 
-<Warning>If you set the status code of the response between `400` and `599`, the server will stop processing
-of post-response hooks and will send the error to the client.</Warning>
-
 Here's an example of using a post-response hook to add custom headers to the response:
 ```dart
 // Creating a post-response hook to add custom headers
 final customHeadersHook = GazellePostResponseHook(
-  (response) async {
+  (request, response) async {
     // Return the modified response
-    return response.copyWith(
+    return (request, response.copyWith(
       // Add custom headers to the response
       headers: {...response.headers, 'X-Custom-Header': 'Value'},
       // Optionally modify the response body or status code
       body: "${response.body} (modified)",
       statusCode: 200,
-    )
+    ));
   },
   shareWithChildRoutes: true, // Share this hook with child routes, false by default
 );
@@ -81,8 +81,8 @@ final customHeadersHook = GazellePostResponseHook(
 final app = GazelleApp();
 
 // Declaring a GET route for the path '/data'
-app.get('/data', (request) async {
-  return GazelleResponse(
+app.get('/data', (request, response) async {
+  return response.copyWith(
     statusCode: 200,
     body: 'Data',
   );
@@ -91,8 +91,8 @@ app.get('/data', (request) async {
 
 // Declaring a GET route for the path '/data/info'
 // Automatically inherits custom headers hook from parent route
-app.get('/data/info', (request) async {
-  return GazelleResponse(
+app.get('/data/info', (request, response) async {
+  return response.copyWith(
     statusCode: 200,
     body: 'Info',
   );
