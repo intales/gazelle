@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gazelle_cors` - `v0.1.2`](#gazelle_cors---v012)
+
+---
+
+#### `gazelle_cors` - `v0.1.2`
+
+ - Version bump 0.1.1 -> 0.1.2
+
+
+## 2024-04-12
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gazelle_core` - `v0.1.8`](#gazelle_core---v018)
  - [`gazelle_cors` - `v0.1.1+1`](#gazelle_cors---v0111)
  - [`gazelle_jwt` - `v0.1.3+1`](#gazelle_jwt---v0131)
