@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-04-12
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_cors` - `v0.1.1`](#gazelle_cors---v011)
+
+---
+
+#### `gazelle_cors` - `v0.1.1`
+
+ - Fixed dependencies.
+
+
 ### Changes
 
 ---
