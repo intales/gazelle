@@ -1,3 +1,7 @@
+## 0.1.8
+
+ - Bump "gazelle_core" to `0.1.8`.
+
 ## 0.1.7
 
 - BREAKING CHANGES! Updated hooks and handler callback return type and parameters.
