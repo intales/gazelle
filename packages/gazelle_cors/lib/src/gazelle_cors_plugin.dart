@@ -15,6 +15,7 @@ class GazelleCorsPlugin implements GazellePlugin {
         GazelleHeaders.values.map((header) => header.name).toList(),
     GazelleCorsHeaders.accessControlAllowMethods.name:
         GazelleHttpMethod.values.map((method) => method.name).toList(),
+    GazelleCorsHeaders.accessControlMaxAge.name: ['86400'],
   };
 
   /// Custom CORS headers provided by the user.
@@ -35,10 +36,10 @@ class GazelleCorsPlugin implements GazellePlugin {
   /// The [corsHook] intercepts incoming requests, adds appropriate CORS headers,
   /// and handles preflight OPTIONS requests.
   GazellePreRequestHook get corsHook => GazellePreRequestHook(
-        (request) async {
+        (request, response) async {
           // Check if the request includes an Origin header
           final origin = request.headers[GazelleHeaders.origin.name];
-          if (origin == null) return request;
+          if (origin == null) return (request, response);
 
           // Combine default and custom CORS headers
           final headers = <String, List<String>>{
@@ -66,14 +67,22 @@ class GazelleCorsPlugin implements GazellePlugin {
 
           // Handle preflight OPTIONS requests
           if (request.method == GazelleHttpMethod.options) {
-            return GazelleResponse(
-              statusCode: 200,
-              headers: newHeaders,
+            return (
+              request,
+              response.copyWith(
+                statusCode: 200,
+                headers: newHeaders,
+              )
             );
           }
 
           // Add CORS headers to the request
-          return request.copyWith(headers: newHeaders);
+          return (
+            request,
+            response.copyWith(
+              headers: newHeaders,
+            )
+          );
         },
         shareWithChildRoutes: true,
       );
