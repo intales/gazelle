@@ -192,7 +192,7 @@ void main() {
       expect(test.body, "OK");
       expect(test2.statusCode, 200);
       expect(test2.body, "OK");
-      expect(preRequestHooksCount, 3);
+      expect(preRequestHooksCount, 2);
       expect(postResponseHooksCount, 2);
       await app.stop(force: true);
     });

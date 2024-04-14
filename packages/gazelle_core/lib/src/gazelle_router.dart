@@ -209,7 +209,7 @@ class GazelleRouter {
       ...result.value!.postResponseHooks
     ];
 
-    GazelleTrieNode<GazelleRoute>? currentNode = result.node;
+    GazelleTrieNode<GazelleRoute>? currentNode = result.node?.parent;
     while (currentNode != null) {
       preRequestsHooks.addAll(currentNode.value?.preRequestHooks
               .where((hook) => hook.shareWithChildRoutes) ??
