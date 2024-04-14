@@ -1,3 +1,7 @@
+## 0.1.9
+
+ - Fixed hooks bug.
+
 ## 0.1.8
 
  - Bump "gazelle_core" to `0.1.8`.
