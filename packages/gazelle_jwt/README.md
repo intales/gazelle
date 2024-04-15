@@ -32,8 +32,8 @@ void main() async {
   app
     ..post(
       "/login",
-      (request) async {
-        return GazelleResponse(
+      (request, response) async {
+        return response.copyWith(
           statusCode: 200,
           body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
         );
@@ -41,8 +41,8 @@ void main() async {
     )
     ..get(
       "/hello_world",
-      (request) async {
-        return GazelleResponse(
+      (request, response) async {
+        return response.copyWith(
           statusCode: 200,
           body: "Hello, World!",
         );
