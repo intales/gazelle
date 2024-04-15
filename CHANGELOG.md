@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gazelle_logger` - `v0.1.1`](#gazelle_logger---v011)
+
+---
+
+#### `gazelle_logger` - `v0.1.1`
+
+ - Fixed `pubspec.yaml` and `README.md`.
+
+
+## 2024-04-15
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gazelle_core` - `v0.2.0`](#gazelle_core---v020)
  - [`gazelle_logger` - `v0.1.0+1`](#gazelle_logger---v0101)
  - [`gazelle_jwt` - `v0.1.3+1`](#gazelle_jwt---v0131)
