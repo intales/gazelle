@@ -2,7 +2,6 @@ name: gazelle_logger
 description: Easy to use logger plugin for Gazelle.
 version: 0.1.0
 repository: https://github.com/intales/gazelle/tree/main/packages/gazelle_logger
-publish_to: none
 
 environment:
   sdk: ^3.3.3
