@@ -1,12 +1,27 @@
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:logger/logger.dart';
 
+/// A plugin for easy logging in Gazelle applications.
+///
+/// The [GazelleLoggerPlugin] class provides functionality for logging inside handlers
+/// and standard hooks for request and response logging.
 class GazelleLoggerPlugin implements GazellePlugin {
+  /// The internal logger instance used for logging messages.
   late final Logger _logger;
 
+  /// The desired output for logs.
+  ///
+  /// When set to null, default output is [ConsoleOutput].
+  final LogOutput? _logOutput;
+
+  /// Creates a [GazelleLoggerPlugin] instance.
+  GazelleLoggerPlugin({LogOutput? logOutput}) : _logOutput = logOutput;
+
+  /// Initializes the plugin and creates a logger instance.
   @override
   Future<void> initialize(GazelleContext context) async {
     _logger = Logger(
+      output: _logOutput,
       filter: ProductionFilter(),
       printer: PrettyPrinter(
         methodCount: 0,
@@ -17,52 +32,78 @@ class GazelleLoggerPlugin implements GazellePlugin {
     );
   }
 
+  /// Logs a message with the 'info' level.
+  void info(String message) => _logger.i(message, time: DateTime.now());
+
+  /// Logs a message with the 'debug' level.
+  void debug(String message) => _logger.d(message, time: DateTime.now());
+
+  /// Logs a message with the 'warning' level.
+  void warning(String message) => _logger.w(message, time: DateTime.now());
+
+  /// Logs a message with the 'fatal' level.
+  void fatal(String message) => _logger.f(message, time: DateTime.now());
+
+  /// Provides a GazellePreRequestHook that logs details of incoming requests.
   GazellePreRequestHook get logRequestHook => GazellePreRequestHook(
         (request, response) async {
+          final method = request.method.name;
           final route = request.uri.path;
           final headers = request.headers.entries
-              .map((e) => "${e.key}:${e.value}")
+              .map((e) => "\t${e.key}:${e.value}")
               .join("\n");
           final pathParameters = request.pathParameters.entries
-              .map((e) => "${e.key}:${e.value}")
+              .map((e) => "\t${e.key}:${e.value}")
               .join("\n");
           final queryParameters = request.uri.queryParameters.entries
-              .map((e) => "${e.key}:${e.value}")
+              .map((e) => "\t${e.key}:${e.value}")
               .join("\n");
 
           String message = "INCOMING REQUEST\n";
+          message += "METHOD: $method\n";
           message += "ROUTE: $route\n";
-          message += "HEADERS: $headers\n";
-          message += "ROUTE PARAMS: $pathParameters\n";
-          message += "QUERY PARAMS: $queryParameters";
+          if (headers.isNotEmpty) message += "HEADERS:\n$headers";
+          if (pathParameters.isNotEmpty) {
+            message += "\nROUTE PARAMS:\n$pathParameters";
+          }
+          if (queryParameters.isNotEmpty) {
+            message += "\nQUERY PARAMS:\n$queryParameters";
+          }
 
-          _logger.i(message, time: DateTime.now());
+          info(message);
 
           return (request, response);
         },
         shareWithChildRoutes: true,
       );
 
+  /// Provides a GazellePostResponseHook that logs details of outgoing responses.
   GazellePostResponseHook get logResponseHook => GazellePostResponseHook(
         (request, response) async {
+          final method = request.method.name;
           final route = request.uri.path;
-          final headers = request.headers.entries
+          final headers = response.headers.entries
               .map((e) => "${e.key}:${e.value}")
               .join("\n");
-          final pathParameters = request.pathParameters.entries
-              .map((e) => "${e.key}:${e.value}")
-              .join("\n");
-          final queryParameters = request.uri.queryParameters.entries
-              .map((e) => "${e.key}:${e.value}")
-              .join("\n");
+          final statusCode = response.statusCode;
+          final body = response.body;
 
-          String message = "OUTGOING REQUEST\n";
+          String message = "OUTGOING RESPONSE\n";
+          message += "METHOD: $method\n";
           message += "ROUTE: $route\n";
-          message += "HEADERS: $headers\n";
-          message += "ROUTE PARAMS: $pathParameters\n";
-          message += "QUERY PARAMS: $queryParameters";
+          if (headers.isNotEmpty) message += "HEADERS:\n$headers\n";
+          message += "STATUS CODE: $statusCode";
+          if (body?.isNotEmpty == true) message += "\nBODY: $body";
 
-          _logger.i(message, time: DateTime.now());
+          if (statusCode >= 200 && statusCode <= 299) {
+            info(message);
+          } else if (statusCode >= 300 && statusCode <= 399) {
+            info(message);
+          } else if (statusCode >= 400 && statusCode <= 499) {
+            warning(message);
+          } else if (statusCode <= 500 && statusCode <= 599) {
+            fatal(message);
+          }
 
           return (request, response);
         },
