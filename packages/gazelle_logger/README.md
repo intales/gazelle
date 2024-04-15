@@ -46,7 +46,7 @@ app.get(
     body: "Hello, Gazelle!",
   ),
   preRequestHooks: [app.getPlugin<GazelleLoggerPlugin>().logRequestHook],
-  postRequestHooks: [app.getPlugin<GazelleLoggerPlugin>().logResponseHook],
+  postResponseHooks: [app.getPlugin<GazelleLoggerPlugin>().logResponseHook],
 );
 ```
 
