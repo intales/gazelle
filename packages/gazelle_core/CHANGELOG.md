@@ -1,3 +1,7 @@
+## 0.2.0
+
+ - Fixed typos in external APIs.
+
 ## 0.1.9
 
  - Fixed hooks bug.
