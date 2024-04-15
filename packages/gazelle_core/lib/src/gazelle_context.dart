@@ -104,13 +104,13 @@ class GazelleContext {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       _router.get(
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postResponseHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers a HEAD route with the specified URL [route] and handler [handler].
@@ -131,13 +131,13 @@ class GazelleContext {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       _router.head(
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postResponseHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers a POST route with the specified URL [route] and handler [handler].
@@ -158,13 +158,13 @@ class GazelleContext {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       _router.post(
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postResponseHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers a PUT route with the specified URL [route] and handler [handler].
@@ -185,13 +185,13 @@ class GazelleContext {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       _router.put(
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postResponseHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers a PATCH route with the specified URL [route] and handler [handler].
@@ -212,13 +212,13 @@ class GazelleContext {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       _router.patch(
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postResponseHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers a DELETE route with the specified URL [route] and handler [handler].
@@ -239,13 +239,13 @@ class GazelleContext {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       _router.delete(
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postResponseHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Registers an OPTIONS route with the specified URL [route] and handler [handler].
@@ -266,13 +266,13 @@ class GazelleContext {
     String route,
     GazelleRouteHandler handler, {
     List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postRequestHooks = const [],
+    List<GazellePostResponseHook> postResponseHooks = const [],
   }) =>
       _router.options(
         route,
         handler,
         preRequestHooks: preRequestHooks,
-        postResponseHooks: postRequestHooks,
+        postResponseHooks: postResponseHooks,
       );
 
   /// Retrieves a plugin of the specified type from the context.

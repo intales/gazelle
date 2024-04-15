@@ -44,10 +44,12 @@ import 'package:gazelle_core/gazelle_core.dart';
 void main() async {
   final app = GazelleApp();
 
-  app.get('/', (request) async => GazelleResponse(
-    statusCode: 200,
-    body: 'Hello, Gazelle!',
-  ));
+  app.get('/', (request, response) async {
+    return response.copyWith(
+      statusCode: 200,
+      body: "Hello, Gazelle!",
+    );
+  }); 
 
   await app.start();
   print('Server is running at http://${app.address}:${app.port}');

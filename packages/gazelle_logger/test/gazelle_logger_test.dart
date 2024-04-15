@@ -28,7 +28,7 @@ void main() {
         preRequestHooks: [
           app.getPlugin<GazelleLoggerPlugin>().logRequestHook,
         ],
-        postRequestHooks: [
+        postResponseHooks: [
           app.getPlugin<GazelleLoggerPlugin>().logResponseHook,
         ],
       );
