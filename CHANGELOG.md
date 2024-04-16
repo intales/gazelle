@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-04-16
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_logger` - `v0.1.2`](#gazelle_logger---v012)
+
+---
+
+#### `gazelle_logger` - `v0.1.2`
+
+ - Fixed `pubspec.yaml` description.
+
+
 ## 2024-04-15
 
 ### Changes

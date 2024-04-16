@@ -1,3 +1,7 @@
+## 0.1.2
+
+ - Fixed `pubspec.yaml` description.
+
 ## 0.1.1
 
  - Fixed `pubspec.yaml` and `README.md`.
