@@ -58,7 +58,7 @@ void main() async {
 That's it! You've just created a basic Gazelle server that responds with "Hello, Gazelle!"
 to any incoming requests to the root route.
 
-For more advanced usage and detailed documentation, check out the Gazelle documentation.
+To learn more, check out our [documentation](https://docs.gazelle-dart.dev/).
 
 ## Contributing 
 
