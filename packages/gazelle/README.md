@@ -21,3 +21,15 @@ Available commands:
 
 Run "gazelle help <command>" for more information about a command.
 ```
+
+### Dockerize
+```
+Generates Dockerfile for current project.
+
+Usage: gazelle dockerize [arguments]
+-h, --help    Print this usage information.
+-p, --port    Specifies exposed port in Dockerfile.
+              (defaults to "3000")
+
+Run "gazelle help" to see global options.
+```
