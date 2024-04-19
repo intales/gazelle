@@ -41,7 +41,7 @@ class DockerizeCommand extends Command {
   @override
   Future<void> run() async {
     final spinner = CliSpin(
-      text: "Dockerizing...",
+      text: "Creating Dockerfile...",
       spinner: CliSpinners.dots,
     ).start();
 
@@ -51,8 +51,11 @@ class DockerizeCommand extends Command {
     try {
       final dockerfile = await dockerize(exposedPort: exposedPort);
       spinner.success("Dockerfile created at ${dockerfile.path}");
-    } catch (e) {
-      stderr.writeln(e.toString());
+    } on LoadProjectConfigurationError catch (e) {
+      spinner.fail(e.errorMessage);
+      exit(2);
+    } on Exception catch (e) {
+      spinner.fail(e.toString());
       exit(2);
     }
   }

@@ -14,7 +14,8 @@ class LoadProjectConfigurationError {
   /// Builds a [LoadProjectConfigurationError] instance.
   const LoadProjectConfigurationError({
     this.errorCode = 1,
-    this.errorMessage = "Unable to find pubspec.yaml file in current directory",
+    this.errorMessage =
+        "Unable to find pubspec.yaml file in current directory.",
   });
 }
 
