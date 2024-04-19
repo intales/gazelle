@@ -28,7 +28,6 @@ RUN dart pub get
 COPY . .
 
 RUN dart pub get --offline
-RUN mkdir -p bin
 RUN dart compile exe $mainFilePath -o bin/server
 
 FROM scratch
@@ -63,7 +62,7 @@ Future<File> createDockerFile({
 ///
 /// Both files are created under [path], Dockerfile
 /// compiles [mainFilePath] and exposes [exposedPort].
-Future<void> createDockerFiles({
+Future<File> createDockerFiles({
   required String path,
   required String mainFilePath,
   required int exposedPort,
@@ -71,7 +70,7 @@ Future<void> createDockerFiles({
   final dockerIgnorePath = "$path/.dockerignore";
   final dockerFilePath = "$path/Dockerfile";
 
-  await Future.wait([
+  final files = await Future.wait([
     createDockerIgnore(dockerIgnorePath),
     createDockerFile(
       path: dockerFilePath,
@@ -79,4 +78,6 @@ Future<void> createDockerFiles({
       exposedPort: exposedPort,
     ),
   ]);
+
+  return files.last;
 }
