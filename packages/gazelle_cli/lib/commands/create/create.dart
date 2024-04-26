@@ -5,44 +5,6 @@ import 'package:cli_spin/cli_spin.dart';
 
 import 'create_project.dart';
 
-const _mainTemplate = """
-import 'package:gazelle_core/gazelle_core.dart';
-
-Future<void> runApp(List<String> args) async {
-  final app = GazelleApp(port: 8080);
-
-  app.get('/', (request, response) async => response.copyWith(
-    statusCode: 200,
-    body: 'Hello, Gazelle!',
-  ));
-
-  await app.start();
-  print('Server is running at http://\${app.address}:\${app.port}');
-}
-""";
-
-String _getPubspecTemplate(String projectName) => """
-name: $projectName 
-description: A new Gazelle project.
-version: 0.1.0
-
-environment:
-  sdk: ^3.3.4
-
-dependencies:
-  gazelle_core: ^0.2.0
-
-dev_dependencies:
-  lints: ">=2.1.0 <4.0.0"
-  test: ^1.24.0
-""";
-
-String _getEntryPoint(String projectName) => """
-import "package:$projectName/$projectName.dart" as $projectName;
-
-void main(List<String> args) => $projectName.runApp(args);
-""";
-
 /// CLI command to create a new Gazelle project.
 class CreateCommand extends Command {
   @override

@@ -36,10 +36,12 @@ import 'package:gazelle_core/gazelle_core.dart';
 Future<void> runApp(List<String> args) async {
   final app = GazelleApp(port: 8080);
 
-  app.get('/', (request, response) async => response.copyWith(
-    statusCode: 200,
-    body: 'Hello, Gazelle!',
-  ));
+  app.get("/", (request, response) async {
+    return response.copyWith(
+      statusCode: 200,
+      body: "Hello, Gazelle!",
+    );
+  });
 
   await app.start();
   print('Server is running at http://\${app.address}:\${app.port}');
@@ -65,7 +67,9 @@ dev_dependencies:
 String _getEntryPoint(String projectName) => """
 import "package:$projectName/$projectName.dart" as $projectName;
 
-void main(List<String> args) => $projectName.runApp(args);
+Future<void> main(List<String> args) async {
+  $projectName.runApp(args);
+}
 """;
 
 /// Represents an error during the creation process of a new project.
