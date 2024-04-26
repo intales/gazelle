@@ -46,6 +46,8 @@ void main() {
       // Assert
       expect(await File("$path/.dockerignore").exists(), isTrue);
       expect(await File("$path/Dockerfile").exists(), isTrue);
+
+      await Directory(path).delete(recursive: true);
     });
   });
 }
