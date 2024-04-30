@@ -122,7 +122,7 @@ Future<void> runProject(String path) async {
 
   ProcessSignal.sigint.watch().listen((event) {
     process.kill();
-    tmpDir.deleteSync(recursive: true);
+    // tmpDir.deleteSync(recursive: true);
     exit(0);
   });
 }
