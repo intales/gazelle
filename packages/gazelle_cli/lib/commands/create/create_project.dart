@@ -54,7 +54,7 @@ description: A new Gazelle project.
 version: 0.1.0
 
 environment:
-  sdk: ^3.3.4
+  sdk: ^3.0.0
 
 dependencies:
   gazelle_core: ^0.2.0
