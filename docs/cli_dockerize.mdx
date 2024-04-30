@@ -1,0 +1,20 @@
+# Dockerize
+
+The `dockerize` command creates a Dockerfile at the root of your project with
+the necessary settings to build a docker image.
+You can build the image by yourself with docker, or you can upload your source code
+to something like [GCP Cloud Build](https://cloud.google.com/build?hl=en) and serve it with [GCP Cloud Run](https://cloud.google.com/run?hl=en), or any other cloud provider
+of your choice.
+
+To create a Dockerfile just run:
+```shell
+gazelle dockerize
+```
+That's it, you now have a Dockerfile ready to ship!
+
+## Options
+The `dockerize` command can be customized with a TCP port of your choice (defaults to "3000").
+An example:
+```shell
+gazelle dockerize -p 8080
+```
