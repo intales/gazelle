@@ -13,6 +13,9 @@ class RunCommand extends Command {
   @override
   String get description => "Runs a Gazelle project with hot reload.";
 
+  /// The default timeout in milliseconds.
+  int defaultTimeout = 1000;
+
   /// Creates a [RunCommand].
   RunCommand() {
     argParser.addOption(
@@ -20,23 +23,32 @@ class RunCommand extends Command {
       abbr: "p",
       help: "The path where the project is located.",
     );
+    argParser.addOption(
+      "timeout",
+      abbr: "t",
+      help: "The time in milliseconds to wait for a restart request.",
+      defaultsTo: "$defaultTimeout",
+    );
   }
 
   @override
   void run() async {
     final pathOption = argResults?.option("path") ?? Directory.current.path;
+    final timeoutOption =
+        int.tryParse((argResults?.option("timeout")).toString()) ??
+            defaultTimeout;
     final projectName = pathOption.split(Platform.pathSeparator).last;
 
     final spinner = CliSpin(
-      text: "Running $projectName...",
+      text: "Running '$projectName'...",
       spinner: CliSpinners.dots,
     ).start();
 
     try {
-      await runProject(pathOption);
-      spinner.success(
-        "$projectName project running!\nPress Ctrl+C to stop.",
-      );
+      await runProject(pathOption, timeoutOption);
+      spinner.success();
+      print(
+          "Press 'r' to hot-reload the project.\nPress 'R' to hot-restart.\nCtrl+c to exit.\n");
     } on RunProjectError catch (e) {
       spinner.fail(e.message);
       exit(e.errCode);

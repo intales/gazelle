@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import '../../commons/functions/version.dart';
+
 const _gitignore = """
 # See https://www.dartlang.org/guides/libraries/private-files
 
@@ -54,7 +56,7 @@ description: A new Gazelle project.
 version: 0.1.0
 
 environment:
-  sdk: ^3.0.0
+  sdk: ^$dartSdkVersion
 
 dependencies:
   gazelle_core: ^0.2.0
