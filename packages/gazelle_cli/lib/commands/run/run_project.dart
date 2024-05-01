@@ -156,9 +156,6 @@ Future<void> runProject(String path, int timeout) async {
 
   ProcessSignal.sigint.watch().listen((event) {
     process?.kill();
-
-    /// TODO: Delete the temporary directory here after the process is killed
-
     exit(0);
   });
 }
