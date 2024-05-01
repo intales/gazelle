@@ -25,6 +25,13 @@ sidebar:
       - "/hooks"
     - - Plugins
       - "/plugins"
+- - CLI
+  - - - Overview
+      - "/cli_overview"
+    - - Create
+      - "/cli_create"
+    - - Dockerize
+      - "/cli_dockerize"
 - - Ecosystem
   - - - Overview
       - "/ecosystem_overview"
