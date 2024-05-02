@@ -30,6 +30,8 @@ sidebar:
       - "/cli_overview"
     - - Create
       - "/cli_create"
+    - - Run 
+      - "/cli_run"
     - - Dockerize
       - "/cli_dockerize"
 - - Ecosystem
