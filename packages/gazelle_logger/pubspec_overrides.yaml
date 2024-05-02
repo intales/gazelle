@@ -1,0 +1,6 @@
+# melos_managed_dependency_overrides: gazelle_core,test
+dependency_overrides:
+  gazelle_core:
+    path: ../gazelle_core
+  test:
+    path: ../gazelle_cli/tmp/create_project_tests/test
