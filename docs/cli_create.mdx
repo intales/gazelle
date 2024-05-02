@@ -1,0 +1,24 @@
+# Create
+
+The `create` command bootstraps a Gazelle project for you.
+To create a basic project run:
+```shell
+gazelle create
+```
+This command will create a folder called `gazelle_app` with the necessary
+setup to develop a Gazelle application.
+Just dive into the `lib` folder and start creating your backend!
+
+## Options
+The `create` command offers a couple of options that you can change:
+`--name` or `-n`, and `--path` or `-p`.
+Here is a simple example:
+```shell
+gazelle create -n my_awesome_app -p ~/my_awesome_projects
+```
+
+The output of `create` command is something like this:
+```
+my_awesome_app project created!
+Run `gazelle run my_awesome_app/bin/my_awesome_app.dart` to test it.
+```
