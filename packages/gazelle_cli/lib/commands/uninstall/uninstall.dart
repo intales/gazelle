@@ -1,48 +1,44 @@
 import 'dart:io';
-
 import 'package:args/command_runner.dart';
 import 'package:cli_spin/cli_spin.dart';
+import 'uninstall_project.dart';
 
-import 'create_project.dart';
-
-/// CLI command to create a new Gazelle project.
-class CreateCommand extends Command {
+/// CLI command to uninstall a Gazelle project.
+class UninstallerCommand extends Command {
   @override
-  String get name => "create";
+  String get description => "Uninstalling a Gazelle project";
 
   @override
-  String get description => "Creates a new Gazelle project.";
+  String get name => "uninstaller";
 
-  /// Creates a [CreateCommand].
-  CreateCommand() {
+  /// Creates a [UninstallerCommand].
+  UninstallerCommand() {
     argParser.addOption(
       "name",
       abbr: "n",
-      help: "The name of the project you want to build.",
+      help: "The name of the project you want to uninstall.",
     );
     argParser.addOption(
       "path",
       abbr: "p",
-      help: "The path where you want to build the project.",
+      help: "The path where you want to uninstall the project.",
     );
   }
 
   @override
   void run() async {
     final spinner = CliSpin(
-      text: "Creating Gazelle project...",
+      text: "Uninstalling Gazelle project...",
       spinner: CliSpinners.dots,
     ).start();
-
     final nameOption = argResults?.option("name") ?? "gazelle_app";
     final pathOption = argResults?.option("path");
-
     try {
-      final result = await createProject(nameOption, path: pathOption);
+      final result = await uninstallProject(nameOption, path: pathOption);
       spinner.success(
-        "$result project created!\nRun `dart run $result/bin/$nameOption.dart` to test it.",
+        "$result project uninstalled!\n",
       );
-    } on CreateProjectError catch (e) {
+    } on UninstallProjectError catch (e) {
       spinner.fail(e.message);
       exit(2);
     } on Exception catch (e) {
