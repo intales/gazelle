@@ -11,5 +11,5 @@ void run(List<String> arguments) =>
       ..addCommand(CreateCommand())
       ..addCommand(DockerizeCommand())
       ..addCommand(RunCommand())
-      ..addCommand(UninstallerCommand())
+      ..addCommand(UninstallCommand())
       ..run(arguments);

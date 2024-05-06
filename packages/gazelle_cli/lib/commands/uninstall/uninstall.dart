@@ -4,15 +4,15 @@ import 'package:cli_spin/cli_spin.dart';
 import 'uninstall_project.dart';
 
 /// CLI command to uninstall a Gazelle project.
-class UninstallerCommand extends Command {
+class UninstallCommand extends Command {
   @override
   String get description => "Uninstalling a Gazelle project";
 
   @override
-  String get name => "uninstaller";
+  String get name => "uninstall";
 
-  /// Creates a [UninstallerCommand].
-  UninstallerCommand() {
+  /// Creates a [UninstallCommand].
+  UninstallCommand() {
     argParser.addOption(
       "name",
       abbr: "n",
