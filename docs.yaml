@@ -34,6 +34,11 @@ sidebar:
       - "/cli_run"
     - - Dockerize
       - "/cli_dockerize"
+- - Deployment
+  - - - Overview
+      - "/deploy_overview"
+    - - Globe
+      - "/deploy_globe"
 - - Ecosystem
   - - - Overview
       - "/ecosystem_overview"
