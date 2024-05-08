@@ -21,7 +21,7 @@ dependencies:
 dev_dependencies:
 """;
 
-String _getMainTemplate(String projectName, int timeout) => """
+String _getMainTemplate(String projectName, int timeout, bool verbose) => """
 import 'dart:convert';
 import 'dart:io';
 
@@ -33,13 +33,13 @@ void main(List<String> arguments) async {
     automaticReload: false,
     watchDependencies: false,
     onBeforeReload: (ctx) {
-      // print('Reloading...');
+      if($verbose){
+        print('Reloading...');
+      }
       return true;
     },
     onAfterReload: (ctx) => print('Reloaded'),
   );
-
-  main_project.runApp(arguments);
 
   final tmpDirList =
       Directory.current.absolute.path.split(Platform.pathSeparator);
@@ -52,14 +52,22 @@ void main(List<String> arguments) async {
 
   void onModify(FileSystemEvent event) {
     if (event.type == FileSystemEvent.delete) {
+      if($verbose){
+        print("Ignoring delete event on '\${event.path}'.");
+      }
       return;
     }
     if (event.path.endsWith('.dart')) {
+      if($verbose){
+        print("File '\${event.path}' modified.");
+      }
       reload(reloader);
     } else if(event.path.endsWith('pubspec.yaml')) {
       reload(reloader);
     } else {
-      print("Ignoring \${event.path} as it is not a dart file.");
+      if($verbose){
+        print("Ignoring '\${event.path}' as it is not a dart file.");
+      }
     }
   }
 
@@ -76,6 +84,8 @@ void main(List<String> arguments) async {
       reload(reloader);
     }
   });
+
+  await main_project.runApp(arguments);
 }
 
 /// This executionIndex is just to implement debouncing
@@ -107,7 +117,7 @@ class RunProjectError {
 }
 
 /// Runs a Gazelle project.
-Future<void> runProject(String path, int timeout) async {
+Future<void> runProject(String path, int timeout, bool verbose) async {
   final projectDir = Directory(path);
   if (!await projectDir.exists()) {
     throw RunProjectError("Project not found!", 1);
@@ -128,7 +138,8 @@ Future<void> runProject(String path, int timeout) async {
       .then((file) => file.writeAsString(_getPubspecTemplate(projectName)));
 
   await File("$tmpDirPath/main_hot_reload.dart").create(recursive: true).then(
-      (file) => file.writeAsString(_getMainTemplate(projectName, timeout)));
+      (file) =>
+          file.writeAsString(_getMainTemplate(projectName, timeout, verbose)));
 
   final result = await Process.run(
     "dart",

@@ -29,14 +29,24 @@ class RunCommand extends Command {
       help: "The time in milliseconds to wait for a restart request.",
       defaultsTo: "$defaultTimeout",
     );
+    argParser.addFlag(
+      "verbose",
+      abbr: 'v',
+      negatable: true,
+      defaultsTo: false,
+      help: "Prints all logs.",
+    );
   }
 
   @override
   void run() async {
-    final pathOption = argResults?.option("path") ?? Directory.current.path;
+    final pathOption = argResults?.option("path") ??
+        argResults?.rest.firstOrNull ??
+        Directory.current.path;
     final timeoutOption =
         int.tryParse((argResults?.option("timeout")).toString()) ??
             defaultTimeout;
+    final bool verbose = argResults?.flag("verbose") ?? false;
     final projectName = pathOption.split(Platform.pathSeparator).last;
 
     final spinner = CliSpin(
@@ -45,7 +55,7 @@ class RunCommand extends Command {
     ).start();
 
     try {
-      await runProject(pathOption, timeoutOption);
+      await runProject(pathOption, timeoutOption, verbose);
       spinner.success();
       print(
           "Press 'r' to hot-reload the project.\nPress 'R' to hot-restart.\nCtrl+c to exit.\n");
