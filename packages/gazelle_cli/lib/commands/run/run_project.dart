@@ -114,10 +114,13 @@ class RunProjectError {
 
   /// Creates a [RunProjectError].
   RunProjectError(this.message, this.errCode);
+
+  @override
+  String toString() => "Error ($errCode): $message";
 }
 
 /// Runs a Gazelle project.
-Future<void> runProject(String path, int timeout, bool verbose) async {
+Future<Process?> runProject(String path, int timeout, bool verbose) async {
   final projectDir = Directory(path);
   if (!await projectDir.exists()) {
     throw RunProjectError("Project not found!", 1);
@@ -169,6 +172,8 @@ Future<void> runProject(String path, int timeout, bool verbose) async {
     process?.kill();
     exit(0);
   });
+
+  return process;
 }
 
 /// Starts the temporary project process.
