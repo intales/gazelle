@@ -23,9 +23,7 @@ class DeleteCommand extends Command {
 
   @override
   void run() async {
-    Confirmation confirmation = Confirmation();
-    bool answer = confirmation
-        .getConfirmation('\nAre you sure you want to delete the project?');
+    bool answer = getConfirmation('\nAre you sure you want to delete the project?');
 
     final spinner = CliSpin(
       text: "Deleting Gazelle project...",
@@ -38,10 +36,6 @@ class DeleteCommand extends Command {
     }
     try {
       final result = await deleteProject(path: pathOption);
-      if (result == "abort") {
-        spinner.fail("Project deletion aborted.");
-        exit(2);
-      }
       spinner.success(
         "$result project is deleted\n",
       );
