@@ -46,7 +46,7 @@ class RunCommand extends Command {
     final timeoutOption =
         int.tryParse((argResults?.option("timeout")).toString()) ??
             defaultTimeout;
-    final bool verbose = argResults?.flag("verbose") ?? false;
+    final verbose = argResults?.flag("verbose") ?? false;
     final projectName = pathOption.split(Platform.pathSeparator).last;
 
     final spinner = CliSpin(

@@ -25,7 +25,6 @@ void main() {
       /// Waiting for the process to start properly and then killing it
       await Future.delayed(Duration(seconds: 5));
       process!.kill();
-      print("Process killed successfully.");
 
       /// Assert (The tmp project must have been created)
       final tmpDir = Directory("${path + Platform.pathSeparator}.tmp");
