@@ -23,7 +23,7 @@ class DeleteCommand extends Command {
 
   @override
   void run() async {
-    bool answer = getConfirmation('\nAre you sure you want to delete the project?');
+    final answer = getConfirmation('\nAre you sure you want to delete the project?');
 
     final spinner = CliSpin(
       text: "Deleting Gazelle project...",
