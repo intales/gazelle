@@ -20,3 +20,19 @@ updates:
     directory: "packages/gazelle_jwt"
     schedule:
       interval: "weekly"
+  - package-ecosystem: "pub"
+    directory: "packages/gazelle_benchmark"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pub"
+    directory: "packages/gazelle_cli"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pub"
+    directory: "packages/gazelle_cors"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pub"
+    directory: "packages/gazelle_logger"
+    schedule:
+      interval: "weekly"
