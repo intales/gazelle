@@ -34,13 +34,15 @@ class CreateCommand extends Command {
       spinner: CliSpinners.dots,
     ).start();
 
-    final nameOption = argResults?.option("name") ?? "gazelle_app";
+    final nameOption = argResults?.option("name") ??
+        argResults?.rest.firstOrNull ??
+        "gazelle_app";
     final pathOption = argResults?.option("path");
 
     try {
       final result = await createProject(nameOption, path: pathOption);
       spinner.success(
-        "$result project created!\nRun `dart run $result/bin/$nameOption.dart` to test it.",
+        "$result project created!\nRun `gazelle run $result` to test it.",
       );
     } on CreateProjectError catch (e) {
       spinner.fail(e.message);
