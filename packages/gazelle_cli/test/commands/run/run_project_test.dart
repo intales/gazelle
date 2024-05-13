@@ -7,7 +7,7 @@ import 'package:gazelle_cli/commands/run/run_project.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group("Run Command Tests:", () {
+  group("Run Command Tests", () {
     test('Should create a tmp project', () async {
       /// Arrange (Creating a new gazelle project)
       String path = "tmp${Platform.pathSeparator}test_project";
