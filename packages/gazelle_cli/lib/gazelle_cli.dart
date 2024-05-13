@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 
 import 'commands/create/create.dart';
+import 'commands/delete/delete.dart';
 import 'commands/dockerize/dockerize.dart';
 import 'commands/run/run.dart';
 
@@ -10,4 +11,5 @@ void run(List<String> arguments) =>
       ..addCommand(CreateCommand())
       ..addCommand(DockerizeCommand())
       ..addCommand(RunCommand())
+      ..addCommand(DeleteCommand())
       ..run(arguments);
