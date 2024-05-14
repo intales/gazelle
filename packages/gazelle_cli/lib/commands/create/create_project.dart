@@ -36,7 +36,7 @@ const _mainTemplate = """
 import 'package:gazelle_core/gazelle_core.dart';
 
 Future<void> runApp(List<String> args) async {
-  final app = GazelleApp(port: 8080);
+  final app = GazelleApp();
 
   app.get("/", (request, response) async {
     return response.copyWith(
