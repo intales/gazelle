@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-05-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_cli` - `v0.2.0`](#gazelle_cli---v020)
+
+---
+
+#### `gazelle_cli` - `v0.2.0`
+
+ - Updated `run` command and created `delete` command.
+
+
 ## 2024-04-16
 
 ### Changes
