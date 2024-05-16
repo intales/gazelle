@@ -22,8 +22,8 @@ class LoadProjectConfigurationError {
 /// Loads configuration file from project `pubspec.yaml` file.
 ///
 /// Throws [LoadProjectConfigurationError] if `pubspec.yaml` is not found.
-Future<ProjectConfiguration> loadProjectConfiguration() async {
-  final directory = Directory.current;
+Future<ProjectConfiguration> loadProjectConfiguration({String? path}) async {
+  final directory = Directory(path ?? Directory.current.path);
   final pubspecPath = "${directory.path}/pubspec.yaml";
   final pubspec = File(pubspecPath);
 
