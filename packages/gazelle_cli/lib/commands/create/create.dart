@@ -11,9 +11,9 @@ class CreateCommand extends Command {
   String get name => "create";
 
   @override
-  String get description => "Creates a Gazelle project.";
+  String get description => "Creates a new Gazelle project.";
 
-  /// Createsa [CreateCommand].
+  /// Creates a [CreateCommand].
   CreateCommand() {
     argParser.addOption(
       "name",
