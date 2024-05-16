@@ -12,6 +12,11 @@ Stream<String> get stdinBroadcast => _stdin ??= _createBroadcastStdin();
 
 /// Creates a broadcast stream of data from stdin.
 Stream<String> _createBroadcastStdin() {
+  /// If stdin is not available, return an empty stream.
+  if (!stdin.hasTerminal) {
+    print("Terminal is not available!");
+    return Stream<String>.empty();
+  }
   stdin.echoMode = false;
   stdin.lineMode = false;
   var controller = StreamController<String>.broadcast();

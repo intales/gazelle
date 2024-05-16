@@ -81,7 +81,9 @@ void main() {
 
     /// Waiting for [testTimeout] seconds
     final timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      stdout.write("\rTime Left: ${testTimeout - timer.tick} seconds");
+      if (stdin.hasTerminal) {
+        stdout.write("\rTime Left: ${testTimeout - timer.tick} seconds");
+      }
     });
     await Future.delayed(Duration(seconds: testTimeout));
 
