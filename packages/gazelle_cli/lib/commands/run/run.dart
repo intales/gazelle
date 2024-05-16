@@ -54,9 +54,11 @@ class RunCommand extends Command {
     try {
       config = await loadProjectConfiguration(path: pathOption);
     } on LoadProjectConfigurationError catch (e) {
-      throw RunProjectError(e.errorMessage, e.errorCode);
+      print(e.errorMessage);
+      exit(e.errorCode);
     } catch (e) {
-      throw RunProjectError(e.toString(), 2);
+      print(e);
+      exit(2);
     }
 
     final projectName = config.name;
