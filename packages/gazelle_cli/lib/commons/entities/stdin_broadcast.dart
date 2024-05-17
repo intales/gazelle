@@ -17,6 +17,10 @@ Stream<String> _createBroadcastStdin() {
     print("Terminal is not available!");
     return Stream<String>.empty();
   }
+  ProcessSignal.sigint.watch().listen((event) {
+    stdin.lineMode = true;
+    stdin.echoMode = true;
+  });
   stdin.echoMode = false;
   stdin.lineMode = false;
   var controller = StreamController<String>.broadcast();
