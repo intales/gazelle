@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:gazelle_cli/commands/create/create_project.dart';
 import 'package:gazelle_cli/commands/run/run_project.dart';
+import 'package:gazelle_cli/commons/entities/stdin_broadcast.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -34,6 +35,7 @@ void main() {
 
       final mainHotReload = File("${tmpDir.path}/main_hot_reload.dart");
       expect(mainHotReload.existsSync(), true);
+      stdinCleanUp(ProcessSignal.sigint);
     });
   });
 
@@ -88,6 +90,7 @@ void main() {
     await Future.delayed(Duration(seconds: testTimeout));
 
     /// Cleanup (Kill the process)
+    stdinCleanUp(ProcessSignal.sigint);
     timer.cancel();
     isRunning = false;
     process.kill();
