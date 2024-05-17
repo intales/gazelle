@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:cli_spin/cli_spin.dart';
 import '../../commons/functions/confirmation.dart';
+import '../../commons/functions/load_project_configuration.dart';
 import 'delete_project.dart';
 
 /// CLI command to delete a Gazelle project.
@@ -23,13 +24,15 @@ class DeleteCommand extends Command {
 
   @override
   void run() async {
-    final answer = getConfirmation('\nAre you sure you want to delete the project?');
+    final pathOption = argResults?.option("path");
+    final projectConfiguration = await loadProjectConfiguration(path: pathOption);
+    final answer = getConfirmation(
+        '\nAre you sure you want to delete the project ${projectConfiguration.name}');
 
     final spinner = CliSpin(
       text: "Deleting Gazelle project...",
       spinner: CliSpinners.dots,
     ).start();
-    final pathOption = argResults?.option("path");
     if (!answer) {
       spinner.fail("Project deletion aborted.");
       return;
