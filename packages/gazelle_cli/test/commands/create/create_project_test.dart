@@ -24,6 +24,8 @@ void main() {
       expect(File("$result/pubspec.yaml").existsSync(), isTrue);
       expect(File("$result/bin/test.dart").existsSync(), isTrue);
       expect(File("$result/lib/test.dart").existsSync(), isTrue);
+
+      await Directory(path).delete(recursive: true);
     });
   });
 }
