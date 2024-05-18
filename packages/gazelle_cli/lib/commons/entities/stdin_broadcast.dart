@@ -12,9 +12,26 @@ Stream<String> get stdinBroadcast => _stdin ??= _createBroadcastStdin();
 
 /// Creates a broadcast stream of data from stdin.
 Stream<String> _createBroadcastStdin() {
+  /// If stdin is not available, return an empty stream.
+  if (!stdin.hasTerminal) {
+    print("Terminal is not available!");
+    return Stream<String>.empty();
+  }
+
+  ProcessSignal.sigint.watch().listen(stdinCleanUp);
+  if (!Platform.isWindows) {
+    ProcessSignal.sigterm.watch().listen(stdinCleanUp);
+  }
+
   stdin.echoMode = false;
   stdin.lineMode = false;
   var controller = StreamController<String>.broadcast();
   stdin.transform(utf8.decoder).listen(controller.add);
   return controller.stream;
+}
+
+/// Resets the terminal settings when the process is terminated.
+void stdinCleanUp(ProcessSignal event) {
+  stdin.lineMode = true;
+  stdin.echoMode = true;
 }

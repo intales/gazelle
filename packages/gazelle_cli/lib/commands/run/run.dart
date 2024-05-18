@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:cli_spin/cli_spin.dart';
 
+import '../../commons/entities/project_configuration.dart';
+import '../../commons/functions/load_project_configuration.dart';
 import 'run_project.dart';
 
 /// CLI command to run a Gazelle project.
@@ -47,10 +49,21 @@ class RunCommand extends Command {
         int.tryParse((argResults?.option("timeout")).toString()) ??
             defaultTimeout;
     final verbose = argResults?.flag("verbose") ?? false;
-    final projectName = pathOption.split(Platform.pathSeparator).last;
 
+    late final ProjectConfiguration config;
+    try {
+      config = await loadProjectConfiguration(path: pathOption);
+    } on LoadProjectConfigurationError catch (e) {
+      print(e.errorMessage);
+      exit(e.errorCode);
+    } catch (e) {
+      print(e);
+      exit(2);
+    }
+
+    final projectName = config.name;
     final spinner = CliSpin(
-      text: "Running '$projectName'...",
+      text: "Running Project '$projectName'...",
       spinner: CliSpinners.dots,
     ).start();
 
