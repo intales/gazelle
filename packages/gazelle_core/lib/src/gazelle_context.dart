@@ -39,8 +39,8 @@ class GazelleContext {
         plugins: {},
       );
 
-  /// Adds a route to the router.
-  void addRoute(GazelleRoute route) => _router.addRoute(route);
+  /// Adds routes to the router.
+  void addRoutes(List<GazelleRoute> routes) => _router.addRoutes(routes);
 
   /// Searches for a route that matches the provided HTTP request.
   ///

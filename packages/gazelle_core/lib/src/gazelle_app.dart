@@ -5,6 +5,7 @@ import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
 import 'gazelle_plugin.dart';
 import 'gazelle_route.dart';
+import 'gazelle_router.dart';
 import 'gazelle_ssl_certificate.dart';
 
 /// A lightweight and flexible HTTP server framework for Dart.
@@ -78,14 +79,18 @@ class GazelleApp {
   /// );
   /// ```
   GazelleApp({
+    required List<GazelleRoute> routes,
     this.address = _localhost,
     int? port,
     this.sslCertificate,
-  })  : _context = GazelleContext.create(),
+  })  : _context = GazelleContext.create()..addRoutes(routes),
         _port = port ?? 0;
 
-  /// Adds a route to the router.
-  void addRoute(GazelleRoute route) => _context.addRoute(route);
+  /// The current server address that Gazelle is listening to.
+  String get serverAddress {
+    final path = "$address:$port";
+    return sslCertificate != null ? "https://$path" : "http://$path";
+  }
 
   /// Registers a plugin with the application context.
   ///

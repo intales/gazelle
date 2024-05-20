@@ -45,8 +45,15 @@ class GazelleRouter {
   /// Constructs a GazelleRouter instance.
   GazelleRouter() : _routes = GazelleTrie<GazelleRoute>(wildcard: _wildcard);
 
-  /// Adds a route to this router.
-  void addRoute(GazelleRoute route) => _addRoute(route, []);
+  /// Adds routes to this router.
+  void addRoutes(List<GazelleRoute> routes) {
+    final route = GazelleRoute(
+      name: "",
+      children: routes,
+    );
+
+    _addRoute(route, []);
+  }
 
   void _addRoute(GazelleRoute route, List<String> parentPath) {
     final currentPath = [...parentPath, route.name];
@@ -113,7 +120,7 @@ class GazelleRouter {
   /// Extracts the route from the specified [request].
   String _routeFromRequest(HttpRequest request) {
     final method = GazelleHttpMethod.fromString(request.method).name;
-    final path = request.uri.path.replaceFirst(_routeSeparator, "");
+    final path = request.uri.path;
 
     return "$method/$path";
   }
