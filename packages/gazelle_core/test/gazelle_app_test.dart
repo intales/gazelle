@@ -87,12 +87,14 @@ void main() {
       final app = GazelleApp();
 
       // Act
-      await app.start();
-      app.insertRoute(
-        GazelleHttpMethod.get,
-        "/test",
-        (request, response) async => throw Exception("error"),
+      final route = GazelleRoute(
+        name: "test",
+        getHandler: (request, response) async => throw Exception("error"),
       );
+
+      app.addRoute(route);
+      await app.start();
+
       final result =
           await http.get(Uri.parse("http://${app.address}:${app.port}/test"));
 
@@ -110,14 +112,15 @@ void main() {
       );
       final app = GazelleApp(sslCertificate: sslCertificate);
 
-      app.get(
-        "/test",
-        (request, response) async => GazelleResponse(
+      final route = GazelleRoute(
+        name: "test",
+        getHandler: (request, response) async => GazelleResponse(
           statusCode: 200,
           body: "OK",
         ),
       );
 
+      app.addRoute(route);
       await app.start();
 
       // Act
@@ -131,17 +134,16 @@ void main() {
       HttpOverrides.global = null;
     });
 
-    test('Should insert a route and get a response', () async {
+    test('Should share hooks with child routes', () async {
       // Arrange
       final app = GazelleApp();
       int preRequestHooksCount = 0;
       int postResponseHooksCount = 0;
 
       // Act
-      app.insertRoute(
-        GazelleHttpMethod.get,
-        "/test",
-        (request, response) async => response.copyWith(
+      final route = GazelleRoute(
+        name: "test",
+        getHandler: (request, response) async => response.copyWith(
           statusCode: 200,
           body: "OK",
         ),
@@ -162,25 +164,26 @@ void main() {
             },
           ),
         ],
-      );
-
-      app.insertRoute(
-        GazelleHttpMethod.get,
-        "/test/test_2",
-        (request, response) async => response.copyWith(
-          statusCode: 200,
-          body: "OK",
-        ),
-        postResponseHooks: [
-          GazellePostResponseHook(
-            (request, response) async {
-              postResponseHooksCount += 1;
-              return (request, response);
-            },
+        children: [
+          GazelleRoute(
+            name: "test_2",
+            getHandler: (request, response) async => response.copyWith(
+              statusCode: 200,
+              body: "OK",
+            ),
+            postResponseHooks: [
+              GazellePostResponseHook(
+                (request, response) async {
+                  postResponseHooksCount += 1;
+                  return (request, response);
+                },
+              ),
+            ],
           ),
         ],
       );
 
+      app.addRoute(route);
       await app.start();
       final test =
           await http.get(Uri.parse("http://${app.address}:${app.port}/test"));
@@ -208,71 +211,87 @@ void main() {
         Future<http.Response> Function()? sendRequest;
         switch (method) {
           case GazelleHttpMethod.get:
-            insertRoute = () => app.get(
-                  "/test",
-                  (request, response) async => response.copyWith(
-                    statusCode: 200,
-                    body: "OK",
+            insertRoute = () => app.addRoute(
+                  GazelleRoute(
+                    name: "test",
+                    getHandler: (request, response) async => response.copyWith(
+                      statusCode: 200,
+                      body: "OK",
+                    ),
                   ),
                 );
             sendRequest = () => http.get(uri);
             break;
           case GazelleHttpMethod.head:
-            insertRoute = () => app.head(
-                  "/test",
-                  (request, response) async => response.copyWith(
-                    statusCode: 200,
-                    body: "OK",
+            insertRoute = () => app.addRoute(
+                  GazelleRoute(
+                    name: "test",
+                    getHandler: (request, response) async => response.copyWith(
+                      statusCode: 200,
+                      body: "OK",
+                    ),
                   ),
                 );
-            sendRequest = () => http.get(uri);
+            sendRequest = () => http.head(uri);
             break;
           case GazelleHttpMethod.put:
-            insertRoute = () => app.put(
-                  "/test",
-                  (request, response) async => response.copyWith(
-                    statusCode: 200,
-                    body: "OK",
+            insertRoute = () => app.addRoute(
+                  GazelleRoute(
+                    name: "test",
+                    putHandler: (request, response) async => response.copyWith(
+                      statusCode: 200,
+                      body: "OK",
+                    ),
                   ),
                 );
             sendRequest = () => http.put(uri);
             break;
           case GazelleHttpMethod.post:
-            insertRoute = () => app.post(
-                  "/test",
-                  (request, response) async => response.copyWith(
-                    statusCode: 200,
-                    body: "OK",
+            insertRoute = () => app.addRoute(
+                  GazelleRoute(
+                    name: "test",
+                    postHandler: (request, response) async => response.copyWith(
+                      statusCode: 200,
+                      body: "OK",
+                    ),
                   ),
                 );
             sendRequest = () => http.post(uri);
             break;
           case GazelleHttpMethod.patch:
-            insertRoute = () => app.patch(
-                  "/test",
-                  (request, response) async => GazelleResponse(
-                    statusCode: 200,
-                    body: "OK",
+            insertRoute = () => app.addRoute(
+                  GazelleRoute(
+                    name: "test",
+                    patchHandler: (request, response) async =>
+                        response.copyWith(
+                      statusCode: 200,
+                      body: "OK",
+                    ),
                   ),
                 );
             sendRequest = () => http.patch(uri);
             break;
           case GazelleHttpMethod.delete:
-            insertRoute = () => app.delete(
-                  "/test",
-                  (request, response) async => response.copyWith(
-                    statusCode: 200,
-                    body: "OK",
+            insertRoute = () => app.addRoute(
+                  GazelleRoute(
+                    name: "test",
+                    deleteHandler: (request, response) async =>
+                        response.copyWith(
+                      statusCode: 200,
+                      body: "OK",
+                    ),
                   ),
                 );
             sendRequest = () => http.delete(uri);
             break;
           case GazelleHttpMethod.options:
-            insertRoute = () => app.options(
-                  "/test",
-                  (request, response) async => response.copyWith(
-                    statusCode: 200,
-                    body: "OK",
+            insertRoute = () => app.addRoute(
+                  GazelleRoute(
+                    name: "test",
+                    getHandler: (request, response) async => response.copyWith(
+                      statusCode: 200,
+                      body: "OK",
+                    ),
                   ),
                 );
             sendRequest = () => http.Client()
@@ -287,8 +306,16 @@ void main() {
         final result = await sendRequest();
 
         // Assert
-        expect(result.statusCode, 200);
-        expect(result.body, "OK");
+        if (method == GazelleHttpMethod.head) {
+          expect(result.statusCode, 200);
+          expect(result.body, "");
+        } else if (method == GazelleHttpMethod.options) {
+          expect(result.statusCode, 204);
+          expect(result.body, "");
+        } else {
+          expect(result.statusCode, 200);
+          expect(result.body, "OK");
+        }
       }
 
       await app.stop(force: true);
@@ -298,13 +325,17 @@ void main() {
         () async {
       // Arrange
       final app = GazelleApp();
-      app.get("/test", (request, response) async {
-        return response.copyWith(
-          statusCode: 200,
-          body: "Hello, World!",
-        );
-      });
+      final route = GazelleRoute(
+        name: "test",
+        getHandler: (request, response) async {
+          return response.copyWith(
+            statusCode: 200,
+            body: "Hello, World!",
+          );
+        },
+      );
 
+      app.addRoute(route);
       await app.start();
 
       // Act
@@ -327,13 +358,17 @@ void main() {
         () async {
       // Arrange
       final app = GazelleApp();
-      app.get("/test", (request, response) async {
-        return response.copyWith(
-          statusCode: 200,
-          body: "Hello, World!",
-        );
-      });
+      final route = GazelleRoute(
+        name: "test",
+        getHandler: (request, response) async {
+          return response.copyWith(
+            statusCode: 200,
+            body: "Hello, World!",
+          );
+        },
+      );
 
+      app.addRoute(route);
       await app.start();
 
       // Act

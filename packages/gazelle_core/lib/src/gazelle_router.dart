@@ -45,152 +45,29 @@ class GazelleRouter {
   /// Constructs a GazelleRouter instance.
   GazelleRouter() : _routes = GazelleTrie<GazelleRoute>(wildcard: _wildcard);
 
-  /// Registers a GET route with the specified [route], [handler], and optional hooks.
-  void get(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      insert(
-        GazelleHttpMethod.get,
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
+  /// Adds a route to this router.
+  void addRoute(GazelleRoute route) => _addRoute(route, []);
 
-  /// Registers a HEAD route with the specified [route], [handler], and optional hooks.
-  void head(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      insert(
-        GazelleHttpMethod.head,
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
+  void _addRoute(GazelleRoute route, List<String> parentPath) {
+    final currentPath = [...parentPath, route.name];
 
-  /// Registers a POST route with the specified [route], [handler], and optional hooks.
-  void post(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      insert(
-        GazelleHttpMethod.post,
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers a PUT route with the specified [route], [handler], and optional hooks.
-  void put(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      insert(
-        GazelleHttpMethod.put,
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers a PATCH route with the specified [route], [handler], and optional hooks.
-  void patch(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      insert(
-        GazelleHttpMethod.patch,
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers a DELETE route with the specified [route], [handler], and optional hooks.
-  void delete(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      insert(
-        GazelleHttpMethod.delete,
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers an OPTIONS route with the specified [route], [handler], and optional hooks.
-  void options(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      insert(
-        GazelleHttpMethod.options,
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Inserts a route with the specified [method], [route], [handler], and optional hooks.
-  void insert(
-    GazelleHttpMethod method,
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) {
-    if (method == GazelleHttpMethod.get) {
-      // Automatically insert HEAD route for given route.
-      _routes.insert(
-        "${GazelleHttpMethod.head.name}/$route".split(_routeSeparator),
-        GazelleRoute(
-          handler,
-          preRequestHooks: preRequestHooks,
-          postResponseHooks: postResponseHooks,
-        ),
-      );
+    void addHandler(GazelleHttpMethod method, GazelleRouteHandler? handler) {
+      if (handler == null) return;
+      final path = [method.name, ...currentPath];
+      _routes.insert(path, route);
     }
 
-    // Automatically insert OPTIONS route for given route.
-    _routes.insert(
-      "${GazelleHttpMethod.options.name}/$route".split(_routeSeparator),
-      GazelleRoute(
-        (request, response) async {
-          final availableMethods = _getAvailableMethodsForResource(request);
-          return response.copyWith(statusCode: 204, headers: {
-            "allow": availableMethods.map((method) => method.name).toList(),
-          });
-        },
-      ),
-    );
+    addHandler(GazelleHttpMethod.get, route.getHandler);
+    addHandler(GazelleHttpMethod.head, route.headHandler);
+    addHandler(GazelleHttpMethod.post, route.postHandler);
+    addHandler(GazelleHttpMethod.put, route.putHandler);
+    addHandler(GazelleHttpMethod.patch, route.patchHandler);
+    addHandler(GazelleHttpMethod.delete, route.deleteHandler);
+    addHandler(GazelleHttpMethod.options, route.optionsHandler);
 
-    _routes.insert(
-      "${method.name}/$route".split(_routeSeparator),
-      GazelleRoute(
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      ),
-    );
+    for (final route in route.children) {
+      _addRoute(route, currentPath);
+    }
   }
 
   /// Searches for a route that matches the specified [request].
@@ -236,20 +113,8 @@ class GazelleRouter {
   /// Extracts the route from the specified [request].
   String _routeFromRequest(HttpRequest request) {
     final method = GazelleHttpMethod.fromString(request.method).name;
-    final path = request.uri.path;
+    final path = request.uri.path.replaceFirst(_routeSeparator, "");
 
     return "$method/$path";
-  }
-
-  List<GazelleHttpMethod> _getAvailableMethodsForResource(
-    GazelleRequest request,
-  ) {
-    final result = <GazelleHttpMethod>[];
-    for (final method in GazelleHttpMethod.values) {
-      final route = _routes
-          .search("${method.name}/${request.uri.path}".split(_routeSeparator));
-      if (route.value != null) result.add(method);
-    }
-    return result;
   }
 }

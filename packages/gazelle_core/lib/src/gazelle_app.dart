@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'gazelle_context.dart';
-import 'gazelle_hooks.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
 import 'gazelle_plugin.dart';
@@ -85,6 +84,9 @@ class GazelleApp {
   })  : _context = GazelleContext.create(),
         _port = port ?? 0;
 
+  /// Adds a route to the router.
+  void addRoute(GazelleRoute route) => _context.addRoute(route);
+
   /// Registers a plugin with the application context.
   ///
   /// Plugins extend Gazelle's functionality, allowing integration of
@@ -102,245 +104,6 @@ class GazelleApp {
   /// final authPlugin = app.getPlugin<AuthenticationPlugin>();
   /// ```
   T getPlugin<T extends GazellePlugin>() => _context.getPlugin<T>();
-
-  /// Inserts a custom route with the specified HTTP [method], URL [route],
-  /// and request handler [handler].
-  ///
-  /// Optionally, you can provide pre-request and post-response hooks to
-  /// customize request handling.
-  ///
-  /// Example:
-  /// ```dart
-  /// final app = GazelleApp();
-  /// app.insertRoute(
-  ///   GazelleHttpMethod.get,
-  ///   '/hello',
-  ///   (request, response) async {
-  ///     return response.copyWith(
-  ///       statusCode: 200,
-  ///       body: 'Hello, Gazelle!',
-  ///     );
-  ///   },
-  /// );
-  /// await app.start();
-  /// ```
-  void insertRoute(
-    GazelleHttpMethod method,
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      _context.insertRoute(
-        method,
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers a GET route with the specified URL [route] and handler [handler].
-  ///
-  /// Optionally, you can provide pre-request and post-response hooks to
-  /// customize request handling.
-  ///
-  /// Example:
-  /// ```dart
-  /// final app = GazelleApp();
-  /// app.get('/hello', (request, response) async {
-  ///   return response.copyWith(
-  ///     statusCode: 200,
-  ///     body: 'Hello, Gazelle!',
-  ///   );
-  /// });
-  /// await app.start();
-  /// ```
-  void get(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      _context.get(
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers a HEAD route with the specified URL [route] and handler [handler].
-  ///
-  /// Optionally, you can provide pre-request and post-response hooks to
-  /// customize request handling.
-  ///
-  /// Example:
-  /// ```dart
-  /// final app = GazelleApp();
-  /// app.head('/hello', (request, response) async {
-  ///   return response.copyWith(
-  ///     statusCode: 200,
-  ///     body: 'Hello, Gazelle!',
-  ///   );
-  /// });
-  /// await app.start();
-  /// ```
-  void head(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      _context.head(
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers a POST route with the specified URL [route] and handler [handler].
-  ///
-  /// Optionally, you can provide pre-request and post-response hooks to
-  /// customize request handling.
-  ///
-  /// Example:
-  /// ```dart
-  /// final app = GazelleApp();
-  /// app.post('/hello', (request, response) async {
-  ///   return response.copyWith(
-  ///     statusCode: 200,
-  ///     body: 'Hello, Gazelle!',
-  ///   );
-  /// });
-  /// await app.start();
-  /// ```
-  void post(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      _context.post(
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers a PUT route with the specified URL [route] and handler [handler].
-  ///
-  /// Optionally, you can provide pre-request and post-response hooks to
-  /// customize request handling.
-  ///
-  /// Example:
-  /// ```dart
-  /// final app = GazelleApp();
-  /// app.put('/hello', (request, response) async {
-  ///   return response.copyWith(
-  ///     statusCode: 200,
-  ///     body: 'Hello, Gazelle!',
-  ///   );
-  /// });
-  /// await app.start();
-  /// ```
-  void put(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      _context.put(
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers a PATCH route with the specified URL [route] and handler [handler].
-  ///
-  /// Optionally, you can provide pre-request and post-response hooks to
-  /// customize request handling.
-  ///
-  /// Example:
-  /// ```dart
-  /// final app = GazelleApp();
-  /// app.patch('/hello', (request, response) async {
-  ///   return response.copyWith(
-  ///     statusCode: 200,
-  ///     body: 'Hello, Gazelle!',
-  ///   );
-  /// });
-  /// await app.start();
-  /// ```
-  void patch(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      _context.patch(
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers a DELETE route with the specified URL [route] and handler [handler].
-  ///
-  /// Optionally, you can provide pre-request and post-response hooks to
-  /// customize request handling.
-  ///
-  /// Example:
-  /// ```dart
-  /// final app = GazelleApp();
-  /// app.delete('/hello', (request, response) async {
-  ///   return respone.copyWith(
-  ///     statusCode: 200,
-  ///     body: 'Hello, Gazelle!',
-  ///   );
-  /// });
-  /// await app.start();
-  /// ```
-  void delete(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      _context.delete(
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
-
-  /// Registers an OPTIONS route with the specified URL [route] and handler [handler].
-  ///
-  /// Optionally, you can provide pre-request and post-response hooks to
-  /// customize request handling.
-  ///
-  /// Example:
-  /// ```dart
-  /// final app = GazelleApp();
-  /// app.options('/hello', (request, response) async {
-  ///   return response.copyWith(
-  ///     statusCode: 200,
-  ///     body: 'Hello, Gazelle!',
-  ///   );
-  /// });
-  /// await app.start();
-  /// ```
-  void options(
-    String route,
-    GazelleRouteHandler handler, {
-    List<GazellePreRequestHook> preRequestHooks = const [],
-    List<GazellePostResponseHook> postResponseHooks = const [],
-  }) =>
-      _context.options(
-        route,
-        handler,
-        preRequestHooks: preRequestHooks,
-        postResponseHooks: postResponseHooks,
-      );
 
   /// Starts the HTTP server.
   ///
@@ -401,7 +164,17 @@ class GazelleApp {
     GazelleResponse response = searchResult.response;
     final preRequestHooks = searchResult.route.preRequestHooks;
     final postResponseHooks = searchResult.route.postResponseHooks;
-    final handler = searchResult.route.handler;
+    final handler = switch (request.method) {
+      GazelleHttpMethod.get => searchResult.route.getHandler,
+      GazelleHttpMethod.head => searchResult.route.headHandler,
+      GazelleHttpMethod.post => searchResult.route.postHandler,
+      GazelleHttpMethod.put => searchResult.route.putHandler,
+      GazelleHttpMethod.patch => searchResult.route.patchHandler,
+      GazelleHttpMethod.delete => searchResult.route.deleteHandler,
+      GazelleHttpMethod.options => searchResult.route.optionsHandler,
+    };
+
+    if (handler == null) return _send404Error(httpResponse);
 
     for (final hook in preRequestHooks) {
       (request, response) = await hook(request, response);

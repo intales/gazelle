@@ -11,9 +11,9 @@ void main() async {
   }));
 
   // Setup your routes.
-  app.get(
-    "/",
-    (request, response) async {
+  final route = GazelleRoute(
+    name: "",
+    getHandler: (request, response) async {
       return response.copyWith(
         statusCode: 200,
         body: "Hello, Gazelle!",
@@ -23,6 +23,7 @@ void main() async {
     preRequestHooks: [app.getPlugin<GazelleCorsPlugin>().corsHook],
   );
 
+  app.addRoute(route);
   // Start your server.
   await app.start();
 }

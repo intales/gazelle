@@ -5,9 +5,9 @@ void main() async {
   final app = GazelleApp(port: 3000);
   await app.registerPlugin(GazelleLoggerPlugin());
 
-  app.get(
-    "/",
-    (request, resonse) async => resonse.copyWith(
+  final route = GazelleRoute(
+    name: "",
+    getHandler: (request, resonse) async => resonse.copyWith(
       statusCode: 200,
       body: "Hello, Gazelle!",
     ),
@@ -15,5 +15,6 @@ void main() async {
     postResponseHooks: [app.getPlugin<GazelleLoggerPlugin>().logResponseHook],
   );
 
+  app.addRoute(route);
   await app.start();
 }

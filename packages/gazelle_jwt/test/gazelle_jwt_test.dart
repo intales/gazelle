@@ -122,42 +122,49 @@ void main() {
       final app = GazelleApp();
       await app.registerPlugin(GazelleJwtPlugin(SecretKey("supersecret")));
 
-      app
-        ..post(
-          "/login",
-          (request, response) async {
-            return response.copyWith(
-              statusCode: 200,
-              body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-            );
-          },
-        )
-        ..get(
-          "/test",
-          (request, response) async {
-            return response.copyWith(
-              statusCode: 200,
-              body: "Hello, World!",
-            );
-          },
-          preRequestHooks: [
-            app.getPlugin<GazelleJwtPlugin>().authenticationHook,
-          ],
-        )
-        ..get(
-          "/test/test_2",
-          (request, response) async {
-            return response.copyWith(
-              statusCode: 200,
-              body: "Hello, World!",
-            );
-          },
-        );
+      final route = GazelleRoute(
+        name: "api",
+        children: [
+          GazelleRoute(
+            name: "login",
+            postHandler: (request, response) async {
+              return response.copyWith(
+                statusCode: 200,
+                body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+              );
+            },
+          ),
+          GazelleRoute(
+            name: "test",
+            getHandler: (request, response) async {
+              return response.copyWith(
+                statusCode: 200,
+                body: "Hello, World!",
+              );
+            },
+            preRequestHooks: [
+              app.getPlugin<GazelleJwtPlugin>().authenticationHook,
+            ],
+            children: [
+              GazelleRoute(
+                name: "test_2",
+                getHandler: (request, response) async {
+                  return response.copyWith(
+                    statusCode: 200,
+                    body: "Hello, World!",
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      );
 
+      app.addRoute(route);
       await app.start();
 
       // Act
-      final baseUrl = "http://${app.address}:${app.port}";
+      final baseUrl = "http://${app.address}:${app.port}/api";
       final token =
           await http.post(Uri.parse("$baseUrl/login")).then((e) => e.body);
 

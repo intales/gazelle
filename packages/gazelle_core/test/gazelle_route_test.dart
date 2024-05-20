@@ -6,7 +6,8 @@ void main() {
     test('Should return a copy of GazelleRoute with given params', () {
       // Arrange
       final route = GazelleRoute(
-        (request, response) async => response.copyWith(
+        name: "test",
+        getHandler: (request, response) async => response.copyWith(
           statusCode: 200,
         ),
       );

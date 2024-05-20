@@ -12,9 +12,9 @@ void main() {
       await app.registerPlugin(GazelleCorsPlugin(corsHeaders: {
         GazelleCorsHeaders.accessControlAllowOrigin.name: ["example.com"],
       }));
-      app.get(
-        "/",
-        (request, response) async {
+      final route = GazelleRoute(
+        name: "",
+        getHandler: (request, response) async {
           return response.copyWith(
             statusCode: 200,
             body: "Hello, Gazelle!",
@@ -23,6 +23,7 @@ void main() {
         preRequestHooks: [app.getPlugin<GazelleCorsPlugin>().corsHook],
       );
 
+      app.addRoute(route);
       await app.start();
 
       // Act

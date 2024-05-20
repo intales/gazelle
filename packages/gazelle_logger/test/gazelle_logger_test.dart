@@ -17,9 +17,10 @@ void main() {
       final app = GazelleApp();
       final logOutput = TestLogOutput();
       await app.registerPlugin(GazelleLoggerPlugin(logOutput: logOutput));
-      app.get(
-        "/",
-        (request, resonse) async {
+
+      final route = GazelleRoute(
+        name: "",
+        getHandler: (request, resonse) async {
           return resonse.copyWith(
             statusCode: 200,
             body: "Hello, World!",
@@ -33,6 +34,7 @@ void main() {
         ],
       );
 
+      app.addRoute(route);
       await app.start();
 
       // Act

@@ -20,11 +20,13 @@ void main() {
       });
 
       // Act
-      router.insert(
-        GazelleHttpMethod.get,
-        '/test',
-        (request, response) async => response.copyWith(statusCode: 200),
+      final route = GazelleRoute(
+        name: "test",
+        getHandler: (request, response) async =>
+            response.copyWith(statusCode: 200),
       );
+      router.addRoute(route);
+
       await http.get(
           Uri.parse('http://${server.address.address}:${server.port}/test'));
 

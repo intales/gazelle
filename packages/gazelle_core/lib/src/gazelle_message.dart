@@ -60,9 +60,9 @@ class GazelleRequest extends GazelleMessage {
     required this.method,
     required this.pathParameters,
     this.body,
-    Map<String, List<String>> headers = const {},
-    Map<String, dynamic> metadata = const {},
-  }) : super(headers: headers, metadata: metadata);
+    super.headers = const {},
+    super.metadata = const {},
+  });
 
   /// Constructs a [GazelleRequest] instance from an [HttpRequest].
   ///
@@ -125,9 +125,9 @@ class GazelleResponse extends GazelleMessage {
   const GazelleResponse({
     required this.statusCode,
     this.body,
-    Map<String, List<String>> headers = const {},
-    Map<String, dynamic> metadata = const {},
-  }) : super(headers: headers, metadata: metadata);
+    super.headers = const {},
+    super.metadata = const {},
+  });
 
   /// Writes this [GazelleResponse] to an [HttpResponse].
   void toHttpResponse(HttpResponse response, {bool onlyHeaders = false}) {

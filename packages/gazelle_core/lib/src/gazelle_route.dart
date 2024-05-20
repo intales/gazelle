@@ -1,4 +1,5 @@
 import 'gazelle_hooks.dart';
+import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
 
 /// Represents a handler for a Gazelle route.
@@ -11,10 +12,59 @@ typedef GazelleRouteHandler = Future<GazelleResponse> Function(
 
 /// Represents a route in the Gazelle router.
 ///
-/// Contains a [handler] for processing requests, along with optional pre-request and post-response hooks.
+/// Contains a [getHandler] for processing requests, along with optional pre-request and post-response hooks.
 class GazelleRoute {
-  /// The handler for the route.
-  final GazelleRouteHandler handler;
+  /// The name of the route.
+  final String name;
+
+  /// The handler for the GET method.
+  final GazelleRouteHandler? getHandler;
+
+  /// The handler for the POST method.
+  final GazelleRouteHandler? postHandler;
+
+  /// The handler for the PUT method.
+  final GazelleRouteHandler? putHandler;
+
+  /// The handler for the PATCH method.
+  final GazelleRouteHandler? patchHandler;
+
+  /// The handler for the DELETE method.
+  final GazelleRouteHandler? deleteHandler;
+
+  /// The handler for the HEAD method.
+  GazelleRouteHandler? get headHandler {
+    if (getHandler == null) return null;
+    return (request, response) async {
+      final getResponse = await getHandler!(request, response);
+      return getResponse.copyWith(body: "");
+    };
+  }
+
+  /// The handler for the OPTIONS method.
+  Future<GazelleResponse> optionsHandler(
+    GazelleRequest request,
+    GazelleResponse response,
+  ) async {
+    final availableMethods = <String>[];
+
+    if (getHandler != null) availableMethods.add(GazelleHttpMethod.get.name);
+    if (headHandler != null) availableMethods.add(GazelleHttpMethod.head.name);
+    if (postHandler != null) availableMethods.add(GazelleHttpMethod.post.name);
+    if (putHandler != null) availableMethods.add(GazelleHttpMethod.put.name);
+    if (patchHandler != null) {
+      availableMethods.add(GazelleHttpMethod.patch.name);
+    }
+    if (deleteHandler != null) {
+      availableMethods.add(GazelleHttpMethod.delete.name);
+    }
+
+    availableMethods.add(GazelleHttpMethod.options.name);
+
+    return response.copyWith(headers: {
+      'allow': availableMethods,
+    });
+  }
 
   /// The pre-request hooks associated with the route.
   final List<GazellePreRequestHook> preRequestHooks;
@@ -22,28 +72,43 @@ class GazelleRoute {
   /// The post-response hooks associated with the route.
   final List<GazellePostResponseHook> postResponseHooks;
 
+  /// The sub-routes of this route.
+  final List<GazelleRoute> children;
+
   /// Constructs a GazelleRoute instance.
-  ///
-  /// The [handler] parameter represents the handler for the route.
-  /// The optional [preRequestHooks] parameter represents the pre-request hooks
-  /// associated with the route, defaulting to an empty list if not provided.
-  /// The optional [postResponseHooks] parameter represents the post-response hooks
-  /// associated with the route, defaulting to an empty list if not provided.
-  const GazelleRoute(
-    this.handler, {
+  GazelleRoute({
+    required this.name,
+    this.getHandler,
+    this.postHandler,
+    this.putHandler,
+    this.patchHandler,
+    this.deleteHandler,
     this.preRequestHooks = const [],
     this.postResponseHooks = const [],
+    this.children = const [],
   });
 
   /// Creates a copy of this GazelleRoute with the specified attributes overridden.
   GazelleRoute copyWith({
-    GazelleRouteHandler? handler,
+    String? name,
+    GazelleRouteHandler? getHandler,
+    GazelleRouteHandler? postHandler,
+    GazelleRouteHandler? putHandler,
+    GazelleRouteHandler? patchHandler,
+    GazelleRouteHandler? deleteHandler,
     List<GazellePreRequestHook>? preRequestHooks,
     List<GazellePostResponseHook>? postResponseHooks,
+    List<GazelleRoute>? children,
   }) =>
       GazelleRoute(
-        handler ?? this.handler,
+        name: name ?? this.name,
+        getHandler: getHandler ?? this.getHandler,
+        postHandler: postHandler ?? this.postHandler,
+        putHandler: putHandler ?? this.putHandler,
+        patchHandler: patchHandler ?? this.patchHandler,
+        deleteHandler: deleteHandler ?? this.deleteHandler,
         preRequestHooks: preRequestHooks ?? this.preRequestHooks,
         postResponseHooks: postResponseHooks ?? this.postResponseHooks,
+        children: children ?? this.children,
       );
 }
