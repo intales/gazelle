@@ -14,9 +14,8 @@ void main() {
   group('GazelleLoggerPlugin tests', () {
     test('Should log incoming request', () async {
       // Arrange
-      final app = GazelleApp();
       final logOutput = TestLogOutput();
-      await app.registerPlugin(GazelleLoggerPlugin(logOutput: logOutput));
+      final plugin = GazelleLoggerPlugin(logOutput: logOutput);
 
       final route = GazelleRoute(
         name: "",
@@ -27,14 +26,15 @@ void main() {
           );
         },
         preRequestHooks: [
-          app.getPlugin<GazelleLoggerPlugin>().logRequestHook,
+          plugin.logRequestHook,
         ],
         postResponseHooks: [
-          app.getPlugin<GazelleLoggerPlugin>().logResponseHook,
+          plugin.logResponseHook,
         ],
       );
 
-      app.addRoute(route);
+      final app = GazelleApp(routes: [route]);
+      await app.registerPlugin(plugin);
       await app.start();
 
       // Act

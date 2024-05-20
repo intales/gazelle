@@ -3,10 +3,7 @@ import 'package:gazelle_jwt/gazelle_jwt.dart';
 import 'package:http/http.dart' as http;
 
 void main() async {
-  // Initialize your Gazelle app.
-  final app = GazelleApp(port: 3000);
-  // Register GazelleJwtPlugin.
-  await app.registerPlugin(GazelleJwtPlugin(SecretKey("supersecret")));
+  final jwtPlugin = GazelleJwtPlugin(SecretKey("supersecret"));
 
   // Setup your routes.
   final route = GazelleRoute(
@@ -19,7 +16,7 @@ void main() async {
           return response.copyWith(
             statusCode: 200,
             // Sign a token and send it back to the client.
-            body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+            body: jwtPlugin.sign({"test": "123"}),
           );
         },
       ),
@@ -32,12 +29,15 @@ void main() async {
           );
         },
         // Add the authentication hook provided by the plugin to guard your routes.
-        preRequestHooks: [app.getPlugin<GazelleJwtPlugin>().authenticationHook],
+        preRequestHooks: [jwtPlugin.authenticationHook],
       ),
     ],
   );
 
-  app.addRoute(route);
+  // Initialize your Gazelle app.
+  final app = GazelleApp(port: 3000, routes: [route]);
+  await app.registerPlugin(jwtPlugin);
+
   // Start your server.
   await app.start();
 

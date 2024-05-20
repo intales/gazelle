@@ -3,27 +3,28 @@ import 'package:gazelle_cors/gazelle_cors.dart';
 
 void main() async {
   // Setup your server.
-  final app = GazelleApp(port: 3000);
+  final corsPlugin = GazelleCorsPlugin(corsHeaders: {
+    GazelleCorsHeaders.accessControlAllowOrigin.name: ["example.com"],
+  });
+
+  final routes = [
+    GazelleRoute(
+      name: "",
+      getHandler: (request, response) async {
+        return response.copyWith(
+          statusCode: 200,
+          body: "Hello, Gazelle!",
+        );
+      },
+      // Add CORS hook from the regsitered plugin.
+      preRequestHooks: [corsPlugin.corsHook],
+    ),
+  ];
+  final app = GazelleApp(port: 3000, routes: routes);
 
   // Register the CORS plugin.
-  await app.registerPlugin(GazelleCorsPlugin(corsHeaders: {
-    GazelleCorsHeaders.accessControlAllowOrigin.name: ["example.com"],
-  }));
+  await app.registerPlugin(corsPlugin);
 
-  // Setup your routes.
-  final route = GazelleRoute(
-    name: "",
-    getHandler: (request, response) async {
-      return response.copyWith(
-        statusCode: 200,
-        body: "Hello, Gazelle!",
-      );
-    },
-    // Add CORS hook from the regsitered plugin.
-    preRequestHooks: [app.getPlugin<GazelleCorsPlugin>().corsHook],
-  );
-
-  app.addRoute(route);
   // Start your server.
   await app.start();
 }

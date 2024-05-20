@@ -119,9 +119,7 @@ void main() {
 
     test('Should integrate with gazelle core', () async {
       // Arrange
-      final app = GazelleApp();
-      await app.registerPlugin(GazelleJwtPlugin(SecretKey("supersecret")));
-
+      final plugin = GazelleJwtPlugin(SecretKey("supersecret"));
       final route = GazelleRoute(
         name: "api",
         children: [
@@ -130,7 +128,7 @@ void main() {
             postHandler: (request, response) async {
               return response.copyWith(
                 statusCode: 200,
-                body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+                body: plugin.sign({"test": "123"}),
               );
             },
           ),
@@ -143,7 +141,7 @@ void main() {
               );
             },
             preRequestHooks: [
-              app.getPlugin<GazelleJwtPlugin>().authenticationHook,
+              plugin.authenticationHook,
             ],
             children: [
               GazelleRoute(
@@ -160,7 +158,8 @@ void main() {
         ],
       );
 
-      app.addRoute(route);
+      final app = GazelleApp(routes: [route]);
+      await app.registerPlugin(plugin);
       await app.start();
 
       // Act

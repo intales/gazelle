@@ -8,22 +8,23 @@ void main() {
   group('GazelleCorsPlugin tests', () {
     test('Should add CORS headers', () async {
       // Arrange
-      final app = GazelleApp();
-      await app.registerPlugin(GazelleCorsPlugin(corsHeaders: {
+      final corsPlugin = GazelleCorsPlugin(corsHeaders: {
         GazelleCorsHeaders.accessControlAllowOrigin.name: ["example.com"],
-      }));
-      final route = GazelleRoute(
-        name: "",
-        getHandler: (request, response) async {
-          return response.copyWith(
-            statusCode: 200,
-            body: "Hello, Gazelle!",
-          );
-        },
-        preRequestHooks: [app.getPlugin<GazelleCorsPlugin>().corsHook],
-      );
+      });
+      final app = GazelleApp(routes: [
+        GazelleRoute(
+          name: "",
+          getHandler: (request, response) async {
+            return response.copyWith(
+              statusCode: 200,
+              body: "Hello, Gazelle!",
+            );
+          },
+          preRequestHooks: [corsPlugin.corsHook],
+        ),
+      ]);
+      await app.registerPlugin(corsPlugin);
 
-      app.addRoute(route);
       await app.start();
 
       // Act
