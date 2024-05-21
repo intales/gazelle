@@ -36,22 +36,17 @@ class GazelleJwtPlugin implements GazellePlugin {
   /// The secret used for JWT signing and verification.
   final JWTKey _secret;
 
-  /// The secret key derived from the secret.
-  late final JWTKey _secretKey;
-
   /// Constructs a GazelleJwtPlugin instance with the provided [secret].
   GazelleJwtPlugin(this._secret);
 
   @override
-  Future<void> initialize(GazelleContext context) async {
-    _secretKey = _secret;
-  }
+  Future<void> initialize(GazelleContext context) async {}
 
   /// Signs a JWT with the provided [payload].
-  String sign(Map<String, dynamic> payload) => JWT(payload).sign(_secretKey);
+  String sign(Map<String, dynamic> payload) => JWT(payload).sign(_secret);
 
   /// Verifies and decodes a JWT token.
-  JWT? verify(String token) => JWT.tryVerify(token, _secretKey);
+  JWT? verify(String token) => JWT.tryVerify(token, _secret);
 
   /// Returns a pre-request hook for JWT authentication.
   ///

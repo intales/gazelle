@@ -10,8 +10,8 @@ void main() async {
       statusCode: 200,
       body: "Hello, Gazelle!",
     ),
-    preRequestHooks: [loggerPlugin.logRequestHook],
-    postResponseHooks: [loggerPlugin.logResponseHook],
+    preRequestHooks: (context) => [loggerPlugin.logRequestHook],
+    postResponseHooks: (context) => [loggerPlugin.logResponseHook],
   );
 
   final app = GazelleApp(port: 3000, routes: [route]);

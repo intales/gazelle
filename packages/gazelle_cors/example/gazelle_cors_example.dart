@@ -17,7 +17,9 @@ void main() async {
         );
       },
       // Add CORS hook from the regsitered plugin.
-      preRequestHooks: [corsPlugin.corsHook],
+      preRequestHooks: (context) => [
+        context.getPlugin<GazelleCorsPlugin>().corsHook,
+      ],
     ),
   ];
   final app = GazelleApp(port: 3000, routes: routes);

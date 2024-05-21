@@ -25,10 +25,10 @@ void main() {
             body: "Hello, World!",
           );
         },
-        preRequestHooks: [
+        preRequestHooks: (context) => [
           plugin.logRequestHook,
         ],
-        postResponseHooks: [
+        postResponseHooks: (context) => [
           plugin.logResponseHook,
         ],
       );

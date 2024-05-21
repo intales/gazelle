@@ -145,7 +145,6 @@ class GazelleApp {
     if (searchResult == null) return _send404Error(httpResponse);
 
     final context = searchResult.route.context;
-    if (context == null) return _send500Error(httpResponse);
 
     GazelleRequest request = searchResult.request;
     GazelleResponse response = searchResult.response;

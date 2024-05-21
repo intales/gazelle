@@ -3,53 +3,44 @@ import 'package:gazelle_jwt/gazelle_jwt.dart';
 import 'package:http/http.dart' as http;
 
 void main() async {
+  final plugin = GazelleJwtPlugin(SecretKey("supersecret"));
   // Setup your routes.
-  final route = GazelleRoute(
-    name: "api",
-    children: [
-      GazelleRoute(
-        name: "login",
-        postHandler: (context, request, response) async {
-          // Use the request to get data sent from the client.
-          return response.copyWith(
-            statusCode: 200,
-            // Sign a token and send it back to the client.
-            body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-          );
-        },
-      ),
-      GazelleRoute(
-        name: "hello_world",
-        getHandler: (context, request, response) async {
-          return response.copyWith(
-            statusCode: 200,
-            body: "Hello, World!",
-          );
-        },
-        // Add the authentication hook provided by the plugin to guard your routes.
-        preRequestHooks: [
-          GazellePreRequestHook(
-            (context, request, response) =>
-                context.getPlugin<GazelleJwtPlugin>().authenticationHook(
-                      context,
-                      request,
-                      response,
-                    ),
-          ),
-        ],
-      ),
-    ],
-  );
+  final routes = [
+    GazelleRoute(
+      name: "login",
+      postHandler: (context, request, response) async {
+        // Use the request to get data sent from the client.
+        return response.copyWith(
+          statusCode: 200,
+          // Sign a token and send it back to the client.
+          body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+        );
+      },
+    ),
+    GazelleRoute(
+      name: "hello_world",
+      getHandler: (context, request, response) async {
+        return response.copyWith(
+          statusCode: 200,
+          body: "Hello, World!",
+        );
+      },
+      // Add the authentication hook provided by the plugin to guard your routes.
+      preRequestHooks: (context) => [
+        plugin.authenticationHook,
+      ],
+    ),
+  ];
 
   // Initialize your Gazelle app.
-  final app = GazelleApp(port: 3000, routes: [route]);
-  await app.registerPlugin(GazelleJwtPlugin(SecretKey("supersecret")));
+  final app = GazelleApp(port: 3000, routes: routes);
+  await app.registerPlugin(plugin);
 
   // Start your server.
   await app.start();
 
   // CLIENT SIDE
-  final baseUrl = "http://${app.address}:${app.port}/api";
+  final baseUrl = app.serverAddress;
 
   // Ask for a token.
   final token =

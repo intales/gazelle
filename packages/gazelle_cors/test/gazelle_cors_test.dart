@@ -20,7 +20,9 @@ void main() {
               body: "Hello, Gazelle!",
             );
           },
-          preRequestHooks: [corsPlugin.corsHook],
+          preRequestHooks: (context) => [
+            corsPlugin.corsHook,
+          ],
         ),
       ]);
       await app.registerPlugin(corsPlugin);

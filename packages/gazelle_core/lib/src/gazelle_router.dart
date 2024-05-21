@@ -5,6 +5,7 @@ import 'gazelle_hooks.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
 import 'gazelle_route.dart';
+import 'gazelle_router_item.dart';
 import 'gazelle_trie.dart';
 
 /// Represents the result of a search in the Gazelle router.
@@ -21,7 +22,7 @@ class GazelleRouterSearchResult {
   final GazelleResponse response;
 
   /// The route associated with the search result.
-  final GazelleRoute route;
+  final GazelleRouterItem route;
 
   /// Constructs a GazelleRouterSearchResult instance.
   ///
@@ -41,10 +42,11 @@ class GazelleRouter {
   static const _routeSeparator = "/";
   static const _wildcard = ":";
 
-  final GazelleTrie<GazelleRoute> _routes;
+  final GazelleTrie<GazelleRouterItem> _routes;
 
   /// Constructs a GazelleRouter instance.
-  GazelleRouter() : _routes = GazelleTrie<GazelleRoute>(wildcard: _wildcard);
+  GazelleRouter()
+      : _routes = GazelleTrie<GazelleRouterItem>(wildcard: _wildcard);
 
   /// Adds routes to this router.
   void addRoutes(
@@ -64,22 +66,37 @@ class GazelleRouter {
     List<String> parentPath,
     GazelleContext context,
   ) {
-    final currentPath = [...parentPath, route.name];
+    final routerItem = GazelleRouterItem(
+      context: context,
+      name: route.name,
+      getHandler: route.getHandler,
+      postHandler: route.postHandler,
+      putHandler: route.putHandler,
+      patchHandler: route.patchHandler,
+      deleteHandler: route.deleteHandler,
+      preRequestHooks: route.preRequestHooks != null
+          ? route.preRequestHooks!(context)
+          : const [],
+      postResponseHooks: route.postResponseHooks != null
+          ? route.postResponseHooks!(context)
+          : const [],
+    );
+
+    final currentPath = [...parentPath, routerItem.name];
 
     void addHandler(GazelleHttpMethod method, GazelleRouteHandler? handler) {
       if (handler == null) return;
       final path = [method.name, ...currentPath];
-      final routeWithContext = route.copyWith(context: context);
-      _routes.insert(path, routeWithContext);
+      _routes.insert(path, routerItem);
     }
 
-    addHandler(GazelleHttpMethod.get, route.getHandler);
-    addHandler(GazelleHttpMethod.head, route.headHandler);
-    addHandler(GazelleHttpMethod.post, route.postHandler);
-    addHandler(GazelleHttpMethod.put, route.putHandler);
-    addHandler(GazelleHttpMethod.patch, route.patchHandler);
-    addHandler(GazelleHttpMethod.delete, route.deleteHandler);
-    addHandler(GazelleHttpMethod.options, route.optionsHandler);
+    addHandler(GazelleHttpMethod.get, routerItem.getHandler);
+    addHandler(GazelleHttpMethod.head, routerItem.headHandler);
+    addHandler(GazelleHttpMethod.post, routerItem.postHandler);
+    addHandler(GazelleHttpMethod.put, routerItem.putHandler);
+    addHandler(GazelleHttpMethod.patch, routerItem.patchHandler);
+    addHandler(GazelleHttpMethod.delete, routerItem.deleteHandler);
+    addHandler(GazelleHttpMethod.options, routerItem.optionsHandler);
 
     for (final route in route.children) {
       _addRoute(route, currentPath, context);
@@ -102,7 +119,7 @@ class GazelleRouter {
       ...result.value!.postResponseHooks
     ];
 
-    GazelleTrieNode<GazelleRoute>? currentNode = result.node?.parent;
+    GazelleTrieNode<GazelleRouterItem>? currentNode = result.node?.parent;
     while (currentNode != null) {
       preRequestsHooks.addAll(currentNode.value?.preRequestHooks
               .where((hook) => hook.shareWithChildRoutes) ??

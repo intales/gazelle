@@ -147,7 +147,7 @@ void main() {
               statusCode: 200,
               body: "OK",
             ),
-            preRequestHooks: [
+            preRequestHooks: (context) => [
               GazellePreRequestHook(
                 (context, request, response) async {
                   preRequestHooksCount += 1;
@@ -156,7 +156,7 @@ void main() {
                 shareWithChildRoutes: true,
               ),
             ],
-            postResponseHooks: [
+            postResponseHooks: (context) => [
               GazellePostResponseHook(
                 (context, request, response) async {
                   postResponseHooksCount += 1;
@@ -172,7 +172,7 @@ void main() {
                   statusCode: 200,
                   body: "OK",
                 ),
-                postResponseHooks: [
+                postResponseHooks: (context) => [
                   GazellePostResponseHook(
                     (context, request, response) async {
                       postResponseHooksCount += 1;

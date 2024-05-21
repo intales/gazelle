@@ -120,51 +120,47 @@ void main() {
     test('Should integrate with gazelle core', () async {
       // Arrange
       final plugin = GazelleJwtPlugin(SecretKey("supersecret"));
-      final route = GazelleRoute(
-        name: "api",
-        children: [
-          GazelleRoute(
-            name: "login",
-            postHandler: (context, request, response) async {
-              return response.copyWith(
-                statusCode: 200,
-                body:
-                    context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-              );
-            },
-          ),
-          GazelleRoute(
-            name: "test",
-            getHandler: (context, request, response) async {
-              return response.copyWith(
-                statusCode: 200,
-                body: "Hello, World!",
-              );
-            },
-            preRequestHooks: [
-              plugin.authenticationHook,
-            ],
-            children: [
-              GazelleRoute(
-                name: "test_2",
-                getHandler: (context, request, response) async {
-                  return response.copyWith(
-                    statusCode: 200,
-                    body: "Hello, World!",
-                  );
-                },
-              ),
-            ],
-          ),
-        ],
-      );
+      final routes = [
+        GazelleRoute(
+          name: "login",
+          postHandler: (context, request, response) async {
+            return response.copyWith(
+              statusCode: 200,
+              body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+            );
+          },
+        ),
+        GazelleRoute(
+          name: "test",
+          getHandler: (context, request, response) async {
+            return response.copyWith(
+              statusCode: 200,
+              body: "Hello, World!",
+            );
+          },
+          preRequestHooks: (context) => [
+            plugin.authenticationHook,
+          ],
+          children: [
+            GazelleRoute(
+              name: "test_2",
+              getHandler: (context, request, response) async {
+                return response.copyWith(
+                  statusCode: 200,
+                  body: "Hello, World!",
+                );
+              },
+            ),
+          ],
+        ),
+      ];
 
-      final app = GazelleApp(routes: [route]);
+      final app = GazelleApp(routes: routes);
       await app.registerPlugin(plugin);
       await app.start();
 
       // Act
-      final baseUrl = "http://${app.address}:${app.port}/api";
+      final baseUrl = app.serverAddress;
       final token =
           await http.post(Uri.parse("$baseUrl/login")).then((e) => e.body);
 
