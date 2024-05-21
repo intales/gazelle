@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'gazelle_context.dart';
 import 'gazelle_hooks.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
@@ -46,22 +47,30 @@ class GazelleRouter {
   GazelleRouter() : _routes = GazelleTrie<GazelleRoute>(wildcard: _wildcard);
 
   /// Adds routes to this router.
-  void addRoutes(List<GazelleRoute> routes) {
+  void addRoutes(
+    List<GazelleRoute> routes,
+    GazelleContext context,
+  ) {
     final route = GazelleRoute(
       name: "",
       children: routes,
     );
 
-    _addRoute(route, []);
+    _addRoute(route, [], context);
   }
 
-  void _addRoute(GazelleRoute route, List<String> parentPath) {
+  void _addRoute(
+    GazelleRoute route,
+    List<String> parentPath,
+    GazelleContext context,
+  ) {
     final currentPath = [...parentPath, route.name];
 
     void addHandler(GazelleHttpMethod method, GazelleRouteHandler? handler) {
       if (handler == null) return;
       final path = [method.name, ...currentPath];
-      _routes.insert(path, route);
+      final routeWithContext = route.copyWith(context: context);
+      _routes.insert(path, routeWithContext);
     }
 
     addHandler(GazelleHttpMethod.get, route.getHandler);
@@ -73,7 +82,7 @@ class GazelleRouter {
     addHandler(GazelleHttpMethod.options, route.optionsHandler);
 
     for (final route in route.children) {
-      _addRoute(route, currentPath);
+      _addRoute(route, currentPath, context);
     }
   }
 

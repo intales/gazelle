@@ -10,11 +10,11 @@ void main() async {
         children: [
           GazelleRoute(
             name: ":name",
-            getHandler: (request, response) async => response.copyWith(
+            getHandler: (context, request, response) async => response.copyWith(
               statusCode: 200,
               body: "Hello, ${request.pathParameters["name"]}!",
             ),
-            putHandler: (request, response) async => response.copyWith(
+            putHandler: (context, request, response) async => response.copyWith(
               statusCode: 200,
               body: "Hello, ${request.pathParameters["name"]}",
             ),

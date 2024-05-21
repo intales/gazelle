@@ -1,3 +1,4 @@
+import 'gazelle_context.dart';
 import 'gazelle_hooks.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
@@ -6,6 +7,7 @@ import 'gazelle_message.dart';
 ///
 /// It is a function thpat takes a [GazelleRequest] as input and returns a [Future] of [GazelleResponse].
 typedef GazelleRouteHandler = Future<GazelleResponse> Function(
+  GazelleContext context,
   GazelleRequest request,
   GazelleResponse response,
 );
@@ -14,6 +16,9 @@ typedef GazelleRouteHandler = Future<GazelleResponse> Function(
 ///
 /// Contains a [getHandler] for processing requests, along with optional pre-request and post-response hooks.
 class GazelleRoute {
+  /// The route's context.
+  final GazelleContext? context;
+
   /// The name of the route.
   final String name;
 
@@ -35,14 +40,15 @@ class GazelleRoute {
   /// The handler for the HEAD method.
   GazelleRouteHandler? get headHandler {
     if (getHandler == null) return null;
-    return (request, response) async {
-      final getResponse = await getHandler!(request, response);
+    return (context, request, response) async {
+      final getResponse = await getHandler!(context, request, response);
       return getResponse.copyWith(body: "");
     };
   }
 
   /// The handler for the OPTIONS method.
   Future<GazelleResponse> optionsHandler(
+    GazelleContext context,
     GazelleRequest request,
     GazelleResponse response,
   ) async {
@@ -76,7 +82,7 @@ class GazelleRoute {
   final List<GazelleRoute> children;
 
   /// Constructs a GazelleRoute instance.
-  GazelleRoute({
+  const GazelleRoute({
     required this.name,
     this.getHandler,
     this.postHandler,
@@ -86,6 +92,7 @@ class GazelleRoute {
     this.preRequestHooks = const [],
     this.postResponseHooks = const [],
     this.children = const [],
+    this.context,
   });
 
   /// Creates a copy of this GazelleRoute with the specified attributes overridden.
@@ -99,6 +106,7 @@ class GazelleRoute {
     List<GazellePreRequestHook>? preRequestHooks,
     List<GazellePostResponseHook>? postResponseHooks,
     List<GazelleRoute>? children,
+    GazelleContext? context,
   }) =>
       GazelleRoute(
         name: name ?? this.name,
@@ -110,5 +118,6 @@ class GazelleRoute {
         preRequestHooks: preRequestHooks ?? this.preRequestHooks,
         postResponseHooks: postResponseHooks ?? this.postResponseHooks,
         children: children ?? this.children,
+        context: context ?? this.context,
       );
 }

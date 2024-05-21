@@ -7,7 +7,7 @@ void main() {
       // Arrange
       final route = GazelleRoute(
         name: "test",
-        getHandler: (request, response) async => response.copyWith(
+        getHandler: (context, request, response) async => response.copyWith(
           statusCode: 200,
         ),
       );
@@ -16,12 +16,12 @@ void main() {
       final result = route.copyWith(
         preRequestHooks: [
           GazellePreRequestHook(
-            (request, response) async => (request, response),
+            (context, request, response) async => (request, response),
           )
         ],
         postResponseHooks: [
           GazellePostResponseHook(
-            (request, response) async => (request, response),
+            (context, request, response) async => (request, response),
           )
         ],
       );

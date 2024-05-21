@@ -60,7 +60,7 @@ class GazelleJwtPlugin implements GazellePlugin {
     bool shareWithChildRoutes = true,
   }) =>
       GazellePreRequestHook(
-        (request, response) async {
+        (context, request, response) async {
           final authHeader = request.headers[authHeaderName]?.first;
           if (authHeader == null) {
             return (

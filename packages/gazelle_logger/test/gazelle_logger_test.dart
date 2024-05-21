@@ -19,7 +19,7 @@ void main() {
 
       final route = GazelleRoute(
         name: "",
-        getHandler: (request, resonse) async {
+        getHandler: (context, request, resonse) async {
           return resonse.copyWith(
             statusCode: 200,
             body: "Hello, World!",

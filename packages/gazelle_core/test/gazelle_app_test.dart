@@ -86,7 +86,8 @@ void main() {
       final app = GazelleApp(routes: [
         GazelleRoute(
           name: "test",
-          getHandler: (request, response) async => throw Exception("error"),
+          getHandler: (context, request, response) async =>
+              throw Exception("error"),
         ),
       ]);
 
@@ -112,7 +113,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            getHandler: (request, response) async => GazelleResponse(
+            getHandler: (context, request, response) async => GazelleResponse(
               statusCode: 200,
               body: "OK",
             ),
@@ -142,13 +143,13 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            getHandler: (request, response) async => response.copyWith(
+            getHandler: (context, request, response) async => response.copyWith(
               statusCode: 200,
               body: "OK",
             ),
             preRequestHooks: [
               GazellePreRequestHook(
-                (request, response) async {
+                (context, request, response) async {
                   preRequestHooksCount += 1;
                   return (request, response);
                 },
@@ -157,7 +158,7 @@ void main() {
             ],
             postResponseHooks: [
               GazellePostResponseHook(
-                (request, response) async {
+                (context, request, response) async {
                   postResponseHooksCount += 1;
                   return (request, response);
                 },
@@ -166,13 +167,14 @@ void main() {
             children: [
               GazelleRoute(
                 name: "test_2",
-                getHandler: (request, response) async => response.copyWith(
+                getHandler: (context, request, response) async =>
+                    response.copyWith(
                   statusCode: 200,
                   body: "OK",
                 ),
                 postResponseHooks: [
                   GazellePostResponseHook(
-                    (request, response) async {
+                    (context, request, response) async {
                       postResponseHooksCount += 1;
                       return (request, response);
                     },
@@ -205,23 +207,24 @@ void main() {
       final routes = [
         GazelleRoute(
           name: "test",
-          getHandler: (request, response) async => response.copyWith(
+          getHandler: (context, request, response) async => response.copyWith(
             statusCode: 200,
             body: "OK",
           ),
-          postHandler: (request, response) async => response.copyWith(
+          postHandler: (context, request, response) async => response.copyWith(
             statusCode: 200,
             body: "OK",
           ),
-          putHandler: (request, response) async => response.copyWith(
+          putHandler: (context, request, response) async => response.copyWith(
             statusCode: 200,
             body: "OK",
           ),
-          patchHandler: (request, response) async => response.copyWith(
+          patchHandler: (context, request, response) async => response.copyWith(
             statusCode: 200,
             body: "OK",
           ),
-          deleteHandler: (request, response) async => response.copyWith(
+          deleteHandler: (context, request, response) async =>
+              response.copyWith(
             statusCode: 200,
             body: "OK",
           ),
@@ -286,7 +289,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            getHandler: (request, response) async {
+            getHandler: (context, request, response) async {
               return response.copyWith(
                 statusCode: 200,
                 body: "Hello, World!",
@@ -320,7 +323,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            getHandler: (request, response) async {
+            getHandler: (context, request, response) async {
               return response.copyWith(
                 statusCode: 200,
                 body: "Hello, World!",

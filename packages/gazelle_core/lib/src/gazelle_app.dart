@@ -5,32 +5,12 @@ import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
 import 'gazelle_plugin.dart';
 import 'gazelle_route.dart';
-import 'gazelle_router.dart';
 import 'gazelle_ssl_certificate.dart';
 
 /// A lightweight and flexible HTTP server framework for Dart.
 ///
 /// Gazelle simplifies the development of web applications by providing an intuitive
 /// API for setting up APIs, web servers, and microservices with minimal configuration.
-///
-/// Usage:
-/// ```dart
-/// import 'package:gazelle/gazelle.dart';
-///
-/// void main() async {
-///   final app = GazelleApp();
-///
-///   // Define routes
-///   app.get('/', (request, response) async => response.copyWith(
-///         statusCode: 200,
-///         body: 'Hello, Gazelle!',
-///       ));
-///
-///   // Start the server
-///   await app.start();
-///   print('Server is running at http://${app.address}:${app.port}');
-/// }
-/// ```
 class GazelleApp {
   /// The default address for the server.
   static const _localhost = "localhost";
@@ -164,7 +144,9 @@ class GazelleApp {
     final searchResult = _context.searchRoute(httpRequest);
     if (searchResult == null) return _send404Error(httpResponse);
 
-    final onlyHeaders = searchResult.request.method == GazelleHttpMethod.head;
+    final context = searchResult.route.context;
+    if (context == null) return _send500Error(httpResponse);
+
     GazelleRequest request = searchResult.request;
     GazelleResponse response = searchResult.response;
     final preRequestHooks = searchResult.route.preRequestHooks;
@@ -182,30 +164,29 @@ class GazelleApp {
     if (handler == null) return _send404Error(httpResponse);
 
     for (final hook in preRequestHooks) {
-      (request, response) = await hook(request, response);
+      (request, response) = await hook(context, request, response);
       if (response.statusCode >= 400 && response.statusCode <= 599) {
-        return _sendResponse(httpResponse, response, onlyHeaders: onlyHeaders);
+        return _sendResponse(httpResponse, response);
       }
     }
 
-    response = await handler(request, response);
+    response = await handler(context, request, response);
 
     for (final hook in postResponseHooks) {
-      (request, response) = await hook(request, response);
+      (request, response) = await hook(context, request, response);
       if (response.statusCode >= 400 && response.statusCode <= 599) {
-        return _sendResponse(httpResponse, response, onlyHeaders: onlyHeaders);
+        return _sendResponse(httpResponse, response);
       }
     }
 
-    return _sendResponse(httpResponse, response, onlyHeaders: onlyHeaders);
+    return _sendResponse(httpResponse, response);
   }
 
   void _sendResponse(
     HttpResponse httpResponse,
-    GazelleResponse response, {
-    bool onlyHeaders = false,
-  }) =>
-      response.toHttpResponse(httpResponse, onlyHeaders: onlyHeaders);
+    GazelleResponse response,
+  ) =>
+      response.toHttpResponse(httpResponse);
 
   void _send404Error(HttpResponse response) => _sendResponse(
       response,

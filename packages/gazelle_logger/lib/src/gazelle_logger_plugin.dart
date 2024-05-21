@@ -46,7 +46,7 @@ class GazelleLoggerPlugin implements GazellePlugin {
 
   /// Provides a GazellePreRequestHook that logs details of incoming requests.
   GazellePreRequestHook get logRequestHook => GazellePreRequestHook(
-        (request, response) async {
+        (context, request, response) async {
           final method = request.method.name;
           final route = request.uri.path;
           final headers = request.headers.entries
@@ -79,7 +79,7 @@ class GazelleLoggerPlugin implements GazellePlugin {
 
   /// Provides a GazellePostResponseHook that logs details of outgoing responses.
   GazellePostResponseHook get logResponseHook => GazellePostResponseHook(
-        (request, response) async {
+        (context, request, response) async {
           final method = request.method.name;
           final route = request.uri.path;
           final headers = response.headers.entries

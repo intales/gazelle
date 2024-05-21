@@ -23,10 +23,10 @@ void main() {
       router.addRoutes([
         GazelleRoute(
             name: "test",
-            getHandler: (request, response) async => response.copyWith(
+            getHandler: (context, request, response) async => response.copyWith(
                   statusCode: 200,
                 )),
-      ]);
+      ], GazelleContext.create());
 
       await http.get(
           Uri.parse('http://${server.address.address}:${server.port}/test'));

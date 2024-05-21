@@ -40,7 +40,7 @@ class GazelleContext {
       );
 
   /// Adds routes to the router.
-  void addRoutes(List<GazelleRoute> routes) => _router.addRoutes(routes);
+  void addRoutes(List<GazelleRoute> routes) => _router.addRoutes(routes, this);
 
   /// Searches for a route that matches the provided HTTP request.
   ///

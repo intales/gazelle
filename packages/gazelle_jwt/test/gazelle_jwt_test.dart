@@ -39,7 +39,7 @@ void main() {
       GazelleResponse response = GazelleResponse(statusCode: 204);
 
       // Act
-      (request, response) = await hook(request, response);
+      (request, response) = await hook(context, request, response);
 
       // Assert
       expect(request.jwt.payload["test"], "123");
@@ -60,7 +60,7 @@ void main() {
       GazelleResponse response = GazelleResponse(statusCode: 204);
 
       // Act
-      (request, response) = await hook(request, response);
+      (request, response) = await hook(context, request, response);
 
       // Assert
       expect(response.statusCode, 401);
@@ -85,7 +85,7 @@ void main() {
       GazelleResponse response = GazelleResponse(statusCode: 204);
 
       // Act
-      (request, response) = await hook(request, response);
+      (request, response) = await hook(context, request, response);
 
       // Assert
       expect(response.statusCode, 401);
@@ -110,7 +110,7 @@ void main() {
       GazelleResponse response = GazelleResponse(statusCode: 204);
 
       // Act
-      (request, response) = await hook(request, response);
+      (request, response) = await hook(context, request, response);
 
       // Assert
       expect(response.statusCode, 401);
@@ -125,16 +125,17 @@ void main() {
         children: [
           GazelleRoute(
             name: "login",
-            postHandler: (request, response) async {
+            postHandler: (context, request, response) async {
               return response.copyWith(
                 statusCode: 200,
-                body: plugin.sign({"test": "123"}),
+                body:
+                    context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
               );
             },
           ),
           GazelleRoute(
             name: "test",
-            getHandler: (request, response) async {
+            getHandler: (context, request, response) async {
               return response.copyWith(
                 statusCode: 200,
                 body: "Hello, World!",
@@ -146,7 +147,7 @@ void main() {
             children: [
               GazelleRoute(
                 name: "test_2",
-                getHandler: (request, response) async {
+                getHandler: (context, request, response) async {
                   return response.copyWith(
                     statusCode: 200,
                     body: "Hello, World!",

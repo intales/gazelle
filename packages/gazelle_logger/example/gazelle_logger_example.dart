@@ -6,7 +6,7 @@ void main() async {
 
   final route = GazelleRoute(
     name: "",
-    getHandler: (request, resonse) async => resonse.copyWith(
+    getHandler: (context, request, resonse) async => resonse.copyWith(
       statusCode: 200,
       body: "Hello, Gazelle!",
     ),

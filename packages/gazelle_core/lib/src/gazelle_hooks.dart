@@ -1,3 +1,4 @@
+import 'gazelle_context.dart';
 import 'gazelle_message.dart';
 
 /// Represents the result of a [GazellePreRequestHookCallback] or a [GazellePostResponseHookCallback].
@@ -28,6 +29,7 @@ typedef GazelleHookCallbackResult = (
 /// ```
 typedef GazellePreRequestHookCallback = Future<GazelleHookCallbackResult>
     Function(
+  GazelleContext context,
   GazelleRequest request,
   GazelleResponse response,
 );
@@ -79,10 +81,11 @@ class GazellePreRequestHook {
   /// Returns a future that completes with a [GazelleMessage] representing
   /// the result of the hook execution.
   Future<GazelleHookCallbackResult> call(
+    GazelleContext context,
     GazelleRequest request,
     GazelleResponse response,
   ) =>
-      hook(request, response);
+      hook(context, request, response);
 }
 
 /// A function type representing a post-response hook, which is executed after handling an incoming request.
@@ -103,6 +106,7 @@ class GazellePreRequestHook {
 /// ```
 typedef GazellePostResponseHookCallback = Future<GazelleHookCallbackResult>
     Function(
+  GazelleContext context,
   GazelleRequest request,
   GazelleResponse response,
 );
@@ -154,8 +158,9 @@ class GazellePostResponseHook {
   /// Returns a future that completes with a [GazelleResponse] representing
   /// the result of the hook execution.
   Future<GazelleHookCallbackResult> call(
+    GazelleContext context,
     GazelleRequest request,
     GazelleResponse response,
   ) =>
-      hook(request, response);
+      hook(context, request, response);
 }

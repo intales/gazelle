@@ -130,14 +130,14 @@ class GazelleResponse extends GazelleMessage {
   });
 
   /// Writes this [GazelleResponse] to an [HttpResponse].
-  void toHttpResponse(HttpResponse response, {bool onlyHeaders = false}) {
+  void toHttpResponse(HttpResponse response) {
     response.statusCode = statusCode;
 
     headers.forEach((key, value) {
       response.headers.add(key, value);
     });
 
-    if (!onlyHeaders || body == null) {
+    if (body != null) {
       response.write(body);
     }
 

@@ -36,7 +36,7 @@ class GazelleCorsPlugin implements GazellePlugin {
   /// The [corsHook] intercepts incoming requests, adds appropriate CORS headers,
   /// and handles preflight OPTIONS requests.
   GazellePreRequestHook get corsHook => GazellePreRequestHook(
-        (request, response) async {
+        (context, request, response) async {
           // Check if the request includes an Origin header
           final origin = request.headers[GazelleHeaders.origin.name];
           if (origin == null) return (request, response);
