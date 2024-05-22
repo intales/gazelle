@@ -21,6 +21,9 @@ class GazelleApp {
   /// Error message for internal server error.
   static const _error500 = "Internal server error.";
 
+  final Set<GazellePlugin> _plugins;
+  final List<GazelleRoute> _routes;
+
   /// The address on which the server will listen.
   final String address;
 
@@ -60,10 +63,13 @@ class GazelleApp {
   /// ```
   GazelleApp({
     required List<GazelleRoute> routes,
+    Set<GazellePlugin>? plugins,
     this.address = _localhost,
     int? port,
     this.sslCertificate,
-  })  : _context = GazelleContext.create()..addRoutes(routes),
+  })  : _context = GazelleContext.create(),
+        _routes = routes,
+        _plugins = plugins ?? const {},
         _port = port ?? 0;
 
   /// The current server address that Gazelle is listening to.
@@ -71,13 +77,6 @@ class GazelleApp {
     final path = "$address:$port";
     return sslCertificate != null ? "https://$path" : "http://$path";
   }
-
-  /// Registers a plugin with the application context.
-  ///
-  /// Plugins extend Gazelle's functionality, allowing integration of
-  /// authentication, logging, and other common features into the application.
-  Future<void> registerPlugin<T extends GazellePlugin>(T plugin) =>
-      _context.register(plugin);
 
   /// Retrieves a plugin of the specified type from the context.
   ///
@@ -96,6 +95,9 @@ class GazelleApp {
   /// incoming requests. Once the server is started, it will continue listening
   /// until stopped using the [stop] method.
   Future<void> start() async {
+    await _context.registerPlugins(_plugins);
+    _context.addRoutes(_routes);
+
     _server = await _createServer();
     _port = _server.port;
 

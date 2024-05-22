@@ -22,19 +22,21 @@ void main() {
         getHandler: (context, request, resonse) async {
           return resonse.copyWith(
             statusCode: 200,
-            body: "Hello, World!",
+            body: plugin.toString(),
           );
         },
         preRequestHooks: (context) => [
-          plugin.logRequestHook,
+          context.getPlugin<GazelleLoggerPlugin>().logRequestHook,
         ],
         postResponseHooks: (context) => [
-          plugin.logResponseHook,
+          context.getPlugin<GazelleLoggerPlugin>().logResponseHook,
         ],
       );
 
-      final app = GazelleApp(routes: [route]);
-      await app.registerPlugin(plugin);
+      final app = GazelleApp(
+        routes: [route],
+        plugins: {plugin},
+      );
       await app.start();
 
       // Act

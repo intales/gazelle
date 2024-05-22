@@ -8,24 +8,27 @@ void main() {
   group('GazelleCorsPlugin tests', () {
     test('Should add CORS headers', () async {
       // Arrange
-      final corsPlugin = GazelleCorsPlugin(corsHeaders: {
-        GazelleCorsHeaders.accessControlAllowOrigin.name: ["example.com"],
-      });
-      final app = GazelleApp(routes: [
-        GazelleRoute(
-          name: "",
-          getHandler: (context, request, response) async {
-            return response.copyWith(
-              statusCode: 200,
-              body: "Hello, Gazelle!",
-            );
-          },
-          preRequestHooks: (context) => [
-            corsPlugin.corsHook,
-          ],
-        ),
-      ]);
-      await app.registerPlugin(corsPlugin);
+      final app = GazelleApp(
+        routes: [
+          GazelleRoute(
+            name: "",
+            getHandler: (context, request, response) async {
+              return response.copyWith(
+                statusCode: 200,
+                body: "Hello, Gazelle!",
+              );
+            },
+            preRequestHooks: (context) => [
+              context.getPlugin<GazelleCorsPlugin>().corsHook,
+            ],
+          ),
+        ],
+        plugins: {
+          GazelleCorsPlugin(corsHeaders: {
+            GazelleCorsHeaders.accessControlAllowOrigin.name: ["example.com"],
+          })
+        },
+      );
 
       await app.start();
 

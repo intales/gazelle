@@ -119,44 +119,46 @@ void main() {
 
     test('Should integrate with gazelle core', () async {
       // Arrange
-      final plugin = GazelleJwtPlugin(SecretKey("supersecret"));
-      final routes = [
-        GazelleRoute(
-          name: "login",
-          postHandler: (context, request, response) async {
-            return response.copyWith(
-              statusCode: 200,
-              body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-            );
-          },
-        ),
-        GazelleRoute(
-          name: "test",
-          getHandler: (context, request, response) async {
-            return response.copyWith(
-              statusCode: 200,
-              body: "Hello, World!",
-            );
-          },
-          preRequestHooks: (context) => [
-            plugin.authenticationHook,
-          ],
-          children: [
-            GazelleRoute(
-              name: "test_2",
-              getHandler: (context, request, response) async {
-                return response.copyWith(
-                  statusCode: 200,
-                  body: "Hello, World!",
-                );
-              },
-            ),
-          ],
-        ),
-      ];
-
-      final app = GazelleApp(routes: routes);
-      await app.registerPlugin(plugin);
+      final app = GazelleApp(
+        routes: [
+          GazelleRoute(
+            name: "login",
+            postHandler: (context, request, response) async {
+              return response.copyWith(
+                statusCode: 200,
+                body:
+                    context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+              );
+            },
+          ),
+          GazelleRoute(
+            name: "test",
+            getHandler: (context, request, response) async {
+              return response.copyWith(
+                statusCode: 200,
+                body: "Hello, World!",
+              );
+            },
+            preRequestHooks: (context) => [
+              context.getPlugin<GazelleJwtPlugin>().authenticationHook,
+            ],
+            children: [
+              GazelleRoute(
+                name: "test_2",
+                getHandler: (context, request, response) async {
+                  return response.copyWith(
+                    statusCode: 200,
+                    body: "Hello, World!",
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+        plugins: {
+          GazelleJwtPlugin(SecretKey("supersecret")),
+        },
+      );
       await app.start();
 
       // Act

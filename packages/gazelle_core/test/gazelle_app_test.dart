@@ -58,14 +58,18 @@ void main() {
 
     test('Should register a plugin', () async {
       // Arrange
-      final app = GazelleApp(routes: []);
       final plugin = _TestPlugin();
+      final app = GazelleApp(
+        routes: [],
+        plugins: {plugin},
+      );
 
       // Act
-      await app.registerPlugin(plugin);
+      await app.start();
 
       // Assert
       expect(plugin.isInitialized, isTrue);
+      app.stop(force: true);
     });
 
     test('Should return error 404', () async {

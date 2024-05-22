@@ -11,10 +11,12 @@ typedef GazelleRouteHandler = Future<GazelleResponse> Function(
   GazelleResponse response,
 );
 
+/// Represents a callback to build a list of pre-request hooks.
 typedef GazellePreRequestHooksBuilder = List<GazellePreRequestHook> Function(
   GazelleContext context,
 );
 
+/// Represents a callback to build a list of post-response hooks.
 typedef GazellePostResponseHooksBuilder = List<GazellePostResponseHook>
     Function(
   GazelleContext context,

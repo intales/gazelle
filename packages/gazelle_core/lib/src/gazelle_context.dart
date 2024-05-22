@@ -72,6 +72,13 @@ class GazelleContext {
     throw Exception('GazelleContext: Unable to find $T plugin!');
   }
 
+  /// Registers a set of plugins.
+  Future<void> registerPlugins(Set<GazellePlugin> plugins) async {
+    for (final plugin in plugins) {
+      await register(plugin);
+    }
+  }
+
   /// Registers a new plugin with the context.
   ///
   /// The plugin is initialized and added to the context's plugin map.
@@ -82,14 +89,14 @@ class GazelleContext {
   /// final authPlugin = AuthenticationPlugin();
   /// await context.register(authPlugin);
   /// ```
-  Future<void> register<T extends GazellePlugin>(T plugin) async {
+  Future<void> register(GazellePlugin plugin) async {
     final newContext = GazelleContext(
       router: _router,
-      plugins: {T: plugin},
+      plugins: {plugin.runtimeType: plugin},
       context: this,
     );
 
-    await newContext._plugins[T]!.initialize(newContext);
-    _plugins[T] = plugin;
+    await newContext._plugins[plugin.runtimeType]!.initialize(newContext);
+    _plugins[plugin.runtimeType] = plugin;
   }
 }

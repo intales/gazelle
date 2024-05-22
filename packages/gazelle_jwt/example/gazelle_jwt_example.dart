@@ -3,38 +3,36 @@ import 'package:gazelle_jwt/gazelle_jwt.dart';
 import 'package:http/http.dart' as http;
 
 void main() async {
-  final plugin = GazelleJwtPlugin(SecretKey("supersecret"));
-  // Setup your routes.
-  final routes = [
-    GazelleRoute(
-      name: "login",
-      postHandler: (context, request, response) async {
-        // Use the request to get data sent from the client.
-        return response.copyWith(
-          statusCode: 200,
-          // Sign a token and send it back to the client.
-          body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-        );
-      },
-    ),
-    GazelleRoute(
-      name: "hello_world",
-      getHandler: (context, request, response) async {
-        return response.copyWith(
-          statusCode: 200,
-          body: "Hello, World!",
-        );
-      },
-      // Add the authentication hook provided by the plugin to guard your routes.
-      preRequestHooks: (context) => [
-        plugin.authenticationHook,
-      ],
-    ),
-  ];
-
   // Initialize your Gazelle app.
-  final app = GazelleApp(port: 3000, routes: routes);
-  await app.registerPlugin(plugin);
+  final app = GazelleApp(
+    routes: [
+      GazelleRoute(
+        name: "login",
+        postHandler: (context, request, response) async {
+          // Use the request to get data sent from the client.
+          return response.copyWith(
+            statusCode: 200,
+            // Sign a token and send it back to the client.
+            body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+          );
+        },
+      ),
+      GazelleRoute(
+        name: "hello_world",
+        getHandler: (context, request, response) async {
+          return response.copyWith(
+            statusCode: 200,
+            body: "Hello, World!",
+          );
+        },
+        // Add the authentication hook provided by the plugin to guard your routes.
+        preRequestHooks: (context) => [
+          context.getPlugin<GazelleJwtPlugin>().authenticationHook,
+        ],
+      ),
+    ],
+    plugins: {GazelleJwtPlugin(SecretKey("supersecret"))},
+  );
 
   // Start your server.
   await app.start();
