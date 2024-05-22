@@ -95,13 +95,13 @@ class GazelleLoggerPlugin implements GazellePlugin {
           message += "STATUS CODE: $statusCode";
           if (body?.isNotEmpty == true) message += "\nBODY: $body";
 
-          if (statusCode >= 200 && statusCode <= 299) {
+          if (statusCode.code >= 200 && statusCode.code <= 299) {
             info(message);
-          } else if (statusCode >= 300 && statusCode <= 399) {
+          } else if (statusCode.code >= 300 && statusCode.code <= 399) {
             info(message);
-          } else if (statusCode >= 400 && statusCode <= 499) {
+          } else if (statusCode.code >= 400 && statusCode.code <= 499) {
             warning(message);
-          } else if (statusCode <= 500 && statusCode <= 599) {
+          } else if (statusCode.code <= 500 && statusCode.code <= 599) {
             fatal(message);
           }
 

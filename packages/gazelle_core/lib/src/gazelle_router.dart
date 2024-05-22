@@ -3,6 +3,7 @@ import 'dart:io';
 import 'gazelle_context.dart';
 import 'gazelle_hooks.dart';
 import 'gazelle_http_method.dart';
+import 'gazelle_http_status.dart';
 import 'gazelle_message.dart';
 import 'gazelle_route.dart';
 import 'gazelle_router_item.dart';
@@ -31,7 +32,9 @@ class GazelleRouterSearchResult {
   const GazelleRouterSearchResult({
     required this.request,
     required this.route,
-    this.response = const GazelleResponse(statusCode: 204),
+    this.response = const GazelleResponse(
+      statusCode: GazelleHttpStatus.noContent,
+    ),
   });
 }
 

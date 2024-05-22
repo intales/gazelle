@@ -61,7 +61,7 @@ class GazelleJwtPlugin implements GazellePlugin {
             return (
               request,
               response.copyWith(
-                statusCode: 401,
+                statusCode: GazelleHttpStatus.unauthorized,
                 body: missingAuthHeaderMessage,
               )
             );
@@ -71,7 +71,7 @@ class GazelleJwtPlugin implements GazellePlugin {
             return (
               request,
               response.copyWith(
-                statusCode: 401,
+                statusCode: GazelleHttpStatus.unauthorized,
                 body: badBearerSchemaMessage,
               )
             );
@@ -83,7 +83,7 @@ class GazelleJwtPlugin implements GazellePlugin {
             return (
               request,
               response.copyWith(
-                statusCode: 401,
+                statusCode: GazelleHttpStatus.unauthorized,
                 body: invalidTokenMessage,
               )
             );

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'gazelle_http_method.dart';
+import 'gazelle_http_status.dart';
 
 /// Represents a message exchanged between the client and the server in Gazelle.
 ///
@@ -109,7 +110,7 @@ class GazelleRequest extends GazelleMessage {
 /// headers, and body.
 class GazelleResponse extends GazelleMessage {
   /// The HTTP status code of the response.
-  final int statusCode;
+  final GazelleHttpStatus statusCode;
 
   /// The body of the response.
   final String? body;
@@ -131,7 +132,7 @@ class GazelleResponse extends GazelleMessage {
 
   /// Writes this [GazelleResponse] to an [HttpResponse].
   void toHttpResponse(HttpResponse response) {
-    response.statusCode = statusCode;
+    response.statusCode = statusCode.code;
 
     headers.forEach((key, value) {
       response.headers.add(key, value);
@@ -146,7 +147,7 @@ class GazelleResponse extends GazelleMessage {
 
   /// Creates a copy of this [GazelleResponse] with the specified attributes overridden.
   GazelleResponse copyWith({
-    int? statusCode,
+    GazelleHttpStatus? statusCode,
     Map<String, List<String>>? headers,
     Map<String, dynamic>? metadata,
     String? body,

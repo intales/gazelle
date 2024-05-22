@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'gazelle_context.dart';
 import 'gazelle_hooks.dart';
 import 'gazelle_message.dart';
@@ -5,7 +7,7 @@ import 'gazelle_message.dart';
 /// Represents a handler for a Gazelle route.
 ///
 /// It is a function thpat takes a [GazelleRequest] as input and returns a [Future] of [GazelleResponse].
-typedef GazelleRouteHandler = Future<GazelleResponse> Function(
+typedef GazelleRouteHandler = FutureOr<GazelleResponse> Function(
   GazelleContext context,
   GazelleRequest request,
   GazelleResponse response,

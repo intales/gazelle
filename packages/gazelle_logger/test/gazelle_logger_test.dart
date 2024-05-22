@@ -21,7 +21,7 @@ void main() {
         name: "",
         getHandler: (context, request, resonse) async {
           return resonse.copyWith(
-            statusCode: 200,
+            statusCode: GazelleHttpStatus.ok,
             body: plugin.toString(),
           );
         },

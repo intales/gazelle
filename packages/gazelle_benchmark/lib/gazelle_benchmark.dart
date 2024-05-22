@@ -5,7 +5,7 @@ final app = GazelleApp(address: "0.0.0.0", port: 3000, routes: [
   GazelleRoute(
     name: "",
     getHandler: (context, request, response) async => response.copyWith(
-      statusCode: 200,
+      statusCode: GazelleHttpStatus.ok,
       body: "Hello, World!",
     ),
   ),

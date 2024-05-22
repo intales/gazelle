@@ -14,7 +14,7 @@ void main() {
             name: "",
             getHandler: (context, request, response) async {
               return response.copyWith(
-                statusCode: 200,
+                statusCode: GazelleHttpStatus.ok,
                 body: "Hello, Gazelle!",
               );
             },

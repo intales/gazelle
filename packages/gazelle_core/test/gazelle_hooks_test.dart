@@ -11,7 +11,10 @@ void main() {
           method: GazelleHttpMethod.get,
           pathParameters: {},
         );
-        hook(request) => GazelleResponse(statusCode: 401, body: "Unauthorized");
+        hook(request) => GazelleResponse(
+              statusCode: GazelleHttpStatus.unauthorized,
+              body: "Unauthorized",
+            );
 
         // Act
         final result = hook(request);
@@ -38,7 +41,10 @@ void main() {
     group('GazellePostResponseHook tests', () {
       test('Should return a response', () {
         // Arrange
-        final response = GazelleResponse(statusCode: 200, body: "OK");
+        final response = GazelleResponse(
+          statusCode: GazelleHttpStatus.ok,
+          body: "OK",
+        );
         hook(response) => response;
 
         // Act

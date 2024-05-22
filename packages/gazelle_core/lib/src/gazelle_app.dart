@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'gazelle_context.dart';
 import 'gazelle_http_method.dart';
+import 'gazelle_http_status.dart';
 import 'gazelle_message.dart';
 import 'gazelle_plugin.dart';
 import 'gazelle_route.dart';
@@ -166,7 +167,7 @@ class GazelleApp {
 
     for (final hook in preRequestHooks) {
       (request, response) = await hook(context, request, response);
-      if (response.statusCode >= 400 && response.statusCode <= 599) {
+      if (response.statusCode.code >= 400 && response.statusCode.code <= 599) {
         return _sendResponse(httpResponse, response);
       }
     }
@@ -175,7 +176,7 @@ class GazelleApp {
 
     for (final hook in postResponseHooks) {
       (request, response) = await hook(context, request, response);
-      if (response.statusCode >= 400 && response.statusCode <= 599) {
+      if (response.statusCode.code >= 400 && response.statusCode.code <= 599) {
         return _sendResponse(httpResponse, response);
       }
     }
@@ -192,14 +193,14 @@ class GazelleApp {
   void _send404Error(HttpResponse response) => _sendResponse(
       response,
       GazelleResponse(
-        statusCode: 404,
+        statusCode: GazelleHttpStatus.notFound,
         body: _error404,
       ));
 
   void _send500Error(HttpResponse response) => _sendResponse(
       response,
       GazelleResponse(
-        statusCode: 500,
+        statusCode: GazelleHttpStatus.internalServerError,
         body: _error500,
       ));
 }

@@ -24,7 +24,7 @@ void main() {
         GazelleRoute(
             name: "test",
             getHandler: (context, request, response) async => response.copyWith(
-                  statusCode: 200,
+                  statusCode: GazelleHttpStatus.ok,
                 )),
       ], GazelleContext.create());
 
