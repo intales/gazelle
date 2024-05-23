@@ -124,7 +124,7 @@ class GazelleResponse extends GazelleMessage {
   /// The optional [metadata] parameter represents additional metadata associated
   /// with the response, defaulting to an empty map if not provided.
   const GazelleResponse({
-    required this.statusCode,
+    this.statusCode = const GazelleHttpStatus(200),
     this.body,
     super.headers = const {},
     super.metadata = const {},

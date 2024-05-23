@@ -118,7 +118,7 @@ void main() {
           GazelleRoute(
             name: "test",
             getHandler: (context, request, response) async => GazelleResponse(
-              statusCode: GazelleHttpStatus.ok,
+              statusCode: GazelleHttpStatus.success.ok_200,
               body: "OK",
             ),
           )
@@ -148,7 +148,7 @@ void main() {
           GazelleRoute(
             name: "test",
             getHandler: (context, request, response) async => response.copyWith(
-              statusCode: GazelleHttpStatus.ok,
+              statusCode: GazelleHttpStatus.success.ok_200,
               body: "OK",
             ),
             preRequestHooks: (context) => [
@@ -173,7 +173,7 @@ void main() {
                 name: "test_2",
                 getHandler: (context, request, response) async =>
                     response.copyWith(
-                  statusCode: GazelleHttpStatus.ok,
+                  statusCode: GazelleHttpStatus.success.ok_200,
                   body: "OK",
                 ),
                 postResponseHooks: (context) => [
@@ -212,24 +212,24 @@ void main() {
         GazelleRoute(
           name: "test",
           getHandler: (context, request, response) async => response.copyWith(
-            statusCode: GazelleHttpStatus.ok,
+            statusCode: GazelleHttpStatus.success.ok_200,
             body: "OK",
           ),
           postHandler: (context, request, response) async => response.copyWith(
-            statusCode: GazelleHttpStatus.ok,
+            statusCode: GazelleHttpStatus.success.ok_200,
             body: "OK",
           ),
           putHandler: (context, request, response) async => response.copyWith(
-            statusCode: GazelleHttpStatus.ok,
+            statusCode: GazelleHttpStatus.success.ok_200,
             body: "OK",
           ),
           patchHandler: (context, request, response) async => response.copyWith(
-            statusCode: GazelleHttpStatus.ok,
+            statusCode: GazelleHttpStatus.success.ok_200,
             body: "OK",
           ),
           deleteHandler: (context, request, response) async =>
               response.copyWith(
-            statusCode: GazelleHttpStatus.ok,
+            statusCode: GazelleHttpStatus.success.ok_200,
             body: "OK",
           ),
         ),
@@ -295,7 +295,7 @@ void main() {
             name: "test",
             getHandler: (context, request, response) async {
               return response.copyWith(
-                statusCode: GazelleHttpStatus.ok,
+                statusCode: GazelleHttpStatus.success.ok_200,
                 body: "Hello, World!",
               );
             },
@@ -329,7 +329,7 @@ void main() {
             name: "test",
             getHandler: (context, request, response) async {
               return response.copyWith(
-                statusCode: GazelleHttpStatus.ok,
+                statusCode: GazelleHttpStatus.success.ok_200,
                 body: "Hello, World!",
               );
             },

@@ -70,7 +70,7 @@ class GazelleCorsPlugin implements GazellePlugin {
             return (
               request,
               response.copyWith(
-                statusCode: GazelleHttpStatus.ok,
+                statusCode: GazelleHttpStatus.success.ok_200,
                 headers: newHeaders,
               )
             );

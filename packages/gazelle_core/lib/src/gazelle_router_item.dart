@@ -1,6 +1,7 @@
 import 'gazelle_context.dart';
 import 'gazelle_hooks.dart';
 import 'gazelle_http_method.dart';
+import 'gazelle_http_status.dart';
 import 'gazelle_message.dart';
 import 'gazelle_route.dart';
 import 'gazelle_router.dart';
@@ -58,9 +59,12 @@ class GazelleRouterItem {
 
     availableMethods.add(GazelleHttpMethod.options.name);
 
-    return response.copyWith(headers: {
-      'allow': availableMethods,
-    });
+    return response.copyWith(
+      statusCode: GazelleHttpStatus.success.noContent_204,
+      headers: {
+        'allow': availableMethods,
+      },
+    );
   }
 
   /// The pre-request hooks associated with the route.

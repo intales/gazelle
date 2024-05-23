@@ -193,14 +193,14 @@ class GazelleApp {
   void _send404Error(HttpResponse response) => _sendResponse(
       response,
       GazelleResponse(
-        statusCode: GazelleHttpStatus.notFound,
+        statusCode: GazelleHttpStatus.clientError.notFound_404,
         body: _error404,
       ));
 
   void _send500Error(HttpResponse response) => _sendResponse(
       response,
       GazelleResponse(
-        statusCode: GazelleHttpStatus.internalServerError,
+        statusCode: GazelleHttpStatus.serverError.internalServerError_500,
         body: _error500,
       ));
 }

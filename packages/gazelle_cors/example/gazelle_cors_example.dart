@@ -9,7 +9,7 @@ void main() async {
         name: "",
         getHandler: (context, request, response) async {
           return response.copyWith(
-            statusCode: 200,
+            statusCode: GazelleHttpStatus.success.ok_200,
             body: "Hello, Gazelle!",
           );
         },

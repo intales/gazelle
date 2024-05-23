@@ -37,7 +37,7 @@ void main() {
             "authorization": ["Bearer $token"],
           });
       GazelleResponse response = GazelleResponse(
-        statusCode: GazelleHttpStatus.noContent,
+        statusCode: GazelleHttpStatus.success.noContent_204,
       );
 
       // Act
@@ -60,14 +60,15 @@ void main() {
         pathParameters: {},
       );
       GazelleResponse response = GazelleResponse(
-        statusCode: GazelleHttpStatus.noContent,
+        statusCode: GazelleHttpStatus.success.noContent_204,
       );
 
       // Act
       (request, response) = await hook(context, request, response);
 
       // Assert
-      expect(response.statusCode, GazelleHttpStatus.unauthorized);
+      expect(
+          response.statusCode, GazelleHttpStatus.clientError.unauthorized_401);
       expect(response.body, missingAuthHeaderMessage);
     });
 
@@ -87,14 +88,15 @@ void main() {
             "authorization": [" $token"],
           });
       GazelleResponse response = GazelleResponse(
-        statusCode: GazelleHttpStatus.noContent,
+        statusCode: GazelleHttpStatus.success.noContent_204,
       );
 
       // Act
       (request, response) = await hook(context, request, response);
 
       // Assert
-      expect(response.statusCode, GazelleHttpStatus.unauthorized);
+      expect(
+          response.statusCode, GazelleHttpStatus.clientError.unauthorized_401);
       expect(response.body, badBearerSchemaMessage);
     });
 
@@ -114,14 +116,15 @@ void main() {
             "authorization": ["Bearer $token aaaa"],
           });
       GazelleResponse response = GazelleResponse(
-        statusCode: GazelleHttpStatus.noContent,
+        statusCode: GazelleHttpStatus.success.noContent_204,
       );
 
       // Act
       (request, response) = await hook(context, request, response);
 
       // Assert
-      expect(response.statusCode, GazelleHttpStatus.unauthorized);
+      expect(
+          response.statusCode, GazelleHttpStatus.clientError.unauthorized_401);
       expect(response.body, invalidTokenMessage);
     });
 
@@ -133,7 +136,7 @@ void main() {
             name: "login",
             postHandler: (context, request, response) async {
               return response.copyWith(
-                statusCode: GazelleHttpStatus.ok,
+                statusCode: GazelleHttpStatus.success.ok_200,
                 body:
                     context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
               );
@@ -143,7 +146,7 @@ void main() {
             name: "test",
             getHandler: (context, request, response) async {
               return response.copyWith(
-                statusCode: GazelleHttpStatus.ok,
+                statusCode: GazelleHttpStatus.success.ok_200,
                 body: "Hello, World!",
               );
             },
@@ -155,7 +158,7 @@ void main() {
                 name: "test_2",
                 getHandler: (context, request, response) async {
                   return response.copyWith(
-                    statusCode: GazelleHttpStatus.ok,
+                    statusCode: GazelleHttpStatus.success.ok_200,
                     body: "Hello, World!",
                   );
                 },
