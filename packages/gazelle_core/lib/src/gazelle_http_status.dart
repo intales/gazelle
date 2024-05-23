@@ -6,37 +6,14 @@ class GazelleHttpStatus {
   /// Builds an HTTP status.
   const GazelleHttpStatus(this.code);
 
-  /// Informational HTTP status.
-  static const informational = _GazelleInformationalHttpStatus();
-
   /// Successful HTTP status.
   static const success = _GazelleSuccessfulHttpStatus();
-
-  /// Redirection HTTP status.
-  static const redirection = _GazelleRedirectionHttpStatus();
 
   /// Client error HTTP status.
   static const clientError = _GazelleClientErrorHttpStatus();
 
   /// Server error HTTP status.
   static const serverError = _GazelleServerErrorHttpStatus();
-}
-
-/// Informational HTTP status.
-class _GazelleInformationalHttpStatus {
-  const _GazelleInformationalHttpStatus();
-
-  /// Indicates that the initial part of a request has been received and has not yet been rejected by the server.
-  final continueStatus_100 = const GazelleHttpStatus(100);
-
-  /// Indicates that the server is willing to switch protocols as specified by the client.
-  final switchingProtocols_101 = const GazelleHttpStatus(101);
-
-  /// Indicates that the server has received and is processing the request, but no response is available yet.
-  final processing_102 = const GazelleHttpStatus(102);
-
-  /// A suggestion that the client can start preloading resources while the server prepares the response.
-  final earlyHints_103 = const GazelleHttpStatus(103);
 }
 
 /// Successful HTTP status.
@@ -72,35 +49,6 @@ class _GazelleSuccessfulHttpStatus {
 
   /// Indicates that the server has fulfilled a GET request for the resource, and the response is a representation of the result of one or more instance-manipulations applied to the current instance.
   final imUsed_226 = const GazelleHttpStatus(226);
-}
-
-/// Redirection HTTP status.
-class _GazelleRedirectionHttpStatus {
-  const _GazelleRedirectionHttpStatus();
-
-  /// Indicates multiple options for the resource from which the client may choose.
-  final multipleChoices_300 = const GazelleHttpStatus(300);
-
-  /// Indicates that the resource requested has been definitively moved to the URL given by the Location headers.
-  final movedPermanently_301 = const GazelleHttpStatus(301);
-
-  /// Indicates that the resource requested has been temporarily moved to the URL given by the Location headers.
-  final found_302 = const GazelleHttpStatus(302);
-
-  /// Indicates that the server is redirecting to a different resource, as indicated by the Location headers.
-  final seeOther_303 = const GazelleHttpStatus(303);
-
-  /// Indicates that the resource has not been modified since the last request.
-  final notModified_304 = const GazelleHttpStatus(304);
-
-  /// Indicates that the requested resource is available only through a proxy, the address for which is provided in the response.
-  final useProxy_305 = const GazelleHttpStatus(305);
-
-  /// Indicates that the request should be repeated with another URI, but future requests should still use the original URI.
-  final temporaryRedirect_307 = const GazelleHttpStatus(307);
-
-  /// Indicates that the request should be repeated with another URI and future requests should use the new URI.
-  final permanentRedirect_308 = const GazelleHttpStatus(308);
 }
 
 /// Client error HTTP status.
