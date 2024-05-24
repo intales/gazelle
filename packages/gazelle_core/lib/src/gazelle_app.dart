@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'gazelle_context.dart';
 import 'gazelle_http_method.dart';
-import 'gazelle_http_status.dart';
+import 'gazelle_http_status_code.dart';
 import 'gazelle_message.dart';
 import 'gazelle_plugin.dart';
 import 'gazelle_route.dart';
@@ -193,14 +193,14 @@ class GazelleApp {
   void _send404Error(HttpResponse response) => _sendResponse(
       response,
       GazelleResponse(
-        statusCode: GazelleHttpStatus.clientError.notFound_404,
+        statusCode: GazelleHttpStatusCode.error.notFound_404,
         body: _error404,
       ));
 
   void _send500Error(HttpResponse response) => _sendResponse(
       response,
       GazelleResponse(
-        statusCode: GazelleHttpStatus.serverError.internalServerError_500,
+        statusCode: GazelleHttpStatusCode.error.internalServerError_500,
         body: _error500,
       ));
 }

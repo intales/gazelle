@@ -79,7 +79,7 @@ void main() {
         // Arrange
         final server = await createTestHttpServer();
         server.listen((httpRequest) => GazelleResponse(
-              statusCode: GazelleHttpStatus.success.ok_200,
+              statusCode: GazelleHttpStatusCode.success.ok_200,
               body: "OK",
             ).toHttpResponse(httpRequest.response));
 
@@ -96,9 +96,9 @@ void main() {
       test('Should copy response with given params', () {
         // Arrange
         final response = GazelleResponse(
-          statusCode: GazelleHttpStatus.clientError.badRequest_400,
+          statusCode: GazelleHttpStatusCode.error.badRequest_400,
         );
-        final statusCode = GazelleHttpStatus.success.ok_200;
+        final statusCode = GazelleHttpStatusCode.success.ok_200;
         const headers = {
           'Content-Type': ['application/json'],
         };
@@ -109,7 +109,7 @@ void main() {
 
         // Act
         final result = response.copyWith(
-          statusCode: GazelleHttpStatus.success.ok_200,
+          statusCode: GazelleHttpStatusCode.success.ok_200,
           headers: headers,
           body: body,
           metadata: metadata,

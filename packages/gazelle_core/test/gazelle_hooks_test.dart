@@ -12,7 +12,7 @@ void main() {
           pathParameters: {},
         );
         hook(request) => GazelleResponse(
-              statusCode: GazelleHttpStatus.clientError.unauthorized_401,
+              statusCode: GazelleHttpStatusCode.error.unauthorized_401,
               body: "Unauthorized",
             );
 
@@ -42,7 +42,7 @@ void main() {
       test('Should return a response', () {
         // Arrange
         final response = GazelleResponse(
-          statusCode: GazelleHttpStatus.success.ok_200,
+          statusCode: GazelleHttpStatusCode.success.ok_200,
           body: "OK",
         );
         hook(response) => response;

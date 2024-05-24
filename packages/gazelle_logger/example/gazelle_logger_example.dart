@@ -7,7 +7,7 @@ void main() async {
       GazelleRoute(
         name: "hello_gazelle",
         getHandler: (context, request, resonse) async => resonse.copyWith(
-          statusCode: GazelleHttpStatus.success.ok_200,
+          statusCode: GazelleHttpStatusCode.success.ok_200,
           body: "Hello, Gazelle!",
         ),
         preRequestHooks: (context) => [
