@@ -61,7 +61,7 @@ void main() {
       final plugin = _TestPlugin();
       final app = GazelleApp(
         routes: [],
-        plugins: {plugin},
+        plugins: [plugin],
       );
 
       // Act

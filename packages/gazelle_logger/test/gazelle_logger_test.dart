@@ -35,7 +35,7 @@ void main() {
 
       final app = GazelleApp(
         routes: [route],
-        plugins: {plugin},
+        plugins: [plugin],
       );
       await app.start();
 

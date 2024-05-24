@@ -23,11 +23,11 @@ void main() {
             ],
           ),
         ],
-        plugins: {
+        plugins: [
           GazelleCorsPlugin(corsHeaders: {
             GazelleCorsHeaders.accessControlAllowOrigin.name: ["example.com"],
           })
-        },
+        ],
       );
 
       await app.start();

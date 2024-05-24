@@ -19,11 +19,11 @@ void main() async {
         ],
       ),
     ],
-    plugins: {
+    plugins: [
       GazelleCorsPlugin(corsHeaders: {
         GazelleCorsHeaders.accessControlAllowOrigin.name: ["example.com"],
       })
-    },
+    ],
   );
 
   // Start your server.

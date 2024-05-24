@@ -163,9 +163,9 @@ void main() {
             ],
           ),
         ],
-        plugins: {
+        plugins: [
           GazelleJwtPlugin(SecretKey("supersecret")),
-        },
+        ],
       );
       await app.start();
 

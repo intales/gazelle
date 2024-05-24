@@ -31,7 +31,7 @@ void main() async {
         ],
       ),
     ],
-    plugins: {GazelleJwtPlugin(SecretKey("supersecret"))},
+    plugins: [GazelleJwtPlugin(SecretKey("supersecret"))],
   );
 
   // Start your server.

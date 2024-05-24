@@ -18,9 +18,9 @@ void main() async {
         ],
       )
     ],
-    plugins: {
+    plugins: [
       GazelleLoggerPlugin(),
-    },
+    ],
   );
 
   await app.start();
