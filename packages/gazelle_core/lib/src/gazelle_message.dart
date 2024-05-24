@@ -161,3 +161,453 @@ class GazelleResponse extends GazelleMessage {
         body: body ?? this.body,
       );
 }
+
+/// Extension methods for easy access to headers inside a [GazelleMessage].
+extension GazelleMessageHeaderExtension on GazelleMessage {
+  /// Gets the 'Accept' header from the headers list.
+  ///
+  /// Returns the 'Accept' header if present, otherwise null.
+  GazelleHttpHeader? get accept => headers
+      .where((header) => header.header == GazelleHttpHeader.accept.header)
+      .firstOrNull;
+
+  /// Gets the 'Accept-Charset' header from the headers list.
+  ///
+  /// Returns the 'Accept-Charset' header if present, otherwise null.
+  GazelleHttpHeader? get acceptCharset => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.acceptCharset.header)
+      .firstOrNull;
+
+  /// Gets the 'Accept-Encoding' header from the headers list.
+  ///
+  /// Returns the 'Accept-Encoding' header if present, otherwise null.
+  GazelleHttpHeader? get acceptEncoding => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.acceptEncoding.header)
+      .firstOrNull;
+
+  /// Gets the 'Accept-Language' header from the headers list.
+  ///
+  /// Returns the 'Accept-Language' header if present, otherwise null.
+  GazelleHttpHeader? get acceptLanguage => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.acceptLanguage.header)
+      .firstOrNull;
+
+  /// Gets the 'Accept-Ranges' header from the headers list.
+  ///
+  /// Returns the 'Accept-Ranges' header if present, otherwise null.
+  GazelleHttpHeader? get acceptRanges => headers
+      .where((header) => header.header == GazelleHttpHeader.acceptRanges.header)
+      .firstOrNull;
+
+  /// Gets the 'Access-Control-Allow-Credentials' header from the headers list.
+  ///
+  /// Returns the 'Access-Control-Allow-Credentials' header if present, otherwise null.
+  GazelleHttpHeader? get accessControlAllowCredentials => headers
+      .where((header) =>
+          header.header ==
+          GazelleHttpHeader.accessControlAllowCredentials.header)
+      .firstOrNull;
+
+  /// Gets the 'Access-Control-Allow-Headers' header from the headers list.
+  ///
+  /// Returns the 'Access-Control-Allow-Headers' header if present, otherwise null.
+  GazelleHttpHeader? get accessControlAllowHeaders => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.accessControlAllowHeaders.header)
+      .firstOrNull;
+
+  /// Gets the 'Access-Control-Allow-Methods' header from the headers list.
+  ///
+  /// Returns the 'Access-Control-Allow-Methods' header if present, otherwise null.
+  GazelleHttpHeader? get accessControlAllowMethods => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.accessControlAllowMethods.header)
+      .firstOrNull;
+
+  /// Gets the 'Access-Control-Allow-Origin' header from the headers list.
+  ///
+  /// Returns the 'Access-Control-Allow-Origin' header if present, otherwise null.
+  GazelleHttpHeader? get accessControlAllowOrigin => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.accessControlAllowOrigin.header)
+      .firstOrNull;
+
+  /// Gets the 'Access-Control-Expose-Headers' header from the headers list.
+  ///
+  /// Returns the 'Access-Control-Expose-Headers' header if present, otherwise null.
+  GazelleHttpHeader? get accessControlExposeHeaders => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.accessControlExposeHeaders.header)
+      .firstOrNull;
+
+  /// Gets the 'Access-Control-Max-Age' header from the headers list.
+  ///
+  /// Returns the 'Access-Control-Max-Age' header if present, otherwise null.
+  GazelleHttpHeader? get accessControlMaxAge => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.accessControlMaxAge.header)
+      .firstOrNull;
+
+  /// Gets the 'Access-Control-Request-Headers' header from the headers list.
+  ///
+  /// Returns the 'Access-Control-Request-Headers' header if present, otherwise null.
+  GazelleHttpHeader? get accessControlRequestHeaders => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.accessControlRequestHeaders.header)
+      .firstOrNull;
+
+  /// Gets the 'Access-Control-Request-Method' header from the headers list.
+  ///
+  /// Returns the 'Access-Control-Request-Method' header if present, otherwise null.
+  GazelleHttpHeader? get accessControlRequestMethod => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.accessControlRequestMethod.header)
+      .firstOrNull;
+
+  /// Gets the 'Age' header from the headers list.
+  ///
+  /// Returns the 'Age' header if present, otherwise null.
+  GazelleHttpHeader? get age => headers
+      .where((header) => header.header == GazelleHttpHeader.age.header)
+      .firstOrNull;
+
+  /// Gets the 'Allow' header from the headers list.
+  ///
+  /// Returns the 'Allow' header if present, otherwise null.
+  GazelleHttpHeader? get allow => headers
+      .where((header) => header.header == GazelleHttpHeader.allow.header)
+      .firstOrNull;
+
+  /// Gets the 'Authorization' header from the headers list.
+  ///
+  /// Returns the 'Authorization' header if present, otherwise null.
+  GazelleHttpHeader? get authorization => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.authorization.header)
+      .firstOrNull;
+
+  /// Gets the 'Cache-Control' header from the headers list.
+  ///
+  /// Returns the 'Cache-Control' header if present, otherwise null.
+  GazelleHttpHeader? get cacheControl => headers
+      .where((header) => header.header == GazelleHttpHeader.cacheControl.header)
+      .firstOrNull;
+
+  /// Gets the 'Connection' header from the headers list.
+  ///
+  /// Returns the 'Connection' header if present, otherwise null.
+  GazelleHttpHeader? get connection => headers
+      .where((header) => header.header == GazelleHttpHeader.connection.header)
+      .firstOrNull;
+
+  /// Gets the 'Content-Disposition' header from the headers list.
+  ///
+  /// Returns the 'Content-Disposition' header if present, otherwise null.
+  GazelleHttpHeader? get contentDisposition => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.contentDisposition.header)
+      .firstOrNull;
+
+  /// Gets the 'Content-Encoding' header from the headers list.
+  ///
+  /// Returns the 'Content-Encoding' header if present, otherwise null.
+  GazelleHttpHeader? get contentEncoding => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.contentEncoding.header)
+      .firstOrNull;
+
+  /// Gets the 'Content-Language' header from the headers list.
+  ///
+  /// Returns the 'Content-Language' header if present, otherwise null.
+  GazelleHttpHeader? get contentLanguage => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.contentLanguage.header)
+      .firstOrNull;
+
+  /// Gets the 'Content-Length' header from the headers list.
+  ///
+  /// Returns the 'Content-Length' header if present, otherwise null.
+  GazelleHttpHeader? get contentLength => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.contentLength.header)
+      .firstOrNull;
+
+  /// Gets the 'Content-Location' header from the headers list.
+  ///
+  /// Returns the 'Content-Location' header if present, otherwise null.
+  GazelleHttpHeader? get contentLocation => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.contentLocation.header)
+      .firstOrNull;
+
+  /// Gets the 'Content-Range' header from the headers list.
+  ///
+  /// Returns the 'Content-Range' header if present, otherwise null.
+  GazelleHttpHeader? get contentRange => headers
+      .where((header) => header.header == GazelleHttpHeader.contentRange.header)
+      .firstOrNull;
+
+  /// Gets the 'Content-Type' header from the headers list.
+  ///
+  /// Returns the 'Content-Type' header if present, otherwise null.
+  GazelleHttpHeader? get contentType => headers
+      .where((header) => header.header == GazelleHttpHeader.contentType.header)
+      .firstOrNull;
+
+  /// Gets the 'Cookie' header from the headers list.
+  ///
+  /// Returns the 'Cookie' header if present, otherwise null.
+  GazelleHttpHeader? get cookie => headers
+      .where((header) => header.header == GazelleHttpHeader.cookie.header)
+      .firstOrNull;
+
+  /// Gets the 'Date' header from the headers list.
+  ///
+  /// Returns the 'Date' header if present, otherwise null.
+  GazelleHttpHeader? get date => headers
+      .where((header) => header.header == GazelleHttpHeader.date.header)
+      .firstOrNull;
+
+  /// Gets the 'ETag' header from the headers list.
+  ///
+  /// Returns the 'ETag' header if present, otherwise null.
+  GazelleHttpHeader? get etag => headers
+      .where((header) => header.header == GazelleHttpHeader.etag.header)
+      .firstOrNull;
+
+  /// Gets the 'Expect' header from the headers list.
+  ///
+  /// Returns the 'Expect' header if present, otherwise null.
+  GazelleHttpHeader? get expect => headers
+      .where((header) => header.header == GazelleHttpHeader.expect.header)
+      .firstOrNull;
+
+  /// Gets the 'Expires' header from the headers list.
+  ///
+  /// Returns the 'Expires' header if present, otherwise null.
+  GazelleHttpHeader? get expires => headers
+      .where((header) => header.header == GazelleHttpHeader.expires.header)
+      .firstOrNull;
+
+  /// Gets the 'From' header from the headers list.
+  ///
+  /// Returns the 'From' header if present, otherwise null.
+  GazelleHttpHeader? get from => headers
+      .where((header) => header.header == GazelleHttpHeader.from.header)
+      .firstOrNull;
+
+  /// Gets the 'Host' header from the headers list.
+  ///
+  /// Returns the 'Host' header if present, otherwise null.
+  GazelleHttpHeader? get host => headers
+      .where((header) => header.header == GazelleHttpHeader.host.header)
+      .firstOrNull;
+
+  /// Gets the 'If-Match' header from the headers list.
+  ///
+  /// Returns the 'If-Match' header if present, otherwise null.
+  GazelleHttpHeader? get ifMatch => headers
+      .where((header) => header.header == GazelleHttpHeader.ifMatch.header)
+      .firstOrNull;
+
+  /// Gets the 'If-Modified-Since' header from the headers list.
+  ///
+  /// Returns the 'If-Modified-Since' header if present, otherwise null.
+  GazelleHttpHeader? get ifModifiedSince => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.ifModifiedSince.header)
+      .firstOrNull;
+
+  /// Gets the 'If-None-Match' header from the headers list.
+  ///
+  /// Returns the 'If-None-Match' header if present, otherwise null.
+  GazelleHttpHeader? get ifNoneMatch => headers
+      .where((header) => header.header == GazelleHttpHeader.ifNoneMatch.header)
+      .firstOrNull;
+
+  /// Gets the 'If-Range' header from the headers list.
+  ///
+  /// Returns the 'If-Range' header if present, otherwise null.
+  GazelleHttpHeader? get ifRange => headers
+      .where((header) => header.header == GazelleHttpHeader.ifRange.header)
+      .firstOrNull;
+
+  /// Gets the 'If-Unmodified-Since' header from the headers list.
+  ///
+  /// Returns the 'If-Unmodified-Since' header if present, otherwise null.
+  GazelleHttpHeader? get ifUnmodifiedSince => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.ifUnmodifiedSince.header)
+      .firstOrNull;
+
+  /// Gets the 'Last-Modified' header from the headers list.
+  ///
+  /// Returns the 'Last-Modified' header if present, otherwise null.
+  GazelleHttpHeader? get lastModified => headers
+      .where((header) => header.header == GazelleHttpHeader.lastModified.header)
+      .firstOrNull;
+
+  /// Gets the 'Location' header from the headers list.
+  ///
+  /// Returns the 'Location' header if present, otherwise null.
+  GazelleHttpHeader? get location => headers
+      .where((header) => header.header == GazelleHttpHeader.location.header)
+      .firstOrNull;
+
+  /// Gets the 'Max-Forwards' header from the headers list.
+  ///
+  /// Returns the 'Max-Forwards' header if present, otherwise null.
+  GazelleHttpHeader? get maxForwards => headers
+      .where((header) => header.header == GazelleHttpHeader.maxForwards.header)
+      .firstOrNull;
+
+  /// Gets the 'Origin' header from the headers list.
+  ///
+  /// Returns the 'Origin' header if present, otherwise null.
+  GazelleHttpHeader? get origin => headers
+      .where((header) => header.header == GazelleHttpHeader.origin.header)
+      .firstOrNull;
+
+  /// Gets the 'Pragma' header from the headers list.
+  ///
+  /// Returns the 'Pragma' header if present, otherwise null.
+  GazelleHttpHeader? get pragma => headers
+      .where((header) => header.header == GazelleHttpHeader.pragma.header)
+      .firstOrNull;
+
+  /// Gets the 'Proxy-Authenticate' header from the headers list.
+  ///
+  /// Returns the 'Proxy-Authenticate' header if present, otherwise null.
+  GazelleHttpHeader? get proxyAuthenticate => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.proxyAuthenticate.header)
+      .firstOrNull;
+
+  /// Gets the 'Proxy-Authorization' header from the headers list.
+  ///
+  /// Returns the 'Proxy-Authorization' header if present, otherwise null.
+  GazelleHttpHeader? get proxyAuthorization => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.proxyAuthorization.header)
+      .firstOrNull;
+
+  /// Gets the 'Range' header from the headers list.
+  ///
+  /// Returns the 'Range' header if present, otherwise null.
+  GazelleHttpHeader? get range => headers
+      .where((header) => header.header == GazelleHttpHeader.range.header)
+      .firstOrNull;
+
+  /// Gets the 'Referer' header from the headers list.
+  ///
+  /// Returns the 'Referer' header if present, otherwise null.
+  GazelleHttpHeader? get referer => headers
+      .where((header) => header.header == GazelleHttpHeader.referer.header)
+      .firstOrNull;
+
+  /// Gets the 'Retry-After' header from the headers list.
+  ///
+  /// Returns the 'Retry-After' header if present, otherwise null.
+  GazelleHttpHeader? get retryAfter => headers
+      .where((header) => header.header == GazelleHttpHeader.retryAfter.header)
+      .firstOrNull;
+
+  /// Gets the 'Sec-WebSocket-Key' header from the headers list.
+  ///
+  /// Returns the 'Sec-WebSocket-Key' header if present, otherwise null.
+  GazelleHttpHeader? get secWebSocketKey => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.secWebSocketKey.header)
+      .firstOrNull;
+
+  /// Gets the 'Sec-WebSocket-Protocol' header from the headers list.
+  ///
+  /// Returns the 'Sec-WebSocket-Protocol' header if present, otherwise null.
+  GazelleHttpHeader? get secWebSocketProtocol => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.secWebSocketProtocol.header)
+      .firstOrNull;
+
+  /// Gets the 'Sec-WebSocket-Version' header from the headers list.
+  ///
+  /// Returns the 'Sec-WebSocket-Version' header if present, otherwise null.
+  GazelleHttpHeader? get secWebSocketVersion => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.secWebSocketVersion.header)
+      .firstOrNull;
+
+  /// Gets the 'Server' header from the headers list.
+  ///
+  /// Returns the 'Server' header if present, otherwise null.
+  GazelleHttpHeader? get server => headers
+      .where((header) => header.header == GazelleHttpHeader.server.header)
+      .firstOrNull;
+
+  /// Gets the 'Set-Cookie' header from the headers list.
+  ///
+  /// Returns the 'Set-Cookie' header if present, otherwise null.
+  GazelleHttpHeader? get setCookie => headers
+      .where((header) => header.header == GazelleHttpHeader.setCookie.header)
+      .firstOrNull;
+
+  /// Gets the 'TE' header from the headers list.
+  ///
+  /// Returns the 'TE' header if present, otherwise null.
+  GazelleHttpHeader? get te => headers
+      .where((header) => header.header == GazelleHttpHeader.te.header)
+      .firstOrNull;
+
+  /// Gets the 'Trailer' header from the headers list.
+  ///
+  /// Returns the 'Trailer' header if present, otherwise null.
+  GazelleHttpHeader? get trailer => headers
+      .where((header) => header.header == GazelleHttpHeader.trailer.header)
+      .firstOrNull;
+
+  /// Gets the 'Transfer-Encoding' header from the headers list.
+  ///
+  /// Returns the 'Transfer-Encoding' header if present, otherwise null.
+  GazelleHttpHeader? get transferEncoding => headers
+      .where((header) =>
+          header.header == GazelleHttpHeader.transferEncoding.header)
+      .firstOrNull;
+
+  /// Gets the 'Upgrade' header from the headers list.
+  ///
+  /// Returns the 'Upgrade' header if present, otherwise null.
+  GazelleHttpHeader? get upgrade => headers
+      .where((header) => header.header == GazelleHttpHeader.upgrade.header)
+      .firstOrNull;
+
+  /// Gets the 'User-Agent' header from the headers list.
+  ///
+  /// Returns the 'User-Agent' header if present, otherwise null.
+  GazelleHttpHeader? get userAgent => headers
+      .where((header) => header.header == GazelleHttpHeader.userAgent.header)
+      .firstOrNull;
+
+  /// Gets the 'Vary' header from the headers list.
+  ///
+  /// Returns the 'Vary' header if present, otherwise null.
+  GazelleHttpHeader? get vary => headers
+      .where((header) => header.header == GazelleHttpHeader.vary.header)
+      .firstOrNull;
+
+  /// Gets the 'Via' header from the headers list.
+  ///
+  /// Returns the 'Via' header if present, otherwise null.
+  GazelleHttpHeader? get via => headers
+      .where((header) => header.header == GazelleHttpHeader.via.header)
+      .firstOrNull;
+
+  /// Gets the 'WWW-Authenticate' header from the headers list.
+  ///
+  /// Returns the 'WWW-Authenticate' header if present, otherwise null.
+  GazelleHttpHeader? get wwwAuthenticate => headers
+      .where(
+          (header) => header.header == GazelleHttpHeader.wwwAuthenticate.header)
+      .firstOrNull;
+}
