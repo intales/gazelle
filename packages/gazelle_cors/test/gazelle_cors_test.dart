@@ -1,5 +1,4 @@
 import 'package:gazelle_core/gazelle_core.dart';
-import 'package:gazelle_cors/src/gazelle_cors_headers.dart';
 import 'package:gazelle_cors/src/gazelle_cors_plugin.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
@@ -24,9 +23,9 @@ void main() {
           ),
         ],
         plugins: [
-          GazelleCorsPlugin(corsHeaders: {
-            GazelleCorsHeaders.accessControlAllowOrigin.name: ["example.com"],
-          })
+          GazelleCorsPlugin(corsHeaders: [
+            GazelleHttpHeader.accessControlAllowOrigin.addValue("example.com"),
+          ])
         ],
       );
 
@@ -38,8 +37,18 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      for (final corsHeader in GazelleCorsHeaders.values) {
-        expect(result.headers.keys.contains(corsHeader.name), isTrue);
+      final corsHeaders = [
+        GazelleHttpHeader.accessControlAllowOrigin,
+        GazelleHttpHeader.accessControlExposeHeaders,
+        GazelleHttpHeader.accessControlAllowCredentials,
+        GazelleHttpHeader.accessControlAllowHeaders,
+        GazelleHttpHeader.accessControlAllowMethods,
+        GazelleHttpHeader.accessControlMaxAge,
+        GazelleHttpHeader.vary,
+      ].map((e) => e.header.toLowerCase());
+      final resultHeaders = result.headers.keys.map((e) => e.toLowerCase());
+      for (final corsHeader in corsHeaders) {
+        expect(resultHeaders.contains(corsHeader), isTrue);
       }
 
       await app.stop();

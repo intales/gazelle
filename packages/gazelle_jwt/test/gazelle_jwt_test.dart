@@ -33,9 +33,9 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
-          headers: {
-            "authorization": ["Bearer $token"],
-          });
+          headers: [
+            GazelleHttpHeader.authorization.addValue("Bearer $token"),
+          ]);
       GazelleResponse response = GazelleResponse(
         statusCode: GazelleHttpStatusCode.success.noContent_204,
       );
@@ -83,9 +83,9 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
-          headers: {
-            "authorization": [" $token"],
-          });
+          headers: [
+            GazelleHttpHeader.authorization.addValue(" $token"),
+          ]);
       GazelleResponse response = GazelleResponse(
         statusCode: GazelleHttpStatusCode.success.noContent_204,
       );
@@ -110,9 +110,9 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
-          headers: {
-            "authorization": ["Bearer $token aaaa"],
-          });
+          headers: [
+            GazelleHttpHeader.authorization.addValue("Bearer $token aaaa"),
+          ]);
       GazelleResponse response = GazelleResponse(
         statusCode: GazelleHttpStatusCode.success.noContent_204,
       );

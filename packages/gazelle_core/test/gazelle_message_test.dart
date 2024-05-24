@@ -43,9 +43,9 @@ void main() {
         );
         final uri = Uri.parse('/test/123');
         const method = GazelleHttpMethod.post;
-        const headers = {
-          'Content-Type': ['application/json'],
-        };
+        final headers = [
+          GazelleHttpHeader.contentType.addValue("application/json"),
+        ];
         const metadata = {
           'test': 123,
         };
@@ -99,9 +99,9 @@ void main() {
           statusCode: GazelleHttpStatusCode.error.badRequest_400,
         );
         final statusCode = GazelleHttpStatusCode.success.ok_200;
-        const headers = {
-          'Content-Type': ['application/json'],
-        };
+        final headers = [
+          GazelleHttpHeader.contentType.addValue("application/json"),
+        ];
         const metadata = {
           'test': 123,
         };

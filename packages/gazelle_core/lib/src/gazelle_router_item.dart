@@ -1,5 +1,6 @@
 import 'gazelle_context.dart';
 import 'gazelle_hooks.dart';
+import 'gazelle_http_header.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_http_status_code.dart';
 import 'gazelle_message.dart';
@@ -61,9 +62,7 @@ class GazelleRouterItem {
 
     return response.copyWith(
       statusCode: GazelleHttpStatusCode.success.noContent_204,
-      headers: {
-        'allow': availableMethods,
-      },
+      headers: [GazelleHttpHeader.allow.addValues(availableMethods)],
     );
   }
 

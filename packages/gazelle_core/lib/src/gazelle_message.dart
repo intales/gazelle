@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'gazelle_http_header.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_http_status_code.dart';
 
@@ -9,7 +10,7 @@ import 'gazelle_http_status_code.dart';
 /// This class serves as the base class for both [GazelleRequest] and [GazelleResponse].
 abstract class GazelleMessage {
   /// The headers of the message.
-  final Map<String, List<String>> headers;
+  final List<GazelleHttpHeader> headers;
 
   /// Request's metadata.
   final Map<String, dynamic> metadata;
@@ -22,7 +23,7 @@ abstract class GazelleMessage {
   /// The optional parameter [metadata] represents additional metadata associated
   /// with the message, defaulting to an empty map if not provided.
   const GazelleMessage({
-    this.headers = const {},
+    this.headers = const [],
     this.metadata = const {},
   });
 }
@@ -61,7 +62,7 @@ class GazelleRequest extends GazelleMessage {
     required this.method,
     required this.pathParameters,
     this.body,
-    super.headers = const {},
+    super.headers = const [],
     super.metadata = const {},
   });
 
@@ -72,8 +73,9 @@ class GazelleRequest extends GazelleMessage {
     HttpRequest request, {
     Map<String, String> pathParameters = const {},
   }) {
-    final headers = <String, List<String>>{};
-    request.headers.forEach((key, value) => headers[key] = value);
+    final headers = <GazelleHttpHeader>[];
+    request.headers.forEach((key, value) =>
+        headers.add(GazelleHttpHeader.fromString(key, values: value)));
     final body = utf8.decodeStream(request);
 
     return GazelleRequest(
@@ -90,7 +92,7 @@ class GazelleRequest extends GazelleMessage {
     Uri? uri,
     GazelleHttpMethod? method,
     Map<String, String>? pathParameters,
-    Map<String, List<String>>? headers,
+    List<GazelleHttpHeader>? headers,
     Future<String>? body,
     Map<String, dynamic>? metadata,
   }) =>
@@ -126,7 +128,7 @@ class GazelleResponse extends GazelleMessage {
   const GazelleResponse({
     this.statusCode = const GazelleHttpStatusCode.custom(200),
     this.body,
-    super.headers = const {},
+    super.headers = const [],
     super.metadata = const {},
   });
 
@@ -134,9 +136,9 @@ class GazelleResponse extends GazelleMessage {
   void toHttpResponse(HttpResponse response) {
     response.statusCode = statusCode.code;
 
-    headers.forEach((key, value) {
-      response.headers.add(key, value);
-    });
+    for (final header in headers.toSet()) {
+      response.headers.add(header.header, header.values);
+    }
 
     if (body != null) {
       response.write(body);
@@ -148,7 +150,7 @@ class GazelleResponse extends GazelleMessage {
   /// Creates a copy of this [GazelleResponse] with the specified attributes overridden.
   GazelleResponse copyWith({
     GazelleHttpStatusCode? statusCode,
-    Map<String, List<String>>? headers,
+    List<GazelleHttpHeader>? headers,
     Map<String, dynamic>? metadata,
     String? body,
   }) =>

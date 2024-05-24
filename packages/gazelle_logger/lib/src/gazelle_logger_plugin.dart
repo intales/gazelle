@@ -49,9 +49,7 @@ class GazelleLoggerPlugin implements GazellePlugin {
         (context, request, response) async {
           final method = request.method.name;
           final route = request.uri.path;
-          final headers = request.headers.entries
-              .map((e) => "\t${e.key}:${e.value}")
-              .join("\n");
+          final headers = request.headers.map((e) => "\t$e").join("\n");
           final pathParameters = request.pathParameters.entries
               .map((e) => "\t${e.key}:${e.value}")
               .join("\n");
@@ -82,9 +80,7 @@ class GazelleLoggerPlugin implements GazellePlugin {
         (context, request, response) async {
           final method = request.method.name;
           final route = request.uri.path;
-          final headers = response.headers.entries
-              .map((e) => "${e.key}:${e.value}")
-              .join("\n");
+          final headers = response.headers.map((e) => "$e").join("\n");
           final statusCode = response.statusCode;
           final body = response.body;
 

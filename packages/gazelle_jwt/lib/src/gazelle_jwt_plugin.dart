@@ -56,7 +56,12 @@ class GazelleJwtPlugin implements GazellePlugin {
   }) =>
       GazellePreRequestHook(
         (context, request, response) async {
-          final authHeader = request.headers[authHeaderName]?.first;
+          final authHeader = request.headers
+              .where((header) =>
+                  header.header == GazelleHttpHeader.authorization.header)
+              .firstOrNull
+              ?.values
+              .firstOrNull;
           if (authHeader == null) {
             return (
               request,

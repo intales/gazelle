@@ -20,9 +20,9 @@ void main() async {
       ),
     ],
     plugins: [
-      GazelleCorsPlugin(corsHeaders: {
-        GazelleCorsHeaders.accessControlAllowOrigin.name: ["example.com"],
-      })
+      GazelleCorsPlugin(corsHeaders: [
+        GazelleHttpHeader.accessControlAllowOrigin.addValue("example.com"),
+      ])
     ],
   );
 
