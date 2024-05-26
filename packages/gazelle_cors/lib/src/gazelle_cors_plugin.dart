@@ -43,11 +43,7 @@ class GazelleCorsPlugin implements GazellePlugin {
   GazellePreRequestHook get corsHook => GazellePreRequestHook(
         (context, request, response) async {
           // Check if the request includes an Origin header
-          final origin = request.headers
-              .where(
-                  (header) => header.header == GazelleHttpHeader.origin.header)
-              .firstOrNull
-              ?.values;
+          final origin = request.headers.origin?.values;
           if (origin == null) return (request, response);
 
           // Combine default and custom CORS headers
@@ -57,12 +53,8 @@ class GazelleCorsPlugin implements GazellePlugin {
           };
 
           // Set Access-Control-Allow-Origin header
-          final accessControlAllowOrigin = _corsHeaders
-              ?.where((header) =>
-                  header.header ==
-                  GazelleHttpHeader.accessControlAllowOrigin.header)
-              .firstOrNull
-              ?.values;
+          final accessControlAllowOrigin =
+              _corsHeaders?.accessControlAllowOrigin?.values;
           if (accessControlAllowOrigin != null) {
             headers.add(GazelleHttpHeader.accessControlAllowOrigin
                 .addValues(accessControlAllowOrigin));
