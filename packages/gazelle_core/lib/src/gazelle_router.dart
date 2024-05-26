@@ -40,13 +40,15 @@ class GazelleRouterSearchResult {
 /// Handles registration and searching of routes based on HTTP methods and paths.
 class GazelleRouter {
   static const _routeSeparator = "/";
-  static const _wildcard = ":";
+
+  /// The wildcard character used to identify param-routes.
+  static const wildcard = ":";
 
   final GazelleTrie<GazelleRouterItem> _routes;
 
   /// Constructs a GazelleRouter instance.
   GazelleRouter()
-      : _routes = GazelleTrie<GazelleRouterItem>(wildcard: _wildcard);
+      : _routes = GazelleTrie<GazelleRouterItem>(wildcard: wildcard);
 
   /// Adds routes to this router.
   void addRoutes(

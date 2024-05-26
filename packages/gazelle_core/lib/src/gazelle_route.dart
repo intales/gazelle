@@ -3,6 +3,7 @@ import 'dart:async';
 import 'gazelle_context.dart';
 import 'gazelle_hooks.dart';
 import 'gazelle_message.dart';
+import 'gazelle_router.dart';
 
 /// Represents a handler for a Gazelle route.
 ///
@@ -53,7 +54,7 @@ class GazelleRoute {
   /// The sub-routes of this route.
   final List<GazelleRoute> children;
 
-  /// Constructs a GazelleRoute instance.
+  /// Constructs a [GazelleRoute] instance.
   const GazelleRoute({
     required this.name,
     this.getHandler,
@@ -65,4 +66,17 @@ class GazelleRoute {
     this.postResponseHooks,
     this.children = const [],
   });
+
+  /// Constructs a parametric [GazelleRoute] instance.
+  const GazelleRoute.parameter({
+    required String name,
+    this.getHandler,
+    this.postHandler,
+    this.putHandler,
+    this.patchHandler,
+    this.deleteHandler,
+    this.preRequestHooks,
+    this.postResponseHooks,
+    this.children = const [],
+  }) : name = "${GazelleRouter.wildcard}$name";
 }

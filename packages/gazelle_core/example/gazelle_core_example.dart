@@ -8,8 +8,8 @@ void main() async {
       GazelleRoute(
         name: "hello",
         children: [
-          GazelleRoute(
-            name: ":name",
+          GazelleRoute.parameter(
+            name: "name",
             getHandler: (context, request, response) => response.copyWith(
               statusCode: GazelleHttpStatusCode.success.ok_200,
               body: "Hello, ${request.pathParameters["name"]}!",
