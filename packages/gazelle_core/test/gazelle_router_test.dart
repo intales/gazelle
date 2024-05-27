@@ -35,5 +35,22 @@ void main() {
       expect(result, isNotNull);
       server.close(force: true);
     });
+
+    test(
+        'Should throw a RouterWhitespaceExcpetion when a route contains whitespace',
+        () {
+      // Arrange
+      final context = GazelleContext.create();
+      final router = GazelleRouter();
+      final route = GazelleRoute(name: "test test");
+
+      try {
+        // Act
+        router.addRoutes([route], context);
+        fail("Should have thrown a RouterWhitespaceExcpetion.");
+      } catch (e) {
+        expect(e, isA<RouterWhitespaceExcpetion>());
+      }
+    });
   });
 }

@@ -40,6 +40,7 @@ class GazelleRouterSearchResult {
 /// Handles registration and searching of routes based on HTTP methods and paths.
 class GazelleRouter {
   static const _routeSeparator = "/";
+  static const _whitespace = " ";
 
   /// The wildcard character used to identify param-routes.
   static const wildcard = ":";
@@ -68,6 +69,10 @@ class GazelleRouter {
     List<String> parentPath,
     GazelleContext context,
   ) {
+    if (route.name.contains(_whitespace)) {
+      throw RouterWhitespaceExcpetion(route.name);
+    }
+
     final routerItem = GazelleRouterItem(
       context: context,
       name: route.name,
@@ -152,4 +157,17 @@ class GazelleRouter {
 
     return "$method/$path";
   }
+}
+
+/// Router exception thrown when a route contains whitespaces.
+class RouterWhitespaceExcpetion implements Exception {
+  /// Exception message.
+  final String message;
+
+  /// Builds a [RouterWhitespaceExcpetion].
+  const RouterWhitespaceExcpetion(String route)
+      : message = "$route contains whitespaces.";
+
+  @override
+  String toString() => message;
 }
