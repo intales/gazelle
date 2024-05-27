@@ -74,7 +74,7 @@ class GazelleCorsPlugin implements GazellePlugin {
           if (request.method == GazelleHttpMethod.options) {
             return (
               request,
-              response.copyWith(
+              GazelleResponse(
                 statusCode: GazelleHttpStatusCode.success.ok_200,
                 headers: newHeaders,
               )
@@ -84,7 +84,7 @@ class GazelleCorsPlugin implements GazellePlugin {
           // Add CORS headers to the request
           return (
             request,
-            response.copyWith(
+            GazelleResponse(
               headers: newHeaders,
             )
           );

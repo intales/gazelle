@@ -20,7 +20,7 @@ void main() {
       final route = GazelleRoute(
         name: "",
         getHandler: (context, request, resonse) async {
-          return resonse.copyWith(
+          return GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: plugin.toString(),
           );

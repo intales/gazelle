@@ -23,7 +23,7 @@ void main() {
       router.addRoutes([
         GazelleRoute(
             name: "test",
-            getHandler: (context, request, response) async => response.copyWith(
+            getHandler: (context, request, response) async => GazelleResponse(
                   statusCode: GazelleHttpStatusCode.success.ok_200,
                 )),
       ], GazelleContext.create());

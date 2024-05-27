@@ -132,7 +132,7 @@ void main() {
           GazelleRoute(
             name: "login",
             postHandler: (context, request, response) async {
-              return response.copyWith(
+              return GazelleResponse(
                 statusCode: GazelleHttpStatusCode.success.ok_200,
                 body:
                     context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
@@ -142,7 +142,7 @@ void main() {
           GazelleRoute(
             name: "test",
             getHandler: (context, request, response) async {
-              return response.copyWith(
+              return GazelleResponse(
                 statusCode: GazelleHttpStatusCode.success.ok_200,
                 body: "Hello, World!",
               );
@@ -154,7 +154,7 @@ void main() {
               GazelleRoute(
                 name: "test_2",
                 getHandler: (context, request, response) async {
-                  return response.copyWith(
+                  return GazelleResponse(
                     statusCode: GazelleHttpStatusCode.success.ok_200,
                     body: "Hello, World!",
                   );

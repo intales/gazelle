@@ -12,7 +12,7 @@ void main() {
           GazelleRoute(
             name: "",
             getHandler: (context, request, response) async {
-              return response.copyWith(
+              return GazelleResponse(
                 statusCode: GazelleHttpStatusCode.success.ok_200,
                 body: "Hello, Gazelle!",
               );

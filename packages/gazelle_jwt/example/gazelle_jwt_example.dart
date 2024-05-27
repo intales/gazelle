@@ -10,7 +10,7 @@ void main() async {
         name: "login",
         postHandler: (context, request, response) async {
           // Use the request to get data sent from the client.
-          return response.copyWith(
+          return GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             // Sign a token and send it back to the client.
             body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
@@ -20,7 +20,7 @@ void main() async {
       GazelleRoute(
         name: "hello_world",
         getHandler: (context, request, response) async {
-          return response.copyWith(
+          return GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: "Hello, World!",
           );

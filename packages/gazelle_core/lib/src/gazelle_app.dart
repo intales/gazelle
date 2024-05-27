@@ -166,16 +166,52 @@ class GazelleApp {
     if (handler == null) return _send404Error(httpResponse);
 
     for (final hook in preRequestHooks) {
-      (request, response) = await hook(context, request, response);
+      final (hookRequest, hookResponse) =
+          await hook(context, request, response);
+      request = GazelleRequest(
+        uri: hookRequest.uri,
+        body: hookRequest.body,
+        method: hookRequest.method,
+        headers: [...request.headers, ...hookRequest.headers],
+        metadata: {...request.metadata, ...hookRequest.metadata},
+        pathParameters: hookRequest.pathParameters,
+      );
+      response = GazelleResponse(
+        metadata: {...response.metadata, ...hookResponse.metadata},
+        headers: [...response.headers, ...hookResponse.headers],
+        body: hookResponse.body,
+        statusCode: hookResponse.statusCode,
+      );
       if (response.statusCode.code >= 400 && response.statusCode.code <= 599) {
         return _sendResponse(httpResponse, response);
       }
     }
 
-    response = await handler(context, request, response);
+    final handlerResponse = await handler(context, request, response);
+    response = GazelleResponse(
+      metadata: {...response.metadata, ...handlerResponse.metadata},
+      headers: [...response.headers, ...handlerResponse.headers],
+      body: handlerResponse.body,
+      statusCode: handlerResponse.statusCode,
+    );
 
     for (final hook in postResponseHooks) {
-      (request, response) = await hook(context, request, response);
+      final (hookRequest, hookResponse) =
+          await hook(context, request, response);
+      request = GazelleRequest(
+        uri: hookRequest.uri,
+        body: hookRequest.body,
+        method: hookRequest.method,
+        headers: [...request.headers, ...hookRequest.headers],
+        metadata: {...request.metadata, ...hookRequest.metadata},
+        pathParameters: hookRequest.pathParameters,
+      );
+      response = GazelleResponse(
+        metadata: {...response.metadata, ...hookResponse.metadata},
+        headers: [...response.headers, ...hookResponse.headers],
+        body: hookResponse.body,
+        statusCode: hookResponse.statusCode,
+      );
       if (response.statusCode.code >= 400 && response.statusCode.code <= 599) {
         return _sendResponse(httpResponse, response);
       }

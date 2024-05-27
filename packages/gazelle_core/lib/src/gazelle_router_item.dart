@@ -35,7 +35,12 @@ class GazelleRouterItem {
     if (getHandler == null) return null;
     return (context, request, response) async {
       final getResponse = await getHandler!(context, request, response);
-      return getResponse.copyWith(body: "");
+      return GazelleResponse(
+        statusCode: getResponse.statusCode,
+        body: getResponse.body,
+        headers: getResponse.headers,
+        metadata: getResponse.metadata,
+      );
     };
   }
 
@@ -60,7 +65,7 @@ class GazelleRouterItem {
 
     availableMethods.add(GazelleHttpMethod.options.name);
 
-    return response.copyWith(
+    return GazelleResponse(
       statusCode: GazelleHttpStatusCode.success.noContent_204,
       headers: [GazelleHttpHeader.allow.addValues(availableMethods)],
     );

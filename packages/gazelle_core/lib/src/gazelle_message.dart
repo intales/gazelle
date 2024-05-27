@@ -86,24 +86,6 @@ class GazelleRequest extends GazelleMessage {
       body: body,
     );
   }
-
-  /// Creates a copy of this [GazelleRequest] with the specified attributes overridden.
-  GazelleRequest copyWith({
-    Uri? uri,
-    GazelleHttpMethod? method,
-    Map<String, String>? pathParameters,
-    List<GazelleHttpHeader>? headers,
-    Future<String>? body,
-    Map<String, dynamic>? metadata,
-  }) =>
-      GazelleRequest(
-        uri: uri ?? this.uri,
-        method: method ?? this.method,
-        pathParameters: pathParameters ?? this.pathParameters,
-        headers: headers ?? this.headers,
-        metadata: metadata ?? this.metadata,
-        body: body ?? this.body,
-      );
 }
 
 /// Represents an HTTP response in Gazelle.
@@ -146,20 +128,6 @@ class GazelleResponse extends GazelleMessage {
 
     response.close();
   }
-
-  /// Creates a copy of this [GazelleResponse] with the specified attributes overridden.
-  GazelleResponse copyWith({
-    GazelleHttpStatusCode? statusCode,
-    List<GazelleHttpHeader>? headers,
-    Map<String, dynamic>? metadata,
-    String? body,
-  }) =>
-      GazelleResponse(
-        statusCode: statusCode ?? this.statusCode,
-        headers: headers ?? this.headers,
-        metadata: metadata ?? this.metadata,
-        body: body ?? this.body,
-      );
 }
 
 /// Extension methods for easy access to headers inside a [GazelleMessage].
