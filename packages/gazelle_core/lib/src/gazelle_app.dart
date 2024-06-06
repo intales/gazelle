@@ -14,7 +14,7 @@ import 'gazelle_ssl_certificate.dart';
 /// API for setting up APIs, web servers, and microservices with minimal configuration.
 class GazelleApp {
   /// The default address for the server.
-  static const _localhost = "localhost";
+  static const _localhost = "0.0.0.0";
 
   /// Error message for resource not found.
   static const _error404 = "Resource not found.";
