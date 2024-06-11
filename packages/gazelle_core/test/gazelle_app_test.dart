@@ -90,8 +90,7 @@ void main() {
       final app = GazelleApp(routes: [
         GazelleRoute(
           name: "test",
-          getHandler: (context, request, response) async =>
-              throw Exception("error"),
+          get: (context, request, response) async => throw Exception("error"),
         ),
       ]);
 
@@ -117,7 +116,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            getHandler: (context, request, response) async => GazelleResponse(
+            get: (context, request, response) async => GazelleResponse(
               statusCode: GazelleHttpStatusCode.success.ok_200,
               body: "OK",
             ),
@@ -147,7 +146,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            getHandler: (context, request, response) async => GazelleResponse(
+            get: (context, request, response) async => GazelleResponse(
               statusCode: GazelleHttpStatusCode.success.ok_200,
               body: "OK",
             ),
@@ -171,8 +170,7 @@ void main() {
             children: [
               GazelleRoute(
                 name: "test_2",
-                getHandler: (context, request, response) async =>
-                    GazelleResponse(
+                get: (context, request, response) async => GazelleResponse(
                   statusCode: GazelleHttpStatusCode.success.ok_200,
                   body: "OK",
                 ),
@@ -211,23 +209,23 @@ void main() {
       final routes = [
         GazelleRoute(
           name: "test",
-          getHandler: (context, request, response) async => GazelleResponse(
+          get: (context, request, response) async => GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: "OK",
           ),
-          postHandler: (context, request, response) async => GazelleResponse(
+          post: (context, request, response) async => GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: "OK",
           ),
-          putHandler: (context, request, response) async => GazelleResponse(
+          put: (context, request, response) async => GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: "OK",
           ),
-          patchHandler: (context, request, response) async => GazelleResponse(
+          patch: (context, request, response) async => GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: "OK",
           ),
-          deleteHandler: (context, request, response) async => GazelleResponse(
+          delete: (context, request, response) async => GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: "OK",
           ),
@@ -292,7 +290,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            getHandler: (context, request, response) async {
+            get: (context, request, response) async {
               return GazelleResponse(
                 statusCode: GazelleHttpStatusCode.success.ok_200,
                 body: "Hello, World!",
@@ -326,7 +324,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            getHandler: (context, request, response) async {
+            get: (context, request, response) async {
               return GazelleResponse(
                 statusCode: GazelleHttpStatusCode.success.ok_200,
                 body: "Hello, World!",

@@ -8,7 +8,7 @@ void main() async {
     routes: [
       GazelleRoute(
         name: "login",
-        postHandler: (context, request, response) async {
+        post: (context, request, response) async {
           // Use the request to get data sent from the client.
           return GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
@@ -19,7 +19,7 @@ void main() async {
       ),
       GazelleRoute(
         name: "hello_world",
-        getHandler: (context, request, response) async {
+        get: (context, request, response) async {
           return GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: "Hello, World!",

@@ -16,25 +16,25 @@ class GazelleRouterItem {
   final String name;
 
   /// The handler for the GET method.
-  final GazelleRouteHandler? getHandler;
+  final GazelleRouteHandler? get;
 
   /// The handler for the POST method.
-  final GazelleRouteHandler? postHandler;
+  final GazelleRouteHandler? post;
 
   /// The handler for the PUT method.
-  final GazelleRouteHandler? putHandler;
+  final GazelleRouteHandler? put;
 
   /// The handler for the PATCH method.
-  final GazelleRouteHandler? patchHandler;
+  final GazelleRouteHandler? patch;
 
   /// The handler for the DELETE method.
-  final GazelleRouteHandler? deleteHandler;
+  final GazelleRouteHandler? delete;
 
   /// The handler for the HEAD method.
-  GazelleRouteHandler? get headHandler {
-    if (getHandler == null) return null;
+  GazelleRouteHandler? get head {
+    if (get == null) return null;
     return (context, request, response) async {
-      final getResponse = await getHandler!(context, request, response);
+      final getResponse = await get!(context, request, response);
       return GazelleResponse(
         statusCode: getResponse.statusCode,
         body: getResponse.body,
@@ -45,21 +45,21 @@ class GazelleRouterItem {
   }
 
   /// The handler for the OPTIONS method.
-  Future<GazelleResponse> optionsHandler(
+  Future<GazelleResponse> options(
     GazelleContext context,
     GazelleRequest request,
     GazelleResponse response,
   ) async {
     final availableMethods = <String>[];
 
-    if (getHandler != null) availableMethods.add(GazelleHttpMethod.get.name);
-    if (headHandler != null) availableMethods.add(GazelleHttpMethod.head.name);
-    if (postHandler != null) availableMethods.add(GazelleHttpMethod.post.name);
-    if (putHandler != null) availableMethods.add(GazelleHttpMethod.put.name);
-    if (patchHandler != null) {
+    if (get != null) availableMethods.add(GazelleHttpMethod.get.name);
+    if (head != null) availableMethods.add(GazelleHttpMethod.head.name);
+    if (post != null) availableMethods.add(GazelleHttpMethod.post.name);
+    if (put != null) availableMethods.add(GazelleHttpMethod.put.name);
+    if (patch != null) {
       availableMethods.add(GazelleHttpMethod.patch.name);
     }
-    if (deleteHandler != null) {
+    if (delete != null) {
       availableMethods.add(GazelleHttpMethod.delete.name);
     }
 
@@ -81,34 +81,45 @@ class GazelleRouterItem {
   const GazelleRouterItem({
     required this.context,
     required this.name,
-    this.getHandler,
-    this.postHandler,
-    this.putHandler,
-    this.patchHandler,
-    this.deleteHandler,
+    this.get,
+    this.post,
+    this.put,
+    this.patch,
+    this.delete,
     this.preRequestHooks = const [],
     this.postResponseHooks = const [],
   });
 
+  /// Retrieves the correct handler.
+  GazelleRouteHandler? getHandler(GazelleHttpMethod method) => switch (method) {
+        GazelleHttpMethod.get => get,
+        GazelleHttpMethod.post => post,
+        GazelleHttpMethod.patch => patch,
+        GazelleHttpMethod.put => put,
+        GazelleHttpMethod.delete => delete,
+        GazelleHttpMethod.head => head,
+        GazelleHttpMethod.options => options,
+      };
+
   /// Creates a copy of this GazelleRoute with the specified attributes overridden.
   GazelleRouterItem copyWith({
     String? name,
-    GazelleRouteHandler? getHandler,
-    GazelleRouteHandler? postHandler,
-    GazelleRouteHandler? putHandler,
-    GazelleRouteHandler? patchHandler,
-    GazelleRouteHandler? deleteHandler,
+    GazelleRouteHandler? get,
+    GazelleRouteHandler? post,
+    GazelleRouteHandler? put,
+    GazelleRouteHandler? patch,
+    GazelleRouteHandler? delete,
     List<GazellePreRequestHook>? preRequestHooks,
     List<GazellePostResponseHook>? postResponseHooks,
     GazelleContext? context,
   }) =>
       GazelleRouterItem(
         name: name ?? this.name,
-        getHandler: getHandler ?? this.getHandler,
-        postHandler: postHandler ?? this.postHandler,
-        putHandler: putHandler ?? this.putHandler,
-        patchHandler: patchHandler ?? this.patchHandler,
-        deleteHandler: deleteHandler ?? this.deleteHandler,
+        get: get ?? this.get,
+        post: post ?? this.post,
+        put: put ?? this.put,
+        patch: patch ?? this.patch,
+        delete: delete ?? this.delete,
         preRequestHooks: preRequestHooks ?? this.preRequestHooks,
         postResponseHooks: postResponseHooks ?? this.postResponseHooks,
         context: context ?? this.context,

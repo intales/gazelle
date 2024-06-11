@@ -31,19 +31,19 @@ class GazelleRoute {
   final String name;
 
   /// The handler for the GET method.
-  final GazelleRouteHandler? getHandler;
+  final GazelleRouteHandler? get;
 
   /// The handler for the POST method.
-  final GazelleRouteHandler? postHandler;
+  final GazelleRouteHandler? post;
 
   /// The handler for the PUT method.
-  final GazelleRouteHandler? putHandler;
+  final GazelleRouteHandler? put;
 
   /// The handler for the PATCH method.
-  final GazelleRouteHandler? patchHandler;
+  final GazelleRouteHandler? patch;
 
   /// The handler for the DELETE method.
-  final GazelleRouteHandler? deleteHandler;
+  final GazelleRouteHandler? delete;
 
   /// The pre-request hooks associated with the route.
   final GazellePreRequestHooksBuilder? preRequestHooks;
@@ -57,11 +57,11 @@ class GazelleRoute {
   /// Constructs a [GazelleRoute] instance.
   const GazelleRoute({
     required this.name,
-    this.getHandler,
-    this.postHandler,
-    this.putHandler,
-    this.patchHandler,
-    this.deleteHandler,
+    this.get,
+    this.post,
+    this.put,
+    this.patch,
+    this.delete,
     this.preRequestHooks,
     this.postResponseHooks,
     this.children = const [],
@@ -70,11 +70,11 @@ class GazelleRoute {
   /// Constructs a parametric [GazelleRoute] instance.
   const GazelleRoute.parameter({
     required String name,
-    this.getHandler,
-    this.postHandler,
-    this.putHandler,
-    this.patchHandler,
-    this.deleteHandler,
+    this.get,
+    this.post,
+    this.put,
+    this.patch,
+    this.delete,
     this.preRequestHooks,
     this.postResponseHooks,
     this.children = const [],

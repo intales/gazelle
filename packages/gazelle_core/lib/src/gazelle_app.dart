@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'gazelle_context.dart';
-import 'gazelle_http_method.dart';
 import 'gazelle_http_status_code.dart';
 import 'gazelle_message.dart';
 import 'gazelle_plugin.dart';
@@ -151,17 +150,10 @@ class GazelleApp {
 
     GazelleRequest request = searchResult.request;
     GazelleResponse response = searchResult.response;
+
+    final handler = searchResult.route.getHandler(request.method);
     final preRequestHooks = searchResult.route.preRequestHooks;
     final postResponseHooks = searchResult.route.postResponseHooks;
-    final handler = switch (request.method) {
-      GazelleHttpMethod.get => searchResult.route.getHandler,
-      GazelleHttpMethod.head => searchResult.route.headHandler,
-      GazelleHttpMethod.post => searchResult.route.postHandler,
-      GazelleHttpMethod.put => searchResult.route.putHandler,
-      GazelleHttpMethod.patch => searchResult.route.patchHandler,
-      GazelleHttpMethod.delete => searchResult.route.deleteHandler,
-      GazelleHttpMethod.options => searchResult.route.optionsHandler,
-    };
 
     if (handler == null) return _send404Error(httpResponse);
 

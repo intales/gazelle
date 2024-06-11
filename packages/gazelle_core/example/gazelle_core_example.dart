@@ -10,11 +10,11 @@ void main() async {
         children: [
           GazelleRoute.parameter(
             name: "name",
-            getHandler: (context, request, response) => GazelleResponse(
+            get: (context, request, response) => GazelleResponse(
               statusCode: GazelleHttpStatusCode.success.ok_200,
               body: "Hello, ${request.pathParameters["name"]}!",
             ),
-            putHandler: (context, request, response) => GazelleResponse(
+            put: (context, request, response) => GazelleResponse(
               statusCode: GazelleHttpStatusCode.success.ok_200,
               body: "Hello, ${request.pathParameters["name"]}",
             ),

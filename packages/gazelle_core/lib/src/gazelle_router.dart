@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'gazelle_context.dart';
 import 'gazelle_hooks.dart';
-import 'gazelle_http_method.dart';
 import 'gazelle_message.dart';
 import 'gazelle_route.dart';
 import 'gazelle_router_item.dart';
@@ -73,14 +72,15 @@ class GazelleRouter {
       throw RouterWhitespaceExcpetion(route.name);
     }
 
+    List<String> path = [...parentPath, route.name];
     final routerItem = GazelleRouterItem(
       context: context,
       name: route.name,
-      getHandler: route.getHandler,
-      postHandler: route.postHandler,
-      putHandler: route.putHandler,
-      patchHandler: route.patchHandler,
-      deleteHandler: route.deleteHandler,
+      get: route.get,
+      post: route.post,
+      put: route.put,
+      patch: route.patch,
+      delete: route.delete,
       preRequestHooks: route.preRequestHooks != null
           ? route.preRequestHooks!(context)
           : const [],
@@ -89,24 +89,10 @@ class GazelleRouter {
           : const [],
     );
 
-    final currentPath = [...parentPath, routerItem.name];
-
-    void addHandler(GazelleHttpMethod method, GazelleRouteHandler? handler) {
-      if (handler == null) return;
-      final path = [method.name, ...currentPath];
-      _routes.insert(path, routerItem);
-    }
-
-    addHandler(GazelleHttpMethod.get, routerItem.getHandler);
-    addHandler(GazelleHttpMethod.head, routerItem.headHandler);
-    addHandler(GazelleHttpMethod.post, routerItem.postHandler);
-    addHandler(GazelleHttpMethod.put, routerItem.putHandler);
-    addHandler(GazelleHttpMethod.patch, routerItem.patchHandler);
-    addHandler(GazelleHttpMethod.delete, routerItem.deleteHandler);
-    addHandler(GazelleHttpMethod.options, routerItem.optionsHandler);
+    _routes.insert(path, routerItem);
 
     for (final route in route.children) {
-      _addRoute(route, currentPath, context);
+      _addRoute(route, path, context);
     }
   }
 
@@ -114,7 +100,7 @@ class GazelleRouter {
   ///
   /// Returns a [GazelleRouterSearchResult] if a match is found, otherwise returns `null`.
   GazelleRouterSearchResult? search(HttpRequest request) {
-    final route = _routeFromRequest(request);
+    final route = request.uri.path;
     final result = _routes.search(route.split(_routeSeparator));
 
     if (result.value == null) return null;
@@ -148,14 +134,6 @@ class GazelleRouter {
         postResponseHooks: postResponseHooks.reversed.toList(),
       ),
     );
-  }
-
-  /// Extracts the route from the specified [request].
-  String _routeFromRequest(HttpRequest request) {
-    final method = GazelleHttpMethod.fromString(request.method).name;
-    final path = request.uri.path;
-
-    return "$method/$path";
   }
 }
 
