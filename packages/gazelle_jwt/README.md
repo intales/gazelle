@@ -26,30 +26,38 @@ import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_jwt/gazelle_jwt.dart';
 
 void main() async {
-  final app = GazelleApp();
-  await app.registerPlugin(GazelleJwtPlugin(SecretKey("supersecret")));
+  // Initialize your Gazelle app.
+  final app = GazelleApp(
+    routes: [
+      GazelleRoute(
+        name: "login",
+        post: (context, request, response) async {
+          // Use the request to get data sent from the client.
+          return GazelleResponse(
+            statusCode: GazelleHttpStatusCode.success.ok_200,
+            // Sign a token and send it back to the client.
+            body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+          );
+        },
+      ),
+      GazelleRoute(
+        name: "hello_world",
+        get: (context, request, response) async {
+          return GazelleResponse(
+            statusCode: GazelleHttpStatusCode.success.ok_200,
+            body: "Hello, World!",
+          );
+        },
+        // Add the authentication hook provided by the plugin to guard your routes.
+        preRequestHooks: (context) => [
+          context.getPlugin<GazelleJwtPlugin>().authenticationHook,
+        ],
+      ),
+    ],
+    plugins: [GazelleJwtPlugin(SecretKey("supersecret"))],
+  );
 
-  app
-    ..post(
-      "/login",
-      (request, response) async {
-        return response.copyWith(
-          statusCode: 200,
-          body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-        );
-      },
-    )
-    ..get(
-      "/hello_world",
-      (request, response) async {
-        return response.copyWith(
-          statusCode: 200,
-          body: "Hello, World!",
-        );
-      },
-      preRequestHooks: [app.getPlugin<GazelleJwtPlugin>().authenticationHook],
-    );
-
+  // Start your server.
   await app.start();
 }
 ```
