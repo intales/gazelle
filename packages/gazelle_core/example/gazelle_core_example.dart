@@ -4,20 +4,11 @@ void main() async {
   final app = GazelleApp(
     routes: [
       GazelleRoute(
-        name: "hello",
-        children: [
-          GazelleRoute.parameter(
-            name: "name",
-            get: (context, request, response) => GazelleResponse(
-              statusCode: GazelleHttpStatusCode.success.ok_200,
-              body: "Hello, ${request.pathParameters["name"]}!",
-            ),
-            put: (context, request, response) => GazelleResponse(
-              statusCode: GazelleHttpStatusCode.success.ok_200,
-              body: "Hello, ${request.pathParameters["name"]}",
-            ),
-          ),
-        ],
+        name: "hello_gazelle",
+        get: (context, request, response) => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, Gazelle!",
+        ),
       ),
     ],
   );
