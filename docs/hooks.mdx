@@ -8,9 +8,6 @@ hooks and handlers and will send the response to the client.</Warning>
 ### Pre-request Hooks
 Pre-request hooks are functions that are executed before a request is handled.
 They can be used for tasks such as authentication, authorization, logging, etc.
-If you want to interrupt the handling of a request by return a `GazelleResponse` object
-inside the hook callback, otherwise just return the request to continue its processing.
-You can also update the request via its `copyWith` method.
 Here's an example of using a pre-request hook to authenticate requests:
 ```dart
 // Creating a pre-request hook for authentication
@@ -18,38 +15,44 @@ final authenticationHook = GazellePreRequestHook(
   (request, response) async {
     // Perform authentication logic here
     if (!isAuthenticated(request)) {
-      return (request,response.copyWith(
+      final response = GazelleResponse(
         statusCode: 401,
         body: 'Unauthorized',
-      ));
+      );
+      return (request, response);
     }
 
     // If authentication succeeds, continue processing the request
     return (request, response);
   },
-  shareWithChildRoutes: true, // Share this hook with child routes, false by default
+  // Share this hook with child routes, false by default
+  shareWithChildRoutes: true,
 );
 
-final app = GazelleApp();
-
-// Declaring a GET route for the path '/protected'
-app.get('/protected', (request, response) async {
-  return response.copyWith(
-    statusCode: 200,
-    body: 'Protected',
-  );
- },
- preRequestHooks: [authenticationHook],
-);
-
-// Declaring a GET route for the path '/protected/user_info'
-// Automatically inherits authentication hook from parent route
-app.get('/protected/user_info', (request, response) async {
-  return response.copyWith(
-    statusCode: 200,
-    body: 'User Info',
-  );
- },
+final app = GazelleApp(
+  routes: [
+    GazelleRoute(
+      name: "protected",
+      preRequestHooks: (context) => [authenticationHook],
+      get: (context, request, response) {
+        return GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Protected",
+        );
+      },
+      children: [
+        GazelleRoute(
+          name: "user_info",
+          get: (context, request, response) {
+            return GazelleResponse(
+              statusCode: GazelleHttpStatusCode.success.ok_200,
+              body: "User Info",
+            );
+          },
+        )
+      ],
+    ),
+  ],
 );
 ```
 In this example, the pre-request hook for authentication is applied to the main path `/protected`.
@@ -66,38 +69,44 @@ Here's an example of using a post-response hook to add custom headers to the res
 // Creating a post-response hook to add custom headers
 final customHeadersHook = GazellePostResponseHook(
   (request, response) async {
-    // Return the modified response
-    return (request, response.copyWith(
+    final response = GazelleResponse(
       // Add custom headers to the response
       headers: {...response.headers, 'X-Custom-Header': 'Value'},
       // Optionally modify the response body or status code
       body: "${response.body} (modified)",
-      statusCode: 200,
-    ));
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+    );
+    // Return the modified response
+    return (request, response);
   },
-  shareWithChildRoutes: true, // Share this hook with child routes, false by default
+  // Share this hook with child routes, false by default
+  shareWithChildRoutes: true,
 );
 
-final app = GazelleApp();
-
-// Declaring a GET route for the path '/data'
-app.get('/data', (request, response) async {
-  return response.copyWith(
-    statusCode: 200,
-    body: 'Data',
-  );
- },
-);
-
-// Declaring a GET route for the path '/data/info'
-// Automatically inherits custom headers hook from parent route
-app.get('/data/info', (request, response) async {
-  return response.copyWith(
-    statusCode: 200,
-    body: 'Info',
-  );
- },
- postResponseHooks: [customHeadersHook],
+final app = GazelleApp(
+  routes: [
+    GazelleRoute(
+      name: "data",
+      postResponseHooks: (context) => [customHeadersHook],
+      get: (context, request, response) {
+        return GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Data",
+        );
+      },
+      children: [
+        GazelleRoute(
+          name: "info",
+          get: (context, request, response) {
+            return GazelleResponse(
+              statusCode: GazelleHttpStatusCode.success.ok_200,
+              body: "Info",
+            );
+          },
+        ),
+      ],
+    )
+  ],
 );
 ```
 In this example, the post-response hook for adding custom headers is applied to the main path `/data`.
