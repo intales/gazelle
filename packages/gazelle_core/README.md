@@ -31,7 +31,7 @@ microservices, all with minimal configuration and maximum efficiency.
 To start using Gazelle in your Dart project, simply add it to your `pubspec.yaml` file:
 ```yaml
 dependencies:
-  gazelle: <latest-version> 
+  gazelle_core: <latest-version> 
 ```
 Then, run `dart pub get` or `flutter pub get` to install the package.
 
@@ -42,23 +42,26 @@ Here's a quick example of how to create a simple Gazelle server:
 import 'package:gazelle_core/gazelle_core.dart';
 
 void main() async {
-  final app = GazelleApp();
-
-  app.get('/', (request, response) async {
-    return response.copyWith(
-      statusCode: 200,
-      body: "Hello, Gazelle!",
-    );
-  }); 
+  final app = GazelleApp(
+    routes: [
+      GazelleRoute(
+        name: "hello_gazelle",
+        get: (context, request, response) => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, Gazelle!",
+        ),
+      ),
+    ],
+  );
 
   await app.start();
-  print('Server is running at http://${app.address}:${app.port}');
+  print("Gazelle listening at ${app.serverAddress}");
 }
 ```
 That's it! You've just created a basic Gazelle server that responds with "Hello, Gazelle!"
 to any incoming requests to the root route.
 
-For more advanced usage and detailed documentation, check out the Gazelle documentation.
+To learn more, check out our [documentation](https://docs.gazelle-dart.dev/).
 
 ## Contributing 
 

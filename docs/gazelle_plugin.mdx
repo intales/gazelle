@@ -27,9 +27,9 @@ class MyPlugin extends GazellePlugin {
 Once the plugin is implemented, it can be registered with a Gazelle application using the `registerPlugin` method.
 This enables the plugin to extend the functionality of the application seamlessly.
 ```dart
-final app = GazelleApp();
-final myPlugin = MyPlugin();
-await app.registerPlugin(myPlugin);
+final app = GazelleApp(
+  plugins: [MyPlugin()],
+);
 ```
 
 ## Initialization

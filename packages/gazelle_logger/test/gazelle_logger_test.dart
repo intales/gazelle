@@ -14,25 +14,29 @@ void main() {
   group('GazelleLoggerPlugin tests', () {
     test('Should log incoming request', () async {
       // Arrange
-      final app = GazelleApp();
       final logOutput = TestLogOutput();
-      await app.registerPlugin(GazelleLoggerPlugin(logOutput: logOutput));
-      app.get(
-        "/",
-        (request, resonse) async {
-          return resonse.copyWith(
-            statusCode: 200,
-            body: "Hello, World!",
+      final plugin = GazelleLoggerPlugin(logOutput: logOutput);
+
+      final route = GazelleRoute(
+        name: "",
+        get: (context, request, resonse) async {
+          return GazelleResponse(
+            statusCode: GazelleHttpStatusCode.success.ok_200,
+            body: plugin.toString(),
           );
         },
-        preRequestHooks: [
-          app.getPlugin<GazelleLoggerPlugin>().logRequestHook,
+        preRequestHooks: (context) => [
+          context.getPlugin<GazelleLoggerPlugin>().logRequestHook,
         ],
-        postResponseHooks: [
-          app.getPlugin<GazelleLoggerPlugin>().logResponseHook,
+        postResponseHooks: (context) => [
+          context.getPlugin<GazelleLoggerPlugin>().logResponseHook,
         ],
       );
 
+      final app = GazelleApp(
+        routes: [route],
+        plugins: [plugin],
+      );
       await app.start();
 
       // Act

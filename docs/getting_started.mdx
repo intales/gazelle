@@ -23,18 +23,23 @@ Here's an example:
 import 'package:gazelle_core/gazelle_core.dart';
 
 void main() async {
-  final app = GazelleApp();
-
-  app.get('/', (request, response) async => response.copyWith(
-    statusCode: 200,
-    body: 'Hello, Gazelle!',
-  ));
+  final app = GazelleApp(
+    routes: [
+      GazelleRoute(
+        name: "hello_gazelle",
+        get: (context, request, response) => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, Gazelle!",
+        ),
+      ),
+    ],
+  );
 
   await app.start();
-  print('Server is running at http://${app.address}:${app.port}');
+  print("Gazelle listening at ${app.serverAddress}");
 }
 ```
-In this example, we create a new instance of a `GazelleApp`, define a route for the root path `/`,
+In this example, we create a new instance of a `GazelleApp`, define a route for the path `/hello_gazelle`,
 and specify a request handler that returns a simple `Hello, Gazelle!` response.
 Finally, we start the server using the `start()` method.
 
@@ -42,10 +47,13 @@ Finally, we start the server using the `start()` method.
 Gazelle provides a powerful routing system that allows you to handle different HTTP methods and paths with ease.
 You can define routes using methods like get, post, put, delete, etc., and specify request handlers to process incoming requests.
 ```dart
-app.get('/hello', (request, response) async => response.copyWith(
-  statusCode: 200,
-  body: 'Hello, World!',
-));
+final myGetRoute = GazelleRoute(
+  name: "hello",
+  get: (context, request, response) => GazelleResponse(
+    statusCode: GazelleHttpStatusCode.success.ok_200,
+    body: "Hello, World!",
+  ),
+);
 ```
 In this example, we define a route for the path `/hello` using the get method and specify a request handler that returns a `Hello, World!` response.
 
@@ -53,19 +61,34 @@ In this example, we define a route for the path `/hello` using the get method an
 Gazelle allows you to enhance your application's functionality using hooks and plugins.
 Hooks enable you to execute functions before and after request handlers, while plugins provide a way to extend Gazelle with custom features.
 ```dart
-// Registering a plugin
-await app.registerPlugin(GazelleJwtPlugin("supersecret"));
-
-// Using a hook
-app.get(
-  "/protected",
-  (request, response) async {
-    return response.copyWith(
-      statusCode: 200,
-      body: "Protected Route",
-    );
-  },
-  preRequestHooks: [app.getPlugin<GazelleJwtPlugin>().authenticationHook],
+final app = GazelleApp(
+  routes: [
+    GazelleRoute(
+      name: "login",
+      post: (context, request, response) async {
+        // Use the request to get data sent from the client.
+        return GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          // Sign a token and send it back to the client.
+          body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+        );
+      },
+    ),
+    GazelleRoute(
+      name: "hello_world",
+      get: (context, request, response) async {
+        return GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, World!",
+        );
+      },
+      // Add the authentication hook provided by the plugin to guard your routes.
+      preRequestHooks: (context) => [
+        context.getPlugin<GazelleJwtPlugin>().authenticationHook,
+      ],
+    ),
+  ],
+  plugins: [GazelleJwtPlugin(SecretKey("supersecret"))],
 );
 ```
 In this example, we register a JWT authentication plugin and apply an authentication hook to a protected route.

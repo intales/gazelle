@@ -20,17 +20,37 @@ void main() {
       });
 
       // Act
-      router.insert(
-        GazelleHttpMethod.get,
-        '/test',
-        (request, response) async => response.copyWith(statusCode: 200),
-      );
+      router.addRoutes([
+        GazelleRoute(
+            name: "test",
+            get: (context, request, response) async => GazelleResponse(
+                  statusCode: GazelleHttpStatusCode.success.ok_200,
+                )),
+      ], GazelleContext.create());
+
       await http.get(
           Uri.parse('http://${server.address.address}:${server.port}/test'));
 
       // Assert
       expect(result, isNotNull);
       server.close(force: true);
+    });
+
+    test(
+        'Should throw a RouterWhitespaceExcpetion when a route contains whitespace',
+        () {
+      // Arrange
+      final context = GazelleContext.create();
+      final router = GazelleRouter();
+      final route = GazelleRoute(name: "test test");
+
+      try {
+        // Act
+        router.addRoutes([route], context);
+        fail("Should have thrown a RouterWhitespaceExcpetion.");
+      } catch (e) {
+        expect(e, isA<RouterWhitespaceExcpetion>());
+      }
     });
   });
 }

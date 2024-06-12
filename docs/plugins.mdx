@@ -24,31 +24,29 @@ import 'package:gazelle_jwt/gazelle_jwt.dart';
 
 void main() async {
   // Initialize your Gazelle app.
-  final app = GazelleApp();
-  // Register GazelleJwtPlugin.
-  await app.registerPlugin(GazelleJwtPlugin("supersecret"));
+  final app = GazelleApp(
+    // Register GazelleJwtPlugin.
+    plugins: [GazelleJwtPlugin(SecretKey("supersecret"))],
+  );
 }
 ```
 The example above imports `GazelleJwtPlugin` from its package, then it gets registered from `GazelleApp`.
 
 ## Using a plugin
-Using a plugin is pretty straight forward, `GazelleApp` and `GazelleContext` both have a `getPlugin` method that's really easy to use.
+Using a plugin is pretty straight forward,`GazelleContext` has a `getPlugin` method that's really easy to use.
 Here's a quick example on how to use it:
 ```dart
-// Assume we already set up our `GazelleApp`
-
-// Setup your routes.
-  app.post(
-      "/login",
-      (request, response) async {
-        // Use the request to get data sent from the client.
-        return response.copyWith(
-          statusCode: 200,
-          // Sign a token and send it back to the client.
-          body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-        );
-      },
+final loginRoute = GazelleRoute(
+  name: "login",
+  post: (context, request, response) async {
+    // Use the request to get data sent from the client.
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      // Sign a token and send it back to the client.
+      body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
     );
+  },
+);
 ```
 
 That's it! You just learned how to use a Gazelle plugin, you can learn how they work and how to write one [here](/ecosystem_overview)!
