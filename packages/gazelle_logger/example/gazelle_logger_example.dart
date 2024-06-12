@@ -24,5 +24,5 @@ void main() async {
   );
 
   await app.start();
-  print(app.serverAddress);
+  print("Gazelle listening at ${app.serverAddress}");
 }
