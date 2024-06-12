@@ -36,22 +36,17 @@ class GazelleJwtPlugin implements GazellePlugin {
   /// The secret used for JWT signing and verification.
   final JWTKey _secret;
 
-  /// The secret key derived from the secret.
-  late final JWTKey _secretKey;
-
   /// Constructs a GazelleJwtPlugin instance with the provided [secret].
   GazelleJwtPlugin(this._secret);
 
   @override
-  Future<void> initialize(GazelleContext context) async {
-    _secretKey = _secret;
-  }
+  Future<void> initialize(GazelleContext context) async {}
 
   /// Signs a JWT with the provided [payload].
-  String sign(Map<String, dynamic> payload) => JWT(payload).sign(_secretKey);
+  String sign(Map<String, dynamic> payload) => JWT(payload).sign(_secret);
 
   /// Verifies and decodes a JWT token.
-  JWT? verify(String token) => JWT.tryVerify(token, _secretKey);
+  JWT? verify(String token) => JWT.tryVerify(token, _secret);
 
   /// Returns a pre-request hook for JWT authentication.
   ///
@@ -60,13 +55,18 @@ class GazelleJwtPlugin implements GazellePlugin {
     bool shareWithChildRoutes = true,
   }) =>
       GazellePreRequestHook(
-        (request, response) async {
-          final authHeader = request.headers[authHeaderName]?.first;
+        (context, request, response) async {
+          final authHeader = request.headers
+              .where((header) =>
+                  header.header == GazelleHttpHeader.authorization.header)
+              .firstOrNull
+              ?.values
+              .firstOrNull;
           if (authHeader == null) {
             return (
               request,
-              response.copyWith(
-                statusCode: 401,
+              GazelleResponse(
+                statusCode: GazelleHttpStatusCode.error.unauthorized_401,
                 body: missingAuthHeaderMessage,
               )
             );
@@ -75,8 +75,8 @@ class GazelleJwtPlugin implements GazellePlugin {
           if (!authHeader.startsWith(bearerSchema)) {
             return (
               request,
-              response.copyWith(
-                statusCode: 401,
+              GazelleResponse(
+                statusCode: GazelleHttpStatusCode.error.unauthorized_401,
                 body: badBearerSchemaMessage,
               )
             );
@@ -87,18 +87,22 @@ class GazelleJwtPlugin implements GazellePlugin {
           if (jwt == null) {
             return (
               request,
-              response.copyWith(
-                statusCode: 401,
+              GazelleResponse(
+                statusCode: GazelleHttpStatusCode.error.unauthorized_401,
                 body: invalidTokenMessage,
               )
             );
           }
 
           return (
-            request.copyWith(metadata: {
-              ...request.metadata,
-              jwtKeyword: jwt,
-            }),
+            GazelleRequest(
+              uri: request.uri,
+              method: request.method,
+              pathParameters: request.pathParameters,
+              metadata: {
+                jwtKeyword: jwt,
+              },
+            ),
             response,
           );
         },

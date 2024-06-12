@@ -6,17 +6,20 @@ with a few parameters.
 Here's a basic example:
 ```dart
 void main() async {
-  final app = GazelleApp();
+  final app = GazelleApp(
+    routes: [
+      GazelleRoute(
+        name: "hello_gazelle",
+        get: (context, request, response) => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, Gazelle!",
+        ),
+      ),
+    ],
+  );
 
-  // Define routes
-  app.get('/', (request, response) async => response.copyWith(
-    statusCode: 200,
-    body: 'Hello, Gazelle!',
-  ));
-
-  // Start the server
   await app.start();
-  print('Server is running at http://${app.address}:${app.port}');
+  print("Gazelle listening at ${app.serverAddress}");
 }
 ```
 In the example above, a `GazelleApp` is started without a specific port or address.
@@ -28,17 +31,22 @@ If you want to specify an address and/or a port, you only need to pass them to
 `GazelleApp` constructor.
 ```dart
 void main() async {
-  final app = GazelleApp(address: '127.0.0.1', port: 3000);
+  final app = GazelleApp(
+    address: "127.0.0.1",
+    port: 3000,
+    routes: [
+      GazelleRoute(
+        name: "hello_gazelle",
+        get: (context, request, response) => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, Gazelle!",
+        ),
+      ),
+    ],
+  );
 
-  // Define routes
-  app.get('/', (request, response) async => response.copyWith(
-    statusCode: 200,
-    body: 'Hello, Gazelle!',
-  ));
-
-  // Start the server
   await app.start();
-  print('Server is running at http://${app.address}:${app.port}');
+  print("Gazelle listening at ${app.serverAddress}");
 }
 ```
 
@@ -51,17 +59,24 @@ void main() async {
     certificatePath: 'path_to_cert.cert',
     privateKeyPath: 'path_to_private_key.key',
   );
-  final app = GazelleApp(port: 443, sslCertificate: sslCertificate);
 
-  // Define routes
-  app.get('/', (request, response) async => response.copyWith(
-    statusCode: 200,
-    body: 'Hello, Gazelle!',
-  ));
+  final app = GazelleApp(
+    address: "127.0.0.1",
+    port: 443,
+    sslCertificate: sslCertificate,
+    routes: [
+      GazelleRoute(
+        name: "hello_gazelle",
+        get: (context, request, response) => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, Gazelle!",
+        ),
+      ),
+    ],
+  );
 
-  // Start the server
   await app.start();
-  print('Server is running at https://${app.address}:${app.port}');
+  print("Gazelle listening at ${app.serverAddress}");
 }
 ```
 
@@ -73,17 +88,24 @@ void main() async {
     certificatePath: 'path_to_cert.cert',
     privateKeyPath: 'path_to_private_key.key',
   );
-  final app = GazelleApp(port: 443, sslCertificate: sslCertificate);
 
-  // Define routes
-  app.get('/', (request, response) async => response.copyWith(
-    statusCode: 200,
-    body: 'Hello, Gazelle!',
-  ));
+  final app = GazelleApp(
+    address: "127.0.0.1",
+    port: 443,
+    sslCertificate: sslCertificate,
+    routes: [
+      GazelleRoute(
+        name: "hello_gazelle",
+        get: (context, request, response) => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, Gazelle!",
+        ),
+      ),
+    ],
+  );
 
-  // Start the server
   await app.start();
-  print('Server is running at https://${app.address}:${app.port}');
+  print("Gazelle listening at ${app.serverAddress}");
 
   // Stop the server
   // If close is true, active connections will be close immediately.

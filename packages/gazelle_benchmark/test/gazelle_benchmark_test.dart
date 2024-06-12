@@ -9,7 +9,7 @@ void main() {
     final response = await get(Uri.parse("http://localhost:3000/"));
 
     expect(response.statusCode, 200);
-    expect(response.body, "{ hello: 'world' }");
+    expect(response.body, "Hello, World!");
 
     await stopGazelleServer();
   });

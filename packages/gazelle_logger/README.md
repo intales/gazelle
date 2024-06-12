@@ -20,34 +20,34 @@ Then, run `dart pub get` to install the package.
 Import the package in your Dart file:
 
 ```dart
+import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_logger/gazelle_logger.dart';
-```
 
-Initialize the plugin and register it with your Gazelle application:
-
-```dart
 void main() async {
-  final app = GazelleApp();
-  await app.registerPlugin(GazelleLoggerPlugin());
-
-  // Define your routes here
+  final app = GazelleApp(
+    routes: [
+      GazelleRoute(
+        name: "hello_gazelle",
+        get: (context, request, resonse) async => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, Gazelle!",
+        ),
+        preRequestHooks: (context) => [
+          context.getPlugin<GazelleLoggerPlugin>().logRequestHook,
+        ],
+        postResponseHooks: (context) => [
+          context.getPlugin<GazelleLoggerPlugin>().logResponseHook,
+        ],
+      )
+    ],
+    plugins: [
+      GazelleLoggerPlugin(),
+    ],
+  );
 
   await app.start();
+  print("Gazelle listening at ${app.serverAddress}");
 }
-```
-
-Now, you can use the provided hooks to log requests and responses:
-
-```dart
-app.get(
-  "/",
-  (request, response) async => response.copyWith(
-    statusCode: 200,
-    body: "Hello, Gazelle!",
-  ),
-  preRequestHooks: [app.getPlugin<GazelleLoggerPlugin>().logRequestHook],
-  postResponseHooks: [app.getPlugin<GazelleLoggerPlugin>().logResponseHook],
-);
 ```
 
 The `logRequestHook` logs incoming requests, while the `logResponseHook` logs outgoing responses.

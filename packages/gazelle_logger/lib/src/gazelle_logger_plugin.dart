@@ -46,12 +46,10 @@ class GazelleLoggerPlugin implements GazellePlugin {
 
   /// Provides a GazellePreRequestHook that logs details of incoming requests.
   GazellePreRequestHook get logRequestHook => GazellePreRequestHook(
-        (request, response) async {
+        (context, request, response) async {
           final method = request.method.name;
           final route = request.uri.path;
-          final headers = request.headers.entries
-              .map((e) => "\t${e.key}:${e.value}")
-              .join("\n");
+          final headers = request.headers.map((e) => "\t$e").join("\n");
           final pathParameters = request.pathParameters.entries
               .map((e) => "\t${e.key}:${e.value}")
               .join("\n");
@@ -79,12 +77,10 @@ class GazelleLoggerPlugin implements GazellePlugin {
 
   /// Provides a GazellePostResponseHook that logs details of outgoing responses.
   GazellePostResponseHook get logResponseHook => GazellePostResponseHook(
-        (request, response) async {
+        (context, request, response) async {
           final method = request.method.name;
           final route = request.uri.path;
-          final headers = response.headers.entries
-              .map((e) => "${e.key}:${e.value}")
-              .join("\n");
+          final headers = response.headers.map((e) => "$e").join("\n");
           final statusCode = response.statusCode;
           final body = response.body;
 
@@ -95,13 +91,13 @@ class GazelleLoggerPlugin implements GazellePlugin {
           message += "STATUS CODE: $statusCode";
           if (body?.isNotEmpty == true) message += "\nBODY: $body";
 
-          if (statusCode >= 200 && statusCode <= 299) {
+          if (statusCode.code >= 200 && statusCode.code <= 299) {
             info(message);
-          } else if (statusCode >= 300 && statusCode <= 399) {
+          } else if (statusCode.code >= 300 && statusCode.code <= 399) {
             info(message);
-          } else if (statusCode >= 400 && statusCode <= 499) {
+          } else if (statusCode.code >= 400 && statusCode.code <= 499) {
             warning(message);
-          } else if (statusCode <= 500 && statusCode <= 599) {
+          } else if (statusCode.code <= 500 && statusCode.code <= 599) {
             fatal(message);
           }
 

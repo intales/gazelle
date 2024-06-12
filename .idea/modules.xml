@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/packages/gazelle_benchmark/melos_gazelle_benchmark.iml" filepath="$PROJECT_DIR$/packages/gazelle_benchmark/melos_gazelle_benchmark.iml" />
+      <module fileurl="file://$PROJECT_DIR$/packages/gazelle_cli/melos_gazelle_cli.iml" filepath="$PROJECT_DIR$/packages/gazelle_cli/melos_gazelle_cli.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/gazelle_core/melos_gazelle_core.iml" filepath="$PROJECT_DIR$/packages/gazelle_core/melos_gazelle_core.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/gazelle_cors/melos_gazelle_cors.iml" filepath="$PROJECT_DIR$/packages/gazelle_cors/melos_gazelle_cors.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/gazelle_jwt/melos_gazelle_jwt.iml" filepath="$PROJECT_DIR$/packages/gazelle_jwt/melos_gazelle_jwt.iml" />
