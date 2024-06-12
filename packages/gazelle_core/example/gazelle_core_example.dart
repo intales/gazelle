@@ -2,8 +2,6 @@ import 'package:gazelle_core/gazelle_core.dart';
 
 void main() async {
   final app = GazelleApp(
-    address: "localhost",
-    port: 8080,
     routes: [
       GazelleRoute(
         name: "hello",
