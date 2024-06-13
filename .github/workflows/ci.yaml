@@ -2,6 +2,8 @@ name: Continuous Integration Pipeline
 
 on:
   push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   unit-tests:
