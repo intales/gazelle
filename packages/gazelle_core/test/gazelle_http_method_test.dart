@@ -19,21 +19,18 @@ void main() {
       final results = methods.map(GazelleHttpMethod.fromString).toList();
 
       // Assert
-      expect(results, GazelleHttpMethod.values);
+      expect(results, equals(GazelleHttpMethod.values));
     });
 
     test('Should throw exception when method is not expected', () {
       // Arrange
       final method = "UNEXPECTED";
 
-      try {
-        // Act
-        GazelleHttpMethod.fromString(method);
-        fail("Should have thrown an exception.");
-      } catch (e) {
-        // Assert
-        expect(e.toString(), "Unexpected method: $method");
-      }
+      // Act & Assert
+      expect(
+        () => GazelleHttpMethod.fromString(method),
+        throwsA(predicate((e) => e.toString() == "Unexpected method: $method")),
+      );
     });
 
     test('Should return name of GazelleHttpMethod', () {
@@ -52,7 +49,7 @@ void main() {
       final results = GazelleHttpMethod.values.map((e) => e.name).toList();
 
       // Assert
-      expect(results, methods);
+      expect(results, equals(methods));
     });
   });
 }
