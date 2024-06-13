@@ -1,3 +1,7 @@
+## 0.3.0
+
+ - Revamped developer experience!
+
 ## 0.2.0
 
  - Fixed typos in external APIs.
