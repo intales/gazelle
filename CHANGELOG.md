@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gazelle_cors` - `v0.3.0`](#gazelle_cors---v030)
+
+---
+
+#### `gazelle_cors` - `v0.3.0`
+
+ - Updated plugin with new DX
+
+
+## 2024-06-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gazelle_core` - `v0.3.0`](#gazelle_core---v030)
  - [`gazelle_jwt` - `v0.1.3+1`](#gazelle_jwt---v0131)
  - [`gazelle_logger` - `v0.1.2+1`](#gazelle_logger---v0121)

@@ -1,6 +1,6 @@
 name: gazelle_cors
 description: Gazelle CORS Plugin is a Dart package that provides Cross-Origin Resource Sharing (CORS) support for Gazelle applications.
-version: 0.1.2
+version: 0.3.0
 repository: https://github.com/intales/gazelle/tree/main/packages/gazelle_cors
 
 environment:
