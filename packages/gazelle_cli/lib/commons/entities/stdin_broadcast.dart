@@ -23,13 +23,13 @@ Stream<String> _createBroadcastStdin() {
   stdin.echoMode = false;
   stdin.lineMode = false;
 
-  var controller = StreamController<String>.broadcast(
-    onListen: () => stdin.transform(utf8.decoder).listen(controller.add),
+  final controller = StreamController<String>.broadcast(
     onCancel: () {
       stdin.lineMode = true;
       stdin.echoMode = true;
     },
   );
+  stdin.transform(utf8.decoder).listen(controller.add);
 
   return controller.stream;
 }

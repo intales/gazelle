@@ -36,17 +36,24 @@ const _mainTemplate = """
 import 'package:gazelle_core/gazelle_core.dart';
 
 Future<void> runApp(List<String> args) async {
-  final app = GazelleApp();
-
-  app.get("/", (request, response) async {
-    return response.copyWith(
-      statusCode: 200,
-      body: "Hello, Gazelle!",
+  try {
+    final app = GazelleApp(
+      routes: [
+        GazelleRoute(
+          name: "hello_gazelle",
+          get: (context, request, response) => GazelleResponse(
+            statusCode: GazelleHttpStatusCode.success.ok_200,
+            body: "Hello, Gazelle!",
+          ),
+        ),
+      ],
     );
-  });
 
-  await app.start();
-  print('Server is running at http://\${app.address}:\${app.port}');
+    await app.start();
+    print("Gazelle listening at \${app.serverAddress}");
+  } catch (e) {
+    print("Failed to start the server: \$e");
+  }
 }
 """;
 
@@ -59,7 +66,7 @@ environment:
   sdk: ^$dartSdkVersion
 
 dependencies:
-  gazelle_core: ^0.2.0
+  gazelle_core: ^0.3.0
 
 dev_dependencies:
   lints: ">=2.1.0 <4.0.0"
