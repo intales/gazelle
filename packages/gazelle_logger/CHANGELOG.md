@@ -1,3 +1,7 @@
+## 0.3.0
+
+ - Updated with new DX
+
 ## 0.1.2
 
  - Fixed `pubspec.yaml` description.

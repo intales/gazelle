@@ -1,6 +1,6 @@
 name: gazelle_logger
 description: Provides logging functionality for Gazelle applications, allowing developers to log incoming requests and outgoing responses.
-version: 0.1.2
+version: 0.3.0
 repository: https://github.com/intales/gazelle/tree/main/packages/gazelle_logger
 
 environment:

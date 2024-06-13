@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gazelle_logger` - `v0.3.0`](#gazelle_logger---v030)
+
+---
+
+#### `gazelle_logger` - `v0.3.0`
+
+ - Updated with new DX
+
+
+## 2024-06-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gazelle_jwt` - `v0.3.0`](#gazelle_jwt---v030)
 
 ---
