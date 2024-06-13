@@ -14,36 +14,34 @@ class CreateCommand extends Command {
   String get description => "Creates a new Gazelle project.";
 
   /// Creates a [CreateCommand].
-  CreateCommand() {
-    argParser.addOption(
-      "name",
-      abbr: "n",
-      help: "The name of the project you want to build.",
-    );
-    argParser.addOption(
-      "path",
-      abbr: "p",
-      help: "The path where you want to build the project.",
-    );
-  }
+  CreateCommand();
 
   @override
   void run() async {
+    stdout.writeln("✨ What would you like to name your new project? 🚀");
+    String? projectName = stdin.readLineSync();
+    while (projectName == null || projectName == "") {
+      stdout.writeln("⚠ Please provide a name for your project to proceed:");
+      projectName = stdin.readLineSync();
+    }
+    stdout.writeln();
+
     final spinner = CliSpin(
-      text: "Creating Gazelle project...",
+      text: "Creating $projectName project...",
       spinner: CliSpinners.dots,
     ).start();
 
-    final nameOption = argResults?.option("name") ??
-        argResults?.rest.firstOrNull ??
-        "gazelle_app";
-    final pathOption = argResults?.option("path");
-
     try {
-      final result = await createProject(nameOption, path: pathOption);
-      spinner.success(
-        "$result project created!\nRun `gazelle run $result` to test it.",
+      final result = await createProject(
+        projectName,
+        path: Directory.current.path,
       );
+
+      spinner.success(
+        "$projectName project created 🚀\n💡To navigate to your project run \"cd ${result.split("/").last}\"\n💡Then, use \"gazelle run\" to execute it!",
+      );
+
+      Directory.current = result;
     } on CreateProjectError catch (e) {
       spinner.fail(e.message);
       exit(2);
