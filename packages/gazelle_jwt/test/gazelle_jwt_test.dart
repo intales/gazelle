@@ -33,13 +33,15 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
-          headers: {
-            "authorization": ["Bearer $token"],
-          });
-      GazelleResponse response = GazelleResponse(statusCode: 204);
+          headers: [
+            GazelleHttpHeader.authorization.addValue("Bearer $token"),
+          ]);
+      GazelleResponse response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.noContent_204,
+      );
 
       // Act
-      (request, response) = await hook(request, response);
+      (request, response) = await hook(context, request, response);
 
       // Assert
       expect(request.jwt.payload["test"], "123");
@@ -57,13 +59,15 @@ void main() {
         method: GazelleHttpMethod.get,
         pathParameters: {},
       );
-      GazelleResponse response = GazelleResponse(statusCode: 204);
+      GazelleResponse response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.noContent_204,
+      );
 
       // Act
-      (request, response) = await hook(request, response);
+      (request, response) = await hook(context, request, response);
 
       // Assert
-      expect(response.statusCode, 401);
+      expect(response.statusCode, GazelleHttpStatusCode.error.unauthorized_401);
       expect(response.body, missingAuthHeaderMessage);
     });
 
@@ -79,16 +83,18 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
-          headers: {
-            "authorization": [" $token"],
-          });
-      GazelleResponse response = GazelleResponse(statusCode: 204);
+          headers: [
+            GazelleHttpHeader.authorization.addValue(" $token"),
+          ]);
+      GazelleResponse response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.noContent_204,
+      );
 
       // Act
-      (request, response) = await hook(request, response);
+      (request, response) = await hook(context, request, response);
 
       // Assert
-      expect(response.statusCode, 401);
+      expect(response.statusCode, GazelleHttpStatusCode.error.unauthorized_401);
       expect(response.body, badBearerSchemaMessage);
     });
 
@@ -104,60 +110,67 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
-          headers: {
-            "authorization": ["Bearer $token aaaa"],
-          });
-      GazelleResponse response = GazelleResponse(statusCode: 204);
+          headers: [
+            GazelleHttpHeader.authorization.addValue("Bearer $token aaaa"),
+          ]);
+      GazelleResponse response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.noContent_204,
+      );
 
       // Act
-      (request, response) = await hook(request, response);
+      (request, response) = await hook(context, request, response);
 
       // Assert
-      expect(response.statusCode, 401);
+      expect(response.statusCode, GazelleHttpStatusCode.error.unauthorized_401);
       expect(response.body, invalidTokenMessage);
     });
 
     test('Should integrate with gazelle core', () async {
       // Arrange
-      final app = GazelleApp();
-      await app.registerPlugin(GazelleJwtPlugin(SecretKey("supersecret")));
-
-      app
-        ..post(
-          "/login",
-          (request, response) async {
-            return response.copyWith(
-              statusCode: 200,
-              body: app.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-            );
-          },
-        )
-        ..get(
-          "/test",
-          (request, response) async {
-            return response.copyWith(
-              statusCode: 200,
-              body: "Hello, World!",
-            );
-          },
-          preRequestHooks: [
-            app.getPlugin<GazelleJwtPlugin>().authenticationHook,
-          ],
-        )
-        ..get(
-          "/test/test_2",
-          (request, response) async {
-            return response.copyWith(
-              statusCode: 200,
-              body: "Hello, World!",
-            );
-          },
-        );
-
+      final app = GazelleApp(
+        routes: [
+          GazelleRoute(
+            name: "login",
+            post: (context, request, response) async {
+              return GazelleResponse(
+                statusCode: GazelleHttpStatusCode.success.ok_200,
+                body:
+                    context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+              );
+            },
+          ),
+          GazelleRoute(
+            name: "test",
+            get: (context, request, response) async {
+              return GazelleResponse(
+                statusCode: GazelleHttpStatusCode.success.ok_200,
+                body: "Hello, World!",
+              );
+            },
+            preRequestHooks: (context) => [
+              context.getPlugin<GazelleJwtPlugin>().authenticationHook,
+            ],
+            children: [
+              GazelleRoute(
+                name: "test_2",
+                get: (context, request, response) async {
+                  return GazelleResponse(
+                    statusCode: GazelleHttpStatusCode.success.ok_200,
+                    body: "Hello, World!",
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+        plugins: [
+          GazelleJwtPlugin(SecretKey("supersecret")),
+        ],
+      );
       await app.start();
 
       // Act
-      final baseUrl = "http://${app.address}:${app.port}";
+      final baseUrl = app.serverAddress;
       final token =
           await http.post(Uri.parse("$baseUrl/login")).then((e) => e.body);
 

@@ -19,40 +19,41 @@ Go to your main file, for example `lib/my_awesome_app.dart`, you should see
 something like this:
 ```dart
 void runApp() async {
-  final app = GazelleApp();
-
-  app.get(
-    "/",
-    (request, response) async {
-      return response.copyWith(
-        statusCode: 200,
-        body: "Hello, Gazelle!",
-      );
-    },
+  final app = GazelleApp(
+    routes: [
+      GazelleRoute(
+        name: "hello_gazelle",
+        get: (context, request, response) => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, Gazelle!",
+        ),
+      ),
+    ],
   );
 
   await app.start();
-  print("Gazelle running at ${app.address}:${app.port}");
+  print("Gazelle listening at ${app.serverAddress}");
 }
 ```
 You should edit the first lines of the `runApp` function like this:
 ```dart
 void runApp() async {
   final port = int.tryParse(Platform.environment["PORT"] ?? "8080") ?? 8080;
-  final app = GazelleApp(address: "0.0.0.0", port: port);
-
-  app.get(
-    "/",
-    (request, response) async {
-      return response.copyWith(
-        statusCode: 200,
-        body: "Hello, Gazelle!",
-      );
-    },
+  final app = GazelleApp(
+    port: port,
+    routes: [
+      GazelleRoute(
+        name: "hello_gazelle",
+        get: (context, request, response) => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "Hello, Gazelle!",
+        ),
+      ),
+    ],
   );
 
   await app.start();
-  print("Gazelle running at ${app.address}:${app.port}");
+  print("Gazelle listening at ${app.serverAddress}");
 }
 ```
 This is done to use the correct Globe TCP port.

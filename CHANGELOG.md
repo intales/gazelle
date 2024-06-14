@@ -3,6 +3,101 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-06-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_logger` - `v0.3.0`](#gazelle_logger---v030)
+
+---
+
+#### `gazelle_logger` - `v0.3.0`
+
+ - Updated with new DX
+
+
+## 2024-06-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_jwt` - `v0.3.0`](#gazelle_jwt---v030)
+
+---
+
+#### `gazelle_jwt` - `v0.3.0`
+
+ - Updated with new DX
+
+
+## 2024-06-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_cors` - `v0.3.0`](#gazelle_cors---v030)
+
+---
+
+#### `gazelle_cors` - `v0.3.0`
+
+ - Updated plugin with new DX
+
+
+## 2024-06-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_core` - `v0.3.0`](#gazelle_core---v030)
+ - [`gazelle_jwt` - `v0.1.3+1`](#gazelle_jwt---v0131)
+ - [`gazelle_logger` - `v0.1.2+1`](#gazelle_logger---v0121)
+ - [`gazelle_cors` - `v0.1.2+1`](#gazelle_cors---v0121)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gazelle_jwt` - `v0.1.3+1`
+ - `gazelle_logger` - `v0.1.2+1`
+ - `gazelle_cors` - `v0.1.2+1`
+
+---
+
+#### `gazelle_core` - `v0.3.0`
+
+ - Revamped developer experience!
+
+
 ## 2024-05-14
 
 ### Changes

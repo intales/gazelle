@@ -1,17 +1,18 @@
 import 'package:gazelle_core/gazelle_core.dart';
 
 /// Gazelle benchmark sever.
-final app = GazelleApp(address: "0.0.0.0", port: 3000);
+final app = GazelleApp(address: "0.0.0.0", port: 3000, routes: [
+  GazelleRoute(
+    name: "",
+    get: (context, request, response) async => GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: "Hello, World!",
+    ),
+  ),
+]);
 
 /// Starts the Gazelle server for benchmark tests.
 Future<void> startGazelleServer() async {
-  app.get("/", (request, response) async {
-    return response.copyWith(
-      statusCode: 200,
-      body: "{ hello: 'world' }",
-    );
-  });
-
   await app.start();
   print("Gazelle server listening at ${app.address}:${app.port}");
 }

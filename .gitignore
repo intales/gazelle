@@ -30,3 +30,5 @@ packages/*/pubspec.lock
 coverage/
 
 .DS_Store
+
+packages/**/pubspec_overrides.yaml

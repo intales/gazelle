@@ -1,3 +1,7 @@
+## 0.3.0
+
+ - Updated with new DX
+
 ## 0.1.3
 
  - Applied `gazell_core` breaking changes.

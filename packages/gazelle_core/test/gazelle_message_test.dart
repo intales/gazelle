@@ -33,45 +33,6 @@ void main() {
         expect(request?.method, GazelleHttpMethod.post);
         expect(await request?.body, "test");
       });
-
-      test('Should copy request with given params', () async {
-        // Arrange
-        final request = GazelleRequest(
-          uri: Uri.parse("/test"),
-          method: GazelleHttpMethod.get,
-          pathParameters: {},
-        );
-        final uri = Uri.parse('/test/123');
-        const method = GazelleHttpMethod.post;
-        const headers = {
-          'Content-Type': ['application/json'],
-        };
-        const metadata = {
-          'test': 123,
-        };
-        const pathParameters = {
-          'testID': '123',
-        };
-        const body = 'test';
-
-        // Arrange
-        final result = request.copyWith(
-          uri: uri,
-          method: method,
-          headers: headers,
-          pathParameters: pathParameters,
-          body: Future.value(body),
-          metadata: metadata,
-        );
-
-        // Assert
-        expect(result.uri, uri);
-        expect(result.method, method);
-        expect(result.headers, headers);
-        expect(result.pathParameters, pathParameters);
-        expect(await result.body, body);
-        expect(result.metadata, metadata);
-      });
     });
 
     group('GazelleResponse tests', () {
@@ -79,7 +40,7 @@ void main() {
         // Arrange
         final server = await createTestHttpServer();
         server.listen((httpRequest) => GazelleResponse(
-              statusCode: 200,
+              statusCode: GazelleHttpStatusCode.success.ok_200,
               body: "OK",
             ).toHttpResponse(httpRequest.response));
 
@@ -91,33 +52,6 @@ void main() {
         await server.close(force: true);
         expect(result.statusCode, 200);
         expect(result.body, "OK");
-      });
-
-      test('Should copy response with given params', () {
-        // Arrange
-        final response = GazelleResponse(statusCode: 400);
-        const statusCode = 200;
-        const headers = {
-          'Content-Type': ['application/json'],
-        };
-        const metadata = {
-          'test': 123,
-        };
-        const body = "OK";
-
-        // Act
-        final result = response.copyWith(
-          statusCode: statusCode,
-          headers: headers,
-          body: body,
-          metadata: metadata,
-        );
-
-        // Assert
-        expect(result.statusCode, statusCode);
-        expect(result.headers, headers);
-        expect(result.body, body);
-        expect(result.metadata, metadata);
       });
     });
   });

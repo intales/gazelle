@@ -14,24 +14,37 @@ Stream<String> get stdinBroadcast => _stdin ??= _createBroadcastStdin();
 Stream<String> _createBroadcastStdin() {
   /// If stdin is not available, return an empty stream.
   if (!stdin.hasTerminal) {
-    print("Terminal is not available!");
+    stderr.writeln("Terminal is not available!");
     return Stream<String>.empty();
   }
 
-  ProcessSignal.sigint.watch().listen(stdinCleanUp);
-  if (!Platform.isWindows) {
-    ProcessSignal.sigterm.watch().listen(stdinCleanUp);
-  }
+  _setupSignalHandlers();
 
   stdin.echoMode = false;
   stdin.lineMode = false;
-  var controller = StreamController<String>.broadcast();
-  stdin.transform(utf8.decoder).listen(controller.add);
+
+  var controller = StreamController<String>.broadcast(
+    onListen: () => stdin.transform(utf8.decoder).listen(controller.add),
+    onCancel: () {
+      stdin.lineMode = true;
+      stdin.echoMode = true;
+    },
+  );
+
   return controller.stream;
 }
 
-/// Resets the terminal settings when the process is terminated.
-void stdinCleanUp(ProcessSignal event) {
+/// Sets up signal handlers to reset the terminal settings when the process is terminated.
+void _setupSignalHandlers() {
+  ProcessSignal.sigint.watch().listen(_resetTerminalSettings);
+  if (!Platform.isWindows) {
+    ProcessSignal.sigterm.watch().listen(_resetTerminalSettings);
+  }
+}
+
+/// Resets the terminal settings.
+void _resetTerminalSettings(ProcessSignal signal) {
   stdin.lineMode = true;
   stdin.echoMode = true;
+  exit(0); // Exit the application after cleanup
 }
