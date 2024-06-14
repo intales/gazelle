@@ -33,7 +33,7 @@ class CreateCommand extends Command {
 
     try {
       final result = await createProject(
-        projectName,
+        projectName: projectName,
         path: Directory.current.path,
       );
 

@@ -89,15 +89,11 @@ class CreateProjectError {
 /// Creates a new Gazelle project.
 ///
 /// Throws a [CreateProjectError] if project already exists.
-Future<String> createProject(
-  String projectName, {
-  String? path,
+Future<String> createProject({
+  required String projectName,
+  required String path,
 }) async {
-  final nameOption = projectName;
-  final pathOption = path;
-
-  final completePath =
-      pathOption != null ? "$pathOption/$nameOption" : nameOption;
+  final completePath = "$path/$projectName";
   if (await Directory(completePath).exists()) {
     throw CreateProjectError();
   }
@@ -106,19 +102,19 @@ Future<String> createProject(
 
   await File("$completePath/pubspec.yaml")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_getPubspecTemplate(nameOption)));
+      .then((file) => file.writeAsString(_getPubspecTemplate(projectName)));
 
   await File("$completePath/.gitignore")
       .create(recursive: true)
       .then((file) => file.writeAsString(_gitignore));
 
-  await File("$completePath/lib/$nameOption.dart")
+  await File("$completePath/lib/$projectName.dart")
       .create(recursive: true)
       .then((file) => file.writeAsString(_mainTemplate));
 
-  await File("$completePath/bin/$nameOption.dart")
+  await File("$completePath/bin/$projectName.dart")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_getEntryPoint(nameOption)));
+      .then((file) => file.writeAsString(_getEntryPoint(projectName)));
 
   await Process.run(
     "dart",
