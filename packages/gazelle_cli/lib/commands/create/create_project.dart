@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:dart_style/dart_style.dart';
+
 import '../../commons/functions/version.dart';
+import 'create_route.dart';
 
 const _gitignore = """
 # See https://www.dartlang.org/guides/libraries/private-files
@@ -32,19 +35,18 @@ doc/api/
 .flutter-plugins-dependencies
 """;
 
-const _mainTemplate = """
+String _getMainFile({
+  required String routeImportPath,
+  required String routeName,
+}) =>
+    """
 import 'package:gazelle_core/gazelle_core.dart';
+import '$routeImportPath';
 
 Future<void> runApp(List<String> args) async {
   final app = GazelleApp(
     routes: [
-      GazelleRoute(
-        name: "hello_gazelle",
-        get: (context, request, response) => GazelleResponse(
-          statusCode: GazelleHttpStatusCode.success.ok_200,
-          body: "Hello, Gazelle!",
-        ),
-      ),
+      $routeName,
     ],
   );
 
@@ -113,6 +115,17 @@ Future<String> createProject({
     codeProjectName += "${part[0].toUpperCase()}${part.substring(1)}";
   }
 
+  final helloGazelleRoute = await createRoute(
+    routeName: "hello_gazelle",
+    path: "$libPath/routes",
+  );
+
+  final main = _getMainFile(
+    routeImportPath:
+        helloGazelleRoute.routeFilePath.replaceAll(libPath, "").substring(1),
+    routeName: helloGazelleRoute.routeName,
+  );
+
   await Directory(projectPath).create(recursive: true);
 
   await File("$projectPath/pubspec.yaml")
@@ -125,7 +138,7 @@ Future<String> createProject({
 
   await File("$libPath/$projectName.dart")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_mainTemplate));
+      .then((file) => file.writeAsString(DartFormatter().format(main)));
 
   await File("$binPath/$projectName.dart")
       .create(recursive: true)

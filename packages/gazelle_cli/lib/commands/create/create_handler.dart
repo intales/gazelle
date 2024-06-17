@@ -61,7 +61,7 @@ GazelleResponse $handlerName(
       .trim();
 
   final handlerFileName =
-      "$path/${routeName.toLowerCase()}_${httpMethod.toLowerCase()}.dart";
+      "$path/${routeName.toLowerCase()}_${httpMethod.toLowerCase()}_handler.dart";
   final handlerFilePath = await File(handlerFileName)
       .create(recursive: true)
       .then((file) => file.writeAsString(DartFormatter().format(handler)))

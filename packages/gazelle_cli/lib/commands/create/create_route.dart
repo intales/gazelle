@@ -35,6 +35,7 @@ Future<CreateRouteResult> createRoute({
     }
     codeRouteName += "${part[0].toUpperCase()}${part.substring(1)}";
   }
+  codeRouteName += "Route";
 
   final handlerPath = "$path/handlers";
   final handler = await createHandler(
@@ -50,20 +51,20 @@ Future<CreateRouteResult> createRoute({
 import 'package:gazelle_core/gazelle_core.dart';
 import '$handlerImportDirectivePath';
 
-final ${codeRouteName}Route = GazelleRoute(
-  name: $routeName,
+final $codeRouteName = GazelleRoute(
+  name: "$routeName",
   get: ${handler.handlerName},
 );
   """
       .trim();
 
-  final routeFileName = "$path/$routeName.dart";
+  final routeFileName = "$path/${routeName}_route.dart";
   final routeFile = await File(routeFileName)
       .create(recursive: true)
       .then((file) => file.writeAsString(DartFormatter().format(route)));
 
   return CreateRouteResult(
     routeFilePath: routeFile.path,
-    routeName: routeName,
+    routeName: codeRouteName,
   );
 }
