@@ -93,34 +93,49 @@ Future<String> createProject({
   required String projectName,
   required String path,
 }) async {
-  final completePath = "$path/$projectName";
-  if (await Directory(completePath).exists()) {
+  final projectPath = "$path/$projectName";
+  if (await Directory(projectPath).exists()) {
     throw CreateProjectError();
   }
 
-  await Directory(completePath).create(recursive: true);
+  final libPath = "$projectPath/lib";
+  final binPath = "$projectPath/bin";
 
-  await File("$completePath/pubspec.yaml")
+  final projectNameParts = projectName.split("_");
+
+  String codeProjectName = "";
+  for (var i = 0; i < projectNameParts.length; i++) {
+    final part = projectNameParts[i];
+    if (i == 0) {
+      codeProjectName += part.toLowerCase();
+      continue;
+    }
+    codeProjectName += "${part[0].toUpperCase()}${part.substring(1)}";
+  }
+
+  await Directory(projectPath).create(recursive: true);
+
+  await File("$projectPath/pubspec.yaml")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_getPubspecTemplate(projectName)));
+      .then((file) => file.writeAsString(_getPubspecTemplate(codeProjectName)));
 
-  await File("$completePath/.gitignore")
+  await File("$projectPath/.gitignore")
       .create(recursive: true)
       .then((file) => file.writeAsString(_gitignore));
 
-  await File("$completePath/lib/$projectName.dart")
+  await File("$libPath/$projectName.dart")
       .create(recursive: true)
       .then((file) => file.writeAsString(_mainTemplate));
 
-  await File("$completePath/bin/$projectName.dart")
+  await File("$binPath/$projectName.dart")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_getEntryPoint(projectName)));
+      .then((file) => file.writeAsString(_getEntryPoint(codeProjectName)));
 
   await Process.run(
     "dart",
     ["pub", "get"],
-    workingDirectory: "$completePath/",
+    workingDirectory: "$projectPath/",
   );
 
-  return completePath;
+  return projectPath;
 }
