@@ -2,8 +2,23 @@ import 'dart:io';
 
 import 'package:dart_style/dart_style.dart';
 
+/// Represents the result of [createHandler] function.
+class CreateHandlerResult {
+  /// Where the handler has been created.
+  final String handlerFilePath;
+
+  /// The name of the handler.
+  final String handlerName;
+
+  /// Creates a [CreateHandlerResult].
+  const CreateHandlerResult({
+    required this.handlerFilePath,
+    required this.handlerName,
+  });
+}
+
 /// Creates an handler for a Gazelle project.
-Future<String> createHandler({
+Future<CreateHandlerResult> createHandler({
   required String routeName,
   required String httpMethod,
   required String path,
@@ -47,8 +62,13 @@ GazelleResponse $handlerName(
 
   final handlerFileName =
       "$path/${routeName.toLowerCase()}_${httpMethod.toLowerCase()}.dart";
-  return File(handlerFileName)
+  final handlerFilePath = await File(handlerFileName)
       .create(recursive: true)
       .then((file) => file.writeAsString(DartFormatter().format(handler)))
       .then((file) => file.path);
+
+  return CreateHandlerResult(
+    handlerFilePath: handlerFilePath,
+    handlerName: handlerName,
+  );
 }

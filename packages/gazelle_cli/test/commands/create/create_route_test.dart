@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:gazelle_cli/commands/create/create_handler.dart';
+import 'package:gazelle_cli/commands/create/create_route.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('CreateHandler tests', () {
-    test('Should create a handler file', () async {
+  group('CreateRoute tests', () {
+    test('Should create a route', () async {
       // Arrange
-      final tmpDirPath = "tmp/create_handler_test";
+      final tmpDirPath = "tmp/create_route_test";
       Directory tmpDir = Directory(tmpDirPath);
       if (await tmpDir.exists()) {
         await tmpDir.delete(recursive: true);
@@ -15,15 +15,13 @@ void main() {
       tmpDir = await Directory(tmpDirPath).create(recursive: true);
 
       // Act
-      final result = await createHandler(
+      final result = await createRoute(
         routeName: "hello_world",
-        httpMethod: "GET",
         path: tmpDirPath,
       );
 
       // Assert
-      expect(result.handlerName, "helloWorldGet");
-      expect(File(result.handlerFilePath).existsSync(), isTrue);
+      expect(File(result.routeFilePath).existsSync(), isTrue);
 
       // Clean up
       await tmpDir.delete(recursive: true);
