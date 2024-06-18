@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-06-18
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_cli` - `v0.3.0`](#gazelle_cli---v030)
+
+---
+
+#### `gazelle_cli` - `v0.3.0`
+
+ - Enhanced `create` command with `create project` and `create route`.
+
+ - **FIX**(gazelle_cli): file formatting.
+
+
 ## 2024-06-13
 
 ### Changes
