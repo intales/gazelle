@@ -25,7 +25,8 @@ class DeleteCommand extends Command {
   @override
   void run() async {
     final pathOption = argResults?.option("path");
-    final projectConfiguration = await loadProjectConfiguration(path: pathOption);
+    final projectConfiguration =
+        await loadProjectConfiguration(path: pathOption);
     final answer = getConfirmation(
         '\nAre you sure you want to delete the project ${projectConfiguration.name}');
 
