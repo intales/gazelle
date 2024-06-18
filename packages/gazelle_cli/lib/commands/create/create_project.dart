@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:dart_style/dart_style.dart';
+
 import '../../commons/functions/version.dart';
+import 'create_route.dart';
 
 const _gitignore = """
 # See https://www.dartlang.org/guides/libraries/private-files
@@ -30,23 +33,28 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Gazelle temporary files
+.tmp/
 """;
 
-const _mainTemplate = """
+String _getMainFile({
+  required String routeImportPath,
+  required String routeName,
+}) =>
+    """
 import 'package:gazelle_core/gazelle_core.dart';
+import '$routeImportPath';
 
 Future<void> runApp(List<String> args) async {
-  final app = GazelleApp();
-
-  app.get("/", (request, response) async {
-    return response.copyWith(
-      statusCode: 200,
-      body: "Hello, Gazelle!",
-    );
-  });
+  final app = GazelleApp(
+    routes: [
+      $routeName,
+    ],
+  );
 
   await app.start();
-  print('Server is running at http://\${app.address}:\${app.port}');
+  print("Gazelle listening at \${app.serverAddress}");
 }
 """;
 
@@ -59,11 +67,13 @@ environment:
   sdk: ^$dartSdkVersion
 
 dependencies:
-  gazelle_core: ^0.2.0
+  gazelle_core: ^0.3.0
 
 dev_dependencies:
   lints: ">=2.1.0 <4.0.0"
   test: ^1.24.0
+
+gazelle:
 """;
 
 String _getEntryPoint(String projectName) => """
@@ -86,42 +96,52 @@ class CreateProjectError {
 /// Creates a new Gazelle project.
 ///
 /// Throws a [CreateProjectError] if project already exists.
-Future<String> createProject(
-  String projectName, {
-  String? path,
+Future<String> createProject({
+  required String projectName,
+  required String path,
 }) async {
-  final nameOption = projectName;
-  final pathOption = path;
-
-  final completePath =
-      pathOption != null ? "$pathOption/$nameOption" : nameOption;
-  if (await Directory(completePath).exists()) {
+  final projectPath = "$path/$projectName";
+  if (await Directory(projectPath).exists()) {
     throw CreateProjectError();
   }
 
-  await Directory(completePath).create(recursive: true);
+  final libPath = "$projectPath/lib";
+  final binPath = "$projectPath/bin";
 
-  await File("$completePath/pubspec.yaml")
+  final helloGazelleRoute = await createRoute(
+    routeName: "hello_gazelle",
+    path: libPath,
+  );
+
+  final main = _getMainFile(
+    routeImportPath:
+        helloGazelleRoute.routeFilePath.replaceAll(libPath, "").substring(1),
+    routeName: helloGazelleRoute.routeName,
+  );
+
+  await Directory(projectPath).create(recursive: true);
+
+  await File("$projectPath/pubspec.yaml")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_getPubspecTemplate(nameOption)));
+      .then((file) => file.writeAsString(_getPubspecTemplate(projectName)));
 
-  await File("$completePath/.gitignore")
+  await File("$projectPath/.gitignore")
       .create(recursive: true)
       .then((file) => file.writeAsString(_gitignore));
 
-  await File("$completePath/lib/$nameOption.dart")
+  await File("$libPath/$projectName.dart")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_mainTemplate));
+      .then((file) => file.writeAsString(DartFormatter().format(main)));
 
-  await File("$completePath/bin/$nameOption.dart")
+  await File("$binPath/$projectName.dart")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_getEntryPoint(nameOption)));
+      .then((file) => file.writeAsString(_getEntryPoint(projectName)));
 
   await Process.run(
     "dart",
     ["pub", "get"],
-    workingDirectory: "$completePath/",
+    workingDirectory: "$projectPath/",
   );
 
-  return completePath;
+  return projectPath;
 }

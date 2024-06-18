@@ -18,7 +18,7 @@ void main() {
       await Directory(path).create(recursive: true);
 
       // Act
-      final result = await createProject("test", path: path);
+      final result = await createProject(projectName: "test", path: path);
 
       // Assert
       expect(File("$result/pubspec.yaml").existsSync(), isTrue);
