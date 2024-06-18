@@ -42,6 +42,8 @@ class _CreateProjectCommand extends Command {
     }
     stdout.writeln();
 
+    projectName = projectName.replaceAll(RegExp(r'\s+'), "_").toLowerCase();
+
     final spinner = CliSpin(
       text: "Creating $projectName project...",
       spinner: CliSpinners.dots,
@@ -89,6 +91,8 @@ class _CreateRouteCommand extends Command {
     }
     stdout.writeln();
 
+    routeName = routeName.replaceAll(RegExp(r'\s+'), "_").toLowerCase();
+
     final spinner = CliSpin(
       text: "Creating $routeName route...",
       spinner: CliSpinners.dots,
@@ -96,13 +100,15 @@ class _CreateRouteCommand extends Command {
 
     try {
       final directory = Directory.current;
-      final result = await createRoute(
+      final path = "${directory.path}/lib";
+
+      await createRoute(
         routeName: routeName,
-        path: "${directory.path}/lib/routes",
+        path: path,
       );
 
       spinner.success(
-        "$routeName route created 🚀\n💡To navigate to your project run \"cd ${result.routeFilePath.split("/").last}\"",
+        "$routeName route created 🚀",
       );
     } on Exception catch (e) {
       spinner.fail(e.toString());
