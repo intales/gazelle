@@ -53,7 +53,7 @@ class RunCommand extends Command {
     late final ProjectConfiguration config;
     try {
       config = await loadProjectConfiguration(path: pathOption);
-    } on LoadProjectConfigurationError catch (e) {
+    } on LoadProjectConfigurationPubspecNotFoundError catch (e) {
       print(e.errorMessage);
       exit(e.errorCode);
     } catch (e) {

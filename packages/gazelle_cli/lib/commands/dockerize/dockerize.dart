@@ -51,7 +51,7 @@ class DockerizeCommand extends Command {
     try {
       final dockerfile = await dockerize(exposedPort: exposedPort);
       spinner.success("Dockerfile created at ${dockerfile.path}");
-    } on LoadProjectConfigurationError catch (e) {
+    } on LoadProjectConfigurationPubspecNotFoundError catch (e) {
       spinner.fail(e.errorMessage);
       exit(e.errorCode);
     } on Exception catch (e) {

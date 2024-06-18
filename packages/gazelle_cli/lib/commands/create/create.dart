@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:cli_spin/cli_spin.dart';
 
+import '../../commons/functions/load_project_configuration.dart';
 import 'create_project.dart';
 import 'create_route.dart';
 
@@ -83,22 +84,24 @@ class _CreateRouteCommand extends Command {
 
   @override
   void run() async {
-    stdout.writeln("✨ What would you like to name your new route? 🚀");
-    String? routeName = stdin.readLineSync();
-    while (routeName == null || routeName == "") {
-      stdout.writeln("⚠ Please provide a name for your route to proceed:");
-      routeName = stdin.readLineSync();
-    }
-    stdout.writeln();
-
-    routeName = routeName.replaceAll(RegExp(r'\s+'), "_").toLowerCase();
-
-    final spinner = CliSpin(
-      text: "Creating $routeName route...",
-      spinner: CliSpinners.dots,
-    ).start();
-
+    CliSpin spinner = CliSpin();
     try {
+      await loadProjectConfiguration();
+      stdout.writeln("✨ What would you like to name your new route? 🚀");
+      String? routeName = stdin.readLineSync();
+      while (routeName == null || routeName == "") {
+        stdout.writeln("⚠ Please provide a name for your route to proceed:");
+        routeName = stdin.readLineSync();
+      }
+      stdout.writeln();
+
+      routeName = routeName.replaceAll(RegExp(r'\s+'), "_").toLowerCase();
+
+      spinner = CliSpin(
+        text: "Creating $routeName route...",
+        spinner: CliSpinners.dots,
+      ).start();
+
       final directory = Directory.current;
       final path = "${directory.path}/lib";
 
@@ -110,6 +113,9 @@ class _CreateRouteCommand extends Command {
       spinner.success(
         "$routeName route created 🚀",
       );
+    } on LoadProjectConfigurationGazelleNotFoundError catch (e) {
+      spinner.fail(e.errorMessage);
+      exit(e.errorCode);
     } on Exception catch (e) {
       spinner.fail(e.toString());
       exit(2);

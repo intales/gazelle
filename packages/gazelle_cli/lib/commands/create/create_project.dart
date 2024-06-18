@@ -33,6 +33,9 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Gazelle temporary files
+.tmp/
 """;
 
 String _getMainFile({
@@ -69,6 +72,8 @@ dependencies:
 dev_dependencies:
   lints: ">=2.1.0 <4.0.0"
   test: ^1.24.0
+
+gazelle:
 """;
 
 String _getEntryPoint(String projectName) => """
@@ -102,18 +107,6 @@ Future<String> createProject({
 
   final libPath = "$projectPath/lib";
   final binPath = "$projectPath/bin";
-
-  final projectNameParts = projectName.split("_");
-
-  String codeProjectName = "";
-  for (var i = 0; i < projectNameParts.length; i++) {
-    final part = projectNameParts[i];
-    if (i == 0) {
-      codeProjectName += part.toLowerCase();
-      continue;
-    }
-    codeProjectName += "${part[0].toUpperCase()}${part.substring(1)}";
-  }
 
   final helloGazelleRoute = await createRoute(
     routeName: "hello_gazelle",

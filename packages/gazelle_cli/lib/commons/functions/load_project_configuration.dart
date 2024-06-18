@@ -3,32 +3,54 @@ import 'package:yaml/yaml.dart';
 
 import '../entities/project_configuration.dart';
 
-/// Reporesents an error that is thrown when project configuration cannot be loaded.
-class LoadProjectConfigurationError {
+/// Reporesents an error that is thrown when project configuration cannot be found.
+class LoadProjectConfigurationPubspecNotFoundError {
   /// Error code.
   final int errorCode;
 
   /// Error message.
   final String errorMessage;
 
-  /// Builds a [LoadProjectConfigurationError] instance.
-  const LoadProjectConfigurationError({
-    this.errorCode = 1,
+  /// Builds a [LoadProjectConfigurationPubspecNotFoundError] instance.
+  const LoadProjectConfigurationPubspecNotFoundError({
+    this.errorCode = 2,
     this.errorMessage =
         "Unable to find pubspec.yaml file in current directory.",
   });
 }
 
+/// Reporesents an error that is thrown when project configuration does not contain the gazelle prop.
+class LoadProjectConfigurationGazelleNotFoundError {
+  /// Error code.
+  final int errorCode;
+
+  /// Error message.
+  final String errorMessage;
+
+  /// Builds a [LoadProjectConfigurationGazelleNotFoundError] instance.
+  const LoadProjectConfigurationGazelleNotFoundError({
+    this.errorCode = 2,
+    this.errorMessage =
+        "Unable to find gazelle property inside the pubspec.yaml file.",
+  });
+}
+
 /// Loads configuration file from project `pubspec.yaml` file.
 ///
-/// Throws [LoadProjectConfigurationError] if `pubspec.yaml` is not found.
+/// Throws [LoadProjectConfigurationPubspecNotFoundError] if `pubspec.yaml` is not found.
 Future<ProjectConfiguration> loadProjectConfiguration({String? path}) async {
   final directory = Directory(path ?? Directory.current.path);
   final pubspecPath = "${directory.path}/pubspec.yaml";
   final pubspec = File(pubspecPath);
 
-  if (!await pubspec.exists()) throw const LoadProjectConfigurationError();
+  if (!await pubspec.exists()) {
+    throw const LoadProjectConfigurationPubspecNotFoundError();
+  }
 
-  final yaml = loadYaml(await pubspec.readAsString());
+  final yaml = loadYaml(await pubspec.readAsString()) as YamlMap;
+
+  if (!yaml.containsKey("gazelle")) {
+    throw const LoadProjectConfigurationGazelleNotFoundError();
+  }
   return ProjectConfiguration.fromYaml(yaml);
 }
