@@ -142,7 +142,7 @@ Future<String> createProject({
 
   await File("$binPath/$projectName.dart")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_getEntryPoint(codeProjectName)));
+      .then((file) => file.writeAsString(_getEntryPoint(projectName)));
 
   await Process.run(
     "dart",
