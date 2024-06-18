@@ -117,7 +117,7 @@ Future<String> createProject({
 
   final helloGazelleRoute = await createRoute(
     routeName: "hello_gazelle",
-    path: "$libPath/routes",
+    path: libPath,
   );
 
   final main = _getMainFile(
@@ -130,7 +130,7 @@ Future<String> createProject({
 
   await File("$projectPath/pubspec.yaml")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_getPubspecTemplate(codeProjectName)));
+      .then((file) => file.writeAsString(_getPubspecTemplate(projectName)));
 
   await File("$projectPath/.gitignore")
       .create(recursive: true)

@@ -37,7 +37,8 @@ Future<CreateRouteResult> createRoute({
   }
   codeRouteName += "Route";
 
-  final handlerPath = "$path/handlers";
+  final routeDirectory = "$path/routes/${routeName}_route";
+  final handlerPath = "$routeDirectory/handlers";
   final handler = await createHandler(
     routeName: routeName,
     httpMethod: "GET",
@@ -45,20 +46,20 @@ Future<CreateRouteResult> createRoute({
   );
 
   final handlerImportDirectivePath =
-      handler.handlerFilePath.replaceAll(path, "").substring(1);
+      handler.handlerFilePath.replaceAll(routeDirectory, "").substring(1);
 
   final route = """
 import 'package:gazelle_core/gazelle_core.dart';
 import '$handlerImportDirectivePath';
 
-final $codeRouteName = GazelleRoute(
+const $codeRouteName = GazelleRoute(
   name: "$routeName",
   get: ${handler.handlerName},
 );
   """
       .trim();
 
-  final routeFileName = "$path/${routeName}_route.dart";
+  final routeFileName = "$routeDirectory/${routeName}_route.dart";
   final routeFile = await File(routeFileName)
       .create(recursive: true)
       .then((file) => file.writeAsString(DartFormatter().format(route)));
