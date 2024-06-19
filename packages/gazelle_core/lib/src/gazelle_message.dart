@@ -122,10 +122,12 @@ class GazelleResponse<T> extends GazelleMessage {
       response.headers.add(header.header, header.values);
     }
 
-    if (body != null) {
-      response.write(body);
+    if (body == null) {
+      response.close();
+      return;
     }
 
+    response.write(body);
     response.close();
   }
 }
