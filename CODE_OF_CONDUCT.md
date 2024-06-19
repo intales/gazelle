@@ -65,6 +65,6 @@ members of the project's leadership.
 
 This Code of Conduct is adapted from the
 [Contributor Covenant](https://www.contributor-covenant.org).
----
 
+---
 Thank you for helping make this a welcoming, friendly, and productive community!
