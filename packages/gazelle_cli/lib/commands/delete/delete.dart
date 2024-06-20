@@ -46,6 +46,9 @@ class DeleteCommand extends Command {
     } on DeletingProjectError catch (e) {
       spinner.fail(e.message);
       exit(2);
+    } on LoadProjectConfigurationGazelleNotFoundError catch (e) {
+      spinner.fail(e.errorMessage);
+      exit(2);
     } on Exception catch (e) {
       spinner.fail(e.toString());
       exit(2);
