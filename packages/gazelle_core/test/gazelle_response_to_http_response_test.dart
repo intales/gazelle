@@ -257,6 +257,63 @@ void main() {
       await server.close(force: true);
     });
 
+    test('Should serialize a DateTime inside an HttpResponse', () async {
+      // Arrange
+      const testModelProvider = TestModelProvider();
+      final response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: DateTime(2024),
+      );
+      final server = await createTestHttpServer();
+      server.listen((httpRequest) => gazelleResponseToHttpResponse(
+            gazelleResponse: response,
+            httpResponse: httpRequest.response,
+            modelProvider: testModelProvider,
+          ));
+
+      // Act
+      final result = await http.get(
+          Uri.parse("http://${server.address.address}:${server.port}/test"));
+
+      // Assert
+      expect(result.statusCode, 200);
+      expect(result.body, jsonEncode(DateTime(2024).toIso8601String()));
+      await server.close(force: true);
+    });
+
+    test('Should serialize a list of DateTime inside an HttpResponse',
+        () async {
+      // Arrange
+      const testModelProvider = TestModelProvider();
+      final response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: [
+          DateTime(2024),
+          DateTime(2025),
+        ],
+      );
+      final server = await createTestHttpServer();
+      server.listen((httpRequest) => gazelleResponseToHttpResponse(
+            gazelleResponse: response,
+            httpResponse: httpRequest.response,
+            modelProvider: testModelProvider,
+          ));
+
+      // Act
+      final result = await http.get(
+          Uri.parse("http://${server.address.address}:${server.port}/test"));
+
+      // Assert
+      expect(result.statusCode, 200);
+      expect(
+          result.body,
+          jsonEncode([
+            DateTime(2024).toIso8601String(),
+            DateTime(2025).toIso8601String(),
+          ]));
+      await server.close(force: true);
+    });
+
     test('Should serialize a Map<String, TestEntity> inside an HttpResponse',
         () async {
       // Arrange

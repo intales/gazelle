@@ -50,7 +50,7 @@ dynamic _serialize(
   // When GazelleResponse.body is a Dart primitive type
   if (_isPrimitive(object)) {
     // Simply return it
-    return object;
+    return _serializePrimitive(object);
   }
 
   // When GazelleResponse.body is a List
@@ -102,10 +102,19 @@ dynamic _serialize(
   return modelType.toJson(object);
 }
 
-bool _isPrimitive(dynamic body) =>
-    body is String ||
-    body is num ||
-    body is bool ||
-    body is List<String> ||
-    body is List<num> ||
-    body is List<bool>;
+dynamic _serializePrimitive(dynamic primitive) {
+  if (primitive is DateTime) {
+    return primitive.toIso8601String();
+  }
+
+  return primitive;
+}
+
+bool _isPrimitive(dynamic object) =>
+    object is String ||
+    object is num ||
+    object is bool ||
+    object is DateTime ||
+    object is List<String> ||
+    object is List<num> ||
+    object is List<bool>;
