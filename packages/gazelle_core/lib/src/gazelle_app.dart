@@ -3,6 +3,7 @@ import 'dart:io';
 import 'gazelle_context.dart';
 import 'gazelle_http_status_code.dart';
 import 'gazelle_message.dart';
+import 'gazelle_model_provider.dart';
 import 'gazelle_plugin.dart';
 import 'gazelle_response_to_http_response.dart';
 import 'gazelle_route.dart';
@@ -24,6 +25,7 @@ class GazelleApp {
 
   final List<GazellePlugin> _plugins;
   final List<GazelleRoute> _routes;
+  final GazelleModelProvider? _modelProvider;
 
   /// The address on which the server will listen.
   final String address;
@@ -68,10 +70,12 @@ class GazelleApp {
     this.address = _localhost,
     int? port,
     this.sslCertificate,
+    GazelleModelProvider? modelProvider,
   })  : _context = GazelleContext.create(),
         _routes = routes,
         _plugins = plugins ?? const [],
-        _port = port ?? 0;
+        _port = port ?? 0,
+        _modelProvider = modelProvider;
 
   /// The current server address that Gazelle is listening to.
   String get serverAddress {
@@ -220,6 +224,7 @@ class GazelleApp {
       gazelleResponseToHttpResponse(
         gazelleResponse: response,
         httpResponse: httpResponse,
+        modelProvider: _modelProvider,
       );
 
   void _send404Error(HttpResponse response) => _sendResponse(
