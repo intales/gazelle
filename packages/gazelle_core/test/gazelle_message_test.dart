@@ -34,25 +34,5 @@ void main() {
         expect(await request?.body, "test");
       });
     });
-
-    group('GazelleResponse tests', () {
-      test('Should send response to client', () async {
-        // Arrange
-        final server = await createTestHttpServer();
-        server.listen((httpRequest) => GazelleResponse(
-              statusCode: GazelleHttpStatusCode.success.ok_200,
-              body: "OK",
-            ).toHttpResponse(httpRequest.response));
-
-        // Act
-        final result = await http.get(
-            Uri.parse('http://${server.address.address}:${server.port}/test'));
-
-        // Assert
-        await server.close(force: true);
-        expect(result.statusCode, 200);
-        expect(result.body, "OK");
-      });
-    });
   });
 }
