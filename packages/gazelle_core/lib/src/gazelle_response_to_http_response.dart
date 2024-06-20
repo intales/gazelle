@@ -21,49 +21,64 @@ void gazelleResponseToHttpResponse({
     return;
   }
 
-  String body = "";
+  final body = _serialize(gazelleResponse.body, modelProvider);
+  final json = jsonEncode(body);
 
+  httpResponse.write(json);
+  httpResponse.close();
+}
+
+dynamic _serialize(
+  dynamic object,
+  GazelleModelProvider modelProvider,
+) {
   // When GazelleResponse.body is a Dart primitive type
-  if (_isPrimitive(gazelleResponse.body)) {
+  if (_isPrimitive(object)) {
     // Simply transform it to a string
-    body = gazelleResponse.body.toString();
+    return object;
   }
 
   // When GazelleResponse.body is a List
-  else if (gazelleResponse.body is List) {
-    final list = gazelleResponse.body as List;
+  else if (object is List) {
+    final list = object;
 
     // When the list is empty, return an empty json list
     if (list.isEmpty) {
-      body = jsonEncode([]);
+      return [];
     } else {
-      // Get the type of the items inside the list
-      final listItemType = _getTypeOfItemsInList(list);
-
       // Get the correct model type and serialize every item inside the list
-      final modelType = modelProvider.getModelTypeFor(listItemType);
-      final items = list.map(modelType.toJson).toList();
+      final items =
+          list.map((item) => _serialize(item, modelProvider)).toList();
 
-      // Encode into a json string
-      body = jsonEncode(items);
+      return items;
     }
+  }
+
+  // Whene the body is a Map
+  else if (object is Map) {
+    final map = object;
+    final jsonMap = {};
+
+    for (final entry in map.entries) {
+      final key = entry.key;
+      final value = entry.value;
+      final jsonKey = _serialize(key, modelProvider);
+      final jsonValue = _serialize(value, modelProvider);
+      jsonMap[jsonKey.toString()] = jsonValue;
+    }
+
+    return jsonMap;
   }
 
   // When the body is not a primitive nor a List nor a Map
   else {
     // Get the correct model type
-    final modelType =
-        modelProvider.getModelTypeFor(gazelleResponse.body.runtimeType);
+    final modelType = modelProvider.getModelTypeFor(object.runtimeType);
 
     // Encode into a json string
-    body = jsonEncode(modelType.toJson(gazelleResponse.body));
+    return modelType.toJson(object);
   }
-
-  httpResponse.write(body);
-  httpResponse.close();
 }
-
-Type _getTypeOfItemsInList(List list) => list.first.runtimeType;
 
 bool _isPrimitive(dynamic body) =>
     body is String ||

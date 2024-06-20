@@ -133,7 +133,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, "10");
+      expect(result.body, jsonEncode(10));
       await server.close(force: true);
     });
 
@@ -157,7 +157,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, "[1, 2, 3]");
+      expect(result.body, jsonEncode([1, 2, 3]));
       await server.close(force: true);
     });
 
@@ -181,7 +181,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, "Hello, World!");
+      expect(result.body, jsonEncode("Hello, World!"));
       await server.close(force: true);
     });
 
@@ -205,7 +205,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, "[Hello, World!]");
+      expect(result.body, jsonEncode(["Hello", "World!"]));
       await server.close(force: true);
     });
 
@@ -229,7 +229,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, "true");
+      expect(result.body, jsonEncode(true));
       await server.close(force: true);
     });
 
@@ -253,7 +253,83 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, "[true, false]");
+      expect(result.body, jsonEncode([true, false]));
+      await server.close(force: true);
+    });
+
+    test('Should serialize a Map<String, TestEntity> inside an HttpResponse',
+        () async {
+      // Arrange
+      const testModelProvider = TestModelProvider();
+      const modelType = TestEntityModelType();
+      final body = {
+        "testEntity1": modelType.toJson(TestEntity(
+          testProp1: "testValue1",
+          testProp2: "testValue2",
+        )),
+        "testEntity2": modelType.toJson(TestEntity(
+          testProp1: "testValue1",
+          testProp2: "testValue2",
+        )),
+      };
+      final response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: body,
+      );
+      final server = await createTestHttpServer();
+      server.listen((httpRequest) => gazelleResponseToHttpResponse(
+            gazelleResponse: response,
+            httpResponse: httpRequest.response,
+            modelProvider: testModelProvider,
+          ));
+
+      // Act
+      final result = await http.get(
+          Uri.parse("http://${server.address.address}:${server.port}/test"));
+
+      // Assert
+      expect(result.statusCode, 200);
+      expect(result.body, jsonEncode(body));
+      await server.close(force: true);
+    });
+
+    test('Should serialize a Map<TestEntity, int> inside an HttpResponse',
+        () async {
+      // Arrange
+      const testModelProvider = TestModelProvider();
+      const modelType = TestEntityModelType();
+      final body = {
+        modelType
+            .toJson(TestEntity(
+              testProp1: "testValue1",
+              testProp2: "testValue2",
+            ))
+            .toString(): 1,
+        modelType
+            .toJson(TestEntity(
+              testProp1: "testValue1",
+              testProp2: "testValue2",
+            ))
+            .toString(): 2,
+      };
+      final response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: body,
+      );
+      final server = await createTestHttpServer();
+      server.listen((httpRequest) => gazelleResponseToHttpResponse(
+            gazelleResponse: response,
+            httpResponse: httpRequest.response,
+            modelProvider: testModelProvider,
+          ));
+
+      // Act
+      final result = await http.get(
+          Uri.parse("http://${server.address.address}:${server.port}/test"));
+
+      // Assert
+      expect(result.statusCode, 200);
+      expect(result.body, jsonEncode(body));
       await server.close(force: true);
     });
   });
