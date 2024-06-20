@@ -107,6 +107,18 @@ dynamic _serializePrimitive(dynamic primitive) {
     return primitive.toIso8601String();
   }
 
+  if (primitive is Duration) {
+    return primitive.inMicroseconds;
+  }
+
+  if (primitive is BigInt) {
+    return primitive.toString();
+  }
+
+  if (primitive is Uri) {
+    return primitive.toString();
+  }
+
   return primitive;
 }
 
@@ -115,6 +127,9 @@ bool _isPrimitive(dynamic object) =>
     object is num ||
     object is bool ||
     object is DateTime ||
+    object is Duration ||
+    object is BigInt ||
+    object is Uri ||
     object is List<String> ||
     object is List<num> ||
     object is List<bool>;
