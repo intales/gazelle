@@ -92,12 +92,12 @@ class GazelleRequest extends GazelleMessage {
 ///
 /// Encapsulates information about the HTTP response including the status code,
 /// headers, and body.
-class GazelleResponse extends GazelleMessage {
+class GazelleResponse<T> extends GazelleMessage {
   /// The HTTP status code of the response.
   final GazelleHttpStatusCode statusCode;
 
   /// The body of the response.
-  final String? body;
+  final T? body;
 
   /// Constructs a GazelleResponse instance.
   ///
@@ -113,21 +113,6 @@ class GazelleResponse extends GazelleMessage {
     super.headers = const [],
     super.metadata = const {},
   });
-
-  /// Writes this [GazelleResponse] to an [HttpResponse].
-  void toHttpResponse(HttpResponse response) {
-    response.statusCode = statusCode.code;
-
-    for (final header in headers.toSet()) {
-      response.headers.add(header.header, header.values);
-    }
-
-    if (body != null) {
-      response.write(body);
-    }
-
-    response.close();
-  }
 }
 
 /// Extension methods for easy access to headers inside a [GazelleMessage].
