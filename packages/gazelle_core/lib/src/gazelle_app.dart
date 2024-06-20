@@ -4,6 +4,7 @@ import 'gazelle_context.dart';
 import 'gazelle_http_status_code.dart';
 import 'gazelle_message.dart';
 import 'gazelle_plugin.dart';
+import 'gazelle_response_to_http_response.dart';
 import 'gazelle_route.dart';
 import 'gazelle_ssl_certificate.dart';
 
@@ -216,7 +217,10 @@ class GazelleApp {
     HttpResponse httpResponse,
     GazelleResponse response,
   ) =>
-      response.toHttpResponse(httpResponse);
+      gazelleResponseToHttpResponse(
+        gazelleResponse: response,
+        httpResponse: httpResponse,
+      );
 
   void _send404Error(HttpResponse response) => _sendResponse(
       response,

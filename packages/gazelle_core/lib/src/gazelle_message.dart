@@ -113,23 +113,6 @@ class GazelleResponse<T> extends GazelleMessage {
     super.headers = const [],
     super.metadata = const {},
   });
-
-  /// Writes this [GazelleResponse] to an [HttpResponse].
-  void toHttpResponse(HttpResponse response) {
-    response.statusCode = statusCode.code;
-
-    for (final header in headers.toSet()) {
-      response.headers.add(header.header, header.values);
-    }
-
-    if (body == null) {
-      response.close();
-      return;
-    }
-
-    response.write(body);
-    response.close();
-  }
 }
 
 /// Extension methods for easy access to headers inside a [GazelleMessage].

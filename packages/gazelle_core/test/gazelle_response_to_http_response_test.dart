@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:gazelle_core/gazelle_core.dart';
-import 'package:gazelle_core/src/gazelle_model_provider.dart';
-import 'package:gazelle_core/src/gazelle_model_type.dart';
 import 'package:gazelle_core/src/gazelle_response_to_http_response.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
