@@ -157,7 +157,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, jsonEncode([1, 2, 3]));
+      expect(result.body, "[1, 2, 3]");
       await server.close(force: true);
     });
 
@@ -181,7 +181,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, jsonEncode("Hello, World!"));
+      expect(result.body, "Hello, World!");
       await server.close(force: true);
     });
 
@@ -205,7 +205,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, jsonEncode(["Hello", "World!"]));
+      expect(result.body, "[Hello, World!]");
       await server.close(force: true);
     });
 
@@ -253,7 +253,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, jsonEncode([true, false]));
+      expect(result.body, "[true, false]");
       await server.close(force: true);
     });
 
@@ -277,8 +277,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(
-          result.body, jsonEncode(const Duration(seconds: 2).inMicroseconds));
+      expect(result.body, const Duration(seconds: 2).inMicroseconds.toString());
       await server.close(force: true);
     });
 
@@ -302,7 +301,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, jsonEncode(BigInt.from(10).toString()));
+      expect(result.body, BigInt.from(10).toString());
       await server.close(force: true);
     });
 
@@ -327,7 +326,7 @@ void main() {
       // Assert
       expect(result.statusCode, 200);
       expect(result.body,
-          jsonEncode(Uri.dataFromString("https://www.google.com/").toString()));
+          Uri.dataFromString("https://www.google.com/").toString());
       await server.close(force: true);
     });
 
@@ -351,7 +350,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, jsonEncode(DateTime(2024).toIso8601String()));
+      expect(result.body, DateTime(2024).toIso8601String());
       await server.close(force: true);
     });
 
@@ -379,12 +378,8 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(
-          result.body,
-          jsonEncode([
-            DateTime(2024).toIso8601String(),
-            DateTime(2025).toIso8601String(),
-          ]));
+      expect(result.body,
+          "[\"${DateTime(2024).toIso8601String()}\",\"${DateTime(2025).toIso8601String()}\"]");
       await server.close(force: true);
     });
 

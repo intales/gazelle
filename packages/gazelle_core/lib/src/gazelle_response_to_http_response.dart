@@ -21,31 +21,26 @@ void gazelleResponseToHttpResponse({
     return;
   }
 
-  if (modelProvider == null) {
-    final body = gazelleResponse.body.toString();
-    httpResponse.write(body);
-    httpResponse.close();
-    return;
-  }
-
   final body = _serialize(gazelleResponse.body, modelProvider);
-  final json = jsonEncode(body);
+  dynamic httpBody;
 
   if (_isPrimitive(body)) {
     httpResponse.headers.add(HttpHeaders.contentTypeHeader.toString(),
         [ContentType.text.toString()]);
+    httpBody = body;
   } else {
     httpResponse.headers.add(HttpHeaders.contentTypeHeader.toString(),
         [ContentType.json.toString()]);
+    httpBody = jsonEncode(body);
   }
 
-  httpResponse.write(json);
+  httpResponse.write(httpBody);
   httpResponse.close();
 }
 
 dynamic _serialize(
   dynamic object,
-  GazelleModelProvider modelProvider,
+  GazelleModelProvider? modelProvider,
 ) {
   // When GazelleResponse.body is a Dart primitive type
   if (_isPrimitive(object)) {
@@ -92,6 +87,10 @@ dynamic _serialize(
 
     // Return the json map
     return jsonMap;
+  }
+
+  if (modelProvider == null) {
+    return object.toString();
   }
 
   // When the body is not a primitive not a List and not a Map
