@@ -31,6 +31,14 @@ void gazelleResponseToHttpResponse({
   final body = _serialize(gazelleResponse.body, modelProvider);
   final json = jsonEncode(body);
 
+  if (_isPrimitive(body)) {
+    httpResponse.headers.add(HttpHeaders.contentTypeHeader.toString(),
+        [ContentType.text.toString()]);
+  } else {
+    httpResponse.headers.add(HttpHeaders.contentTypeHeader.toString(),
+        [ContentType.json.toString()]);
+  }
+
   httpResponse.write(json);
   httpResponse.close();
 }

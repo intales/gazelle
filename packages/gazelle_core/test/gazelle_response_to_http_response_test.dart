@@ -69,6 +69,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
+      expect(result.headers["content-type"], contains("application/json"));
       expect(result.body, jsonEncode(expected));
       await server.close(force: true);
     });
@@ -131,6 +132,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
+      expect(result.headers["content-type"], contains("text/plain"));
       expect(result.body, jsonEncode(10));
       await server.close(force: true);
     });
