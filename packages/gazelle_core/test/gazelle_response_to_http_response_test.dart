@@ -310,7 +310,7 @@ void main() {
       const testModelProvider = TestModelProvider();
       final response = GazelleResponse(
         statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: Uri.dataFromString("https://www.google.com/"),
+        body: Uri.parse("https://www.google.com/"),
       );
       final server = await createTestHttpServer();
       server.listen((httpRequest) => gazelleResponseToHttpResponse(
@@ -325,8 +325,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body,
-          Uri.dataFromString("https://www.google.com/").toString());
+      expect(result.body, Uri.parse("https://www.google.com/").toString());
       await server.close(force: true);
     });
 
