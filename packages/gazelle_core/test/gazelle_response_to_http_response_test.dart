@@ -181,7 +181,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, jsonEncode("Hello, World!"));
+      expect(result.body, "Hello, World!");
       await server.close(force: true);
     });
 
@@ -254,6 +254,131 @@ void main() {
       // Assert
       expect(result.statusCode, 200);
       expect(result.body, jsonEncode([true, false]));
+      await server.close(force: true);
+    });
+
+    test('Should serialize a Duration inside an HttpResponse', () async {
+      // Arrange
+      const testModelProvider = TestModelProvider();
+      final response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: const Duration(seconds: 2),
+      );
+      final server = await createTestHttpServer();
+      server.listen((httpRequest) => gazelleResponseToHttpResponse(
+            gazelleResponse: response,
+            httpResponse: httpRequest.response,
+            modelProvider: testModelProvider,
+          ));
+
+      // Act
+      final result = await http.get(
+          Uri.parse("http://${server.address.address}:${server.port}/test"));
+
+      // Assert
+      expect(result.statusCode, 200);
+      expect(result.body, const Duration(seconds: 2).inMicroseconds.toString());
+      await server.close(force: true);
+    });
+
+    test('Should serialize a BigInt inside an HttpResponse', () async {
+      // Arrange
+      const testModelProvider = TestModelProvider();
+      final response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: BigInt.from(10),
+      );
+      final server = await createTestHttpServer();
+      server.listen((httpRequest) => gazelleResponseToHttpResponse(
+            gazelleResponse: response,
+            httpResponse: httpRequest.response,
+            modelProvider: testModelProvider,
+          ));
+
+      // Act
+      final result = await http.get(
+          Uri.parse("http://${server.address.address}:${server.port}/test"));
+
+      // Assert
+      expect(result.statusCode, 200);
+      expect(result.body, BigInt.from(10).toString());
+      await server.close(force: true);
+    });
+
+    test('Should serialize a Uri inside an HttpResponse', () async {
+      // Arrange
+      const testModelProvider = TestModelProvider();
+      final response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: Uri.parse("https://www.google.com/"),
+      );
+      final server = await createTestHttpServer();
+      server.listen((httpRequest) => gazelleResponseToHttpResponse(
+            gazelleResponse: response,
+            httpResponse: httpRequest.response,
+            modelProvider: testModelProvider,
+          ));
+
+      // Act
+      final result = await http.get(
+          Uri.parse("http://${server.address.address}:${server.port}/test"));
+
+      // Assert
+      expect(result.statusCode, 200);
+      expect(result.body, Uri.parse("https://www.google.com/").toString());
+      await server.close(force: true);
+    });
+
+    test('Should serialize a DateTime inside an HttpResponse', () async {
+      // Arrange
+      const testModelProvider = TestModelProvider();
+      final response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: DateTime(2024),
+      );
+      final server = await createTestHttpServer();
+      server.listen((httpRequest) => gazelleResponseToHttpResponse(
+            gazelleResponse: response,
+            httpResponse: httpRequest.response,
+            modelProvider: testModelProvider,
+          ));
+
+      // Act
+      final result = await http.get(
+          Uri.parse("http://${server.address.address}:${server.port}/test"));
+
+      // Assert
+      expect(result.statusCode, 200);
+      expect(result.body, DateTime(2024).toIso8601String());
+      await server.close(force: true);
+    });
+
+    test('Should serialize a list of DateTime inside an HttpResponse',
+        () async {
+      // Arrange
+      const testModelProvider = TestModelProvider();
+      final response = GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: [
+          DateTime(2024),
+          DateTime(2025),
+        ],
+      );
+      final server = await createTestHttpServer();
+      server.listen((httpRequest) => gazelleResponseToHttpResponse(
+            gazelleResponse: response,
+            httpResponse: httpRequest.response,
+            modelProvider: testModelProvider,
+          ));
+
+      // Act
+      final result = await http.get(
+          Uri.parse("http://${server.address.address}:${server.port}/test"));
+
+      // Assert
+      expect(result.statusCode, 200);
+      expect(result.body,
+          "[\"${DateTime(2024).toIso8601String()}\",\"${DateTime(2025).toIso8601String()}\"]");
       await server.close(force: true);
     });
 

@@ -21,36 +21,31 @@ void gazelleResponseToHttpResponse({
     return;
   }
 
-  if (modelProvider == null) {
-    final body = gazelleResponse.body.toString();
-    httpResponse.write(body);
-    httpResponse.close();
-    return;
-  }
-
   final body = _serialize(gazelleResponse.body, modelProvider);
-  final json = jsonEncode(body);
+  dynamic httpBody;
 
   if (_isPrimitive(body)) {
     httpResponse.headers.add(HttpHeaders.contentTypeHeader.toString(),
         [ContentType.text.toString()]);
+    httpBody = body;
   } else {
     httpResponse.headers.add(HttpHeaders.contentTypeHeader.toString(),
         [ContentType.json.toString()]);
+    httpBody = jsonEncode(body);
   }
 
-  httpResponse.write(json);
+  httpResponse.write(httpBody);
   httpResponse.close();
 }
 
 dynamic _serialize(
   dynamic object,
-  GazelleModelProvider modelProvider,
+  GazelleModelProvider? modelProvider,
 ) {
   // When GazelleResponse.body is a Dart primitive type
   if (_isPrimitive(object)) {
     // Simply return it
-    return object;
+    return _serializePrimitive(object);
   }
 
   // When GazelleResponse.body is a List
@@ -94,6 +89,10 @@ dynamic _serialize(
     return jsonMap;
   }
 
+  if (modelProvider == null) {
+    return object.toString();
+  }
+
   // When the body is not a primitive not a List and not a Map
   // Get the correct model type
   final modelType = modelProvider.getModelTypeFor(object.runtimeType);
@@ -102,10 +101,31 @@ dynamic _serialize(
   return modelType.toJson(object);
 }
 
-bool _isPrimitive(dynamic body) =>
-    body is String ||
-    body is num ||
-    body is bool ||
-    body is List<String> ||
-    body is List<num> ||
-    body is List<bool>;
+dynamic _serializePrimitive(dynamic primitive) {
+  if (primitive is DateTime) {
+    return primitive.toIso8601String();
+  }
+
+  if (primitive is Duration) {
+    return primitive.inMicroseconds;
+  }
+
+  if (primitive is BigInt) {
+    return primitive.toString();
+  }
+
+  if (primitive is Uri) {
+    return primitive.toString();
+  }
+
+  return primitive;
+}
+
+bool _isPrimitive(dynamic object) =>
+    object is String ||
+    object is num ||
+    object is bool ||
+    object is DateTime ||
+    object is Duration ||
+    object is BigInt ||
+    object is Uri;
