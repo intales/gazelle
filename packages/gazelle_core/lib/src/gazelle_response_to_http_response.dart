@@ -128,7 +128,4 @@ bool _isPrimitive(dynamic object) =>
     object is DateTime ||
     object is Duration ||
     object is BigInt ||
-    object is Uri ||
-    object is List<String> ||
-    object is List<num> ||
-    object is List<bool>;
+    object is Uri;

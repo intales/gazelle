@@ -157,7 +157,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, "[1, 2, 3]");
+      expect(result.body, jsonEncode([1, 2, 3]));
       await server.close(force: true);
     });
 
@@ -205,7 +205,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, "[Hello, World!]");
+      expect(result.body, jsonEncode(["Hello", "World!"]));
       await server.close(force: true);
     });
 
@@ -253,7 +253,7 @@ void main() {
 
       // Assert
       expect(result.statusCode, 200);
-      expect(result.body, "[true, false]");
+      expect(result.body, jsonEncode([true, false]));
       await server.close(force: true);
     });
 
