@@ -5,7 +5,7 @@ import 'class_definition.dart';
 /// Returns a `fromJson` function from a [classDefinition].
 String generateFromJson(ClassDefinition classDefinition) {
   final constructorParameters =
-      _generateFromJsonConstructorProps(classDefinition.properties);
+      _generateFromJsonConstructorProps(classDefinition.constructorParameters);
 
   final classOutput = """
   ${classDefinition.name} fromJson(Map<String, dynamic> json) {
@@ -20,12 +20,23 @@ String generateFromJson(ClassDefinition classDefinition) {
 }
 
 String _generateFromJsonConstructorProps(
-  Set<ClassPropertyDefinition> classPropertyDefinitions,
+  Set<ClassConstructorParameter> constructorParameters,
 ) {
   final parameters = <String>[];
-  for (final propDefinition in classPropertyDefinitions) {
+  final positionalParameters = constructorParameters
+      .where((parameter) => parameter.position != null)
+      .toList()
+    ..sort((a, b) => a.position!.compareTo(b.position!));
+  for (final positionalParameter in positionalParameters) {
+    final parameter = "json[\"${positionalParameter.name}\"],";
+    parameters.add(parameter);
+  }
+
+  final namedParameters =
+      constructorParameters.where((parameter) => parameter.isNamed);
+  for (final namedParameter in namedParameters) {
     final parameter =
-        "${propDefinition.name}: json[\"${propDefinition.name}\"] as ${propDefinition.type},";
+        "${namedParameter.name}: json[\"${namedParameter.name}\"],";
     parameters.add(parameter);
   }
 

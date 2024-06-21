@@ -36,8 +36,14 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
   void visitClassDeclaration(ClassDeclaration node) {
     final className = node.name.value().toString();
     final classProperties = <ClassPropertyDefinition>{};
+    final constructorParamters = <ClassConstructorParameter>{};
+    ConstructorDeclaration? constructorDeclaration;
 
     for (final member in node.members) {
+      if (member is ConstructorDeclaration) {
+        constructorDeclaration = member;
+      }
+
       if (member is! FieldDeclaration) continue;
 
       for (final variable in member.fields.variables) {
@@ -50,9 +56,27 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
       }
     }
 
+    if (constructorDeclaration != null) {
+      for (var i = 0;
+          i < constructorDeclaration.parameters.parameters.length;
+          i++) {
+        final parameter = constructorDeclaration.parameters.parameters[i];
+        final name = parameter.name?.value().toString();
+        final isNamed = name != null;
+        final position = isNamed ? null : i;
+
+        constructorParamters.add(ClassConstructorParameter(
+          name: name,
+          isNamed: isNamed,
+          position: position,
+        ));
+      }
+    }
+
     classes.add(ClassDefinition(
       name: className,
       properties: classProperties,
+      constructorParameters: constructorParamters,
     ));
   }
 }

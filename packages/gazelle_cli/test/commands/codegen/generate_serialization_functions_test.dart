@@ -9,8 +9,8 @@ void main() {
       final expected = """
 	User fromJson(Map<String, dynamic> json) {
 	  return User(
-	    name: json["name"] as String,
-	    age: json["age"] as int,
+	    json["name"],
+	    age: json["age"],
 	  );
 	}
       """
@@ -26,6 +26,17 @@ void main() {
           ClassPropertyDefinition(
             name: "age",
             type: "int",
+          ),
+        },
+        constructorParameters: {
+          ClassConstructorParameter(
+            position: 0,
+            isNamed: false,
+            name: "name",
+          ),
+          ClassConstructorParameter(
+            name: "age",
+            isNamed: true,
           ),
         },
       );
@@ -61,6 +72,7 @@ void main() {
             type: "int",
           ),
         },
+        constructorParameters: {},
       );
 
       // Act
