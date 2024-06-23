@@ -2,11 +2,11 @@ import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_logger/gazelle_logger.dart';
 
 void main() async {
-  final app = GazelleApp(
+  final GazelleApp app = GazelleApp(
     routes: [
       GazelleRoute(
         name: "hello_gazelle",
-        get: (context, request, resonse) async => GazelleResponse(
+        get: (context, request, response) async => GazelleResponse(
           statusCode: GazelleHttpStatusCode.success.ok_200,
           body: "Hello, Gazelle!",
         ),
@@ -16,7 +16,7 @@ void main() async {
         postResponseHooks: (context) => [
           context.getPlugin<GazelleLoggerPlugin>().logResponseHook,
         ],
-      )
+      ),
     ],
     plugins: [
       GazelleLoggerPlugin(),
