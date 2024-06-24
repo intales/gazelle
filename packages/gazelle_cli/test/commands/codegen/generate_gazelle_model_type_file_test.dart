@@ -9,7 +9,8 @@ void main() {
       // Arrange
       const expected = """
       import 'package:gazelle_core/gazelle_core.dart';
-      import '../entities/metadata.dart';
+      import '../entities/user.dart';
+      import 'metadata_model_type.dart';
 
       class UserModelType extends GazelleModelType<User> {
         @override
@@ -123,7 +124,8 @@ void main() {
       // Act
       final result = await generateModelTypeFile(
         classDefinitions,
-        ["metadata.dart"],
+        ["user.dart"],
+        ["metadata_model_type.dart"],
         fileName,
       );
 

@@ -8,6 +8,8 @@ Future<void> codegen(String entitiesDirectoryPath) async {
   final modelsDirectoryPath =
       "${Directory(entitiesDirectoryPath).parent.path}/models";
   final classDefinitions = await analyze(entitiesDirectoryPath);
+
+  // Group by filename to handle imports
   final groupedClassDefinitions =
       classDefinitions.groupBy((item) => item.fileName);
 
@@ -16,16 +18,25 @@ Future<void> codegen(String entitiesDirectoryPath) async {
     final key = entry.key;
     final value = entry.value;
 
-    final filesToImport =
-        groupedClassDefinitions.keys.where((item) => item != key).toList();
+    // The entities to import (should be always 1)
+    final entitiesImports =
+        groupedClassDefinitions.keys.where((e) => e == key).toList();
 
+    // The list of model types that may be imported excluding the
+    // model type that's being generated
+    final modelTypesImports = groupedClassDefinitions.keys
+        .where((e) => e != key)
+        .map((e) => e.replaceAll(".dart", "_model_type.dart"))
+        .toList();
+
+    // Generated model type file name
     String fileName = "$modelsDirectoryPath/";
-    fileName += key.replaceAll(".dart", "");
-    fileName += "_model_type.dart";
+    fileName += key.replaceAll(".dart", "_model_type.dart");
 
     final modelTypeFile = await generateModelTypeFile(
       value.map((e) => e.classDefinition).toList(),
-      filesToImport,
+      entitiesImports,
+      modelTypesImports,
       fileName,
     );
 
@@ -39,7 +50,7 @@ extension _ListGroupByX<T> on List<T> {
 }
 
 Map<K, List<T>> _groupBy<T, K>(List<T> items, K Function(T) keyFunction) {
-  Map<K, List<T>> groupedMap = {};
+  final groupedMap = <K, List<T>>{};
 
   for (final T item in items) {
     final K key = keyFunction(item);

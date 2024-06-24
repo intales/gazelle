@@ -5,6 +5,8 @@ import 'package:gazelle_cli/commands/codegen/codegen.dart';
 import 'package:test/test.dart';
 
 const _user = """
+import 'propic.dart';
+
 class User {
   final String name;
   final int age;
@@ -13,7 +15,7 @@ class User {
   const User({
     required this.name,
     required this.age,
-    requried this.propic,
+    required this.propic,
   });
 }
 """;
@@ -35,20 +37,29 @@ void main() {
     test('Should generate model types', () async {
       // Arrange
       const basePath = "tmp/codgen_tests";
+      final baseDirectory = Directory(basePath);
+      final modelsDirectory = Directory("$basePath/models");
       const entitiesPath = "$basePath/entities";
-      final userFile = await File("$entitiesPath/user.dart")
+      await File("$entitiesPath/user.dart")
           .create(recursive: true)
           .then((file) => file.writeAsString(DartFormatter().format(_user)));
-      final propicFile = await File("$entitiesPath/propic.dart")
+      await File("$entitiesPath/propic.dart")
           .create(recursive: true)
           .then((file) => file.writeAsString(DartFormatter().format(_propic)));
-      // Act
 
-      final result = await codegen(entitiesPath);
+      // Act
+      await codegen(entitiesPath);
 
       // Assert
+      final fileNames = modelsDirectory
+          .listSync()
+          .map((e) => e.path.split("/").last)
+          .toList();
+      expect(fileNames.contains("user_model_type.dart"), true);
+      expect(fileNames.contains("propic_model_type.dart"), true);
 
       // Tear down
+      await baseDirectory.delete(recursive: true);
     });
   });
 }
