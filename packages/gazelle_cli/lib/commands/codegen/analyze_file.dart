@@ -1,15 +1,20 @@
 import 'dart:io';
 
 import 'analyze_class.dart';
-import 'class_definition.dart';
+import 'file_class_definition.dart';
 
 /// Analyzes a Dart file.
-Future<List<ClassDefinition>> analyzeFile(String path) async {
+Future<List<FileClassDefinition>> analyzeFile(String path) async {
   final file = File(path);
   if (!file.existsSync()) return [];
 
   final content = await file.readAsString();
-  final classDefinitions = analyzeClasses(content);
+  final classDefinitions = analyzeClasses(content)
+      .map((classDefinition) => FileClassDefinition(
+            classDefinition: classDefinition,
+            fileName: path.split("/").last,
+          ))
+      .toList();
 
   return classDefinitions;
 }
