@@ -11,6 +11,7 @@ void main() {
 	  return User(
 	    json["name"],
 	    age: json["age"],
+	    propic: PropicModelType().fromJson(json["propic"]),
 	  );
 	}
       """
@@ -27,6 +28,10 @@ void main() {
             name: "age",
             type: "int",
           ),
+          ClassPropertyDefinition(
+            name: "propic",
+            type: "Propic",
+          ),
         },
         constructorParameters: {
           ClassConstructorParameter(
@@ -36,6 +41,11 @@ void main() {
           ),
           ClassConstructorParameter(
             name: "age",
+            isNamed: true,
+          ),
+          ClassConstructorParameter(
+            name: "propic",
+            type: "Propic",
             isNamed: true,
           ),
         },
@@ -55,6 +65,7 @@ void main() {
 	  return {
 	    "name": value.name,
 	    "age": value.age,
+	    "propic": PropicModelType().toJson(value.propic),
 	  };
 	}
       """
@@ -70,6 +81,10 @@ void main() {
           ClassPropertyDefinition(
             name: "age",
             type: "int",
+          ),
+          ClassPropertyDefinition(
+            name: "propic",
+            type: "Propic",
           ),
         },
         constructorParameters: {},

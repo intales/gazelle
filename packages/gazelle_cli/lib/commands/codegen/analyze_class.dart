@@ -64,11 +64,16 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
         final name = parameter.name?.value().toString();
         final isNamed = name != null;
         final position = isNamed ? null : i;
+        final type = classProperties
+            .where((prop) => prop.name == parameter.name.toString())
+            .firstOrNull
+            ?.type;
 
         constructorParamters.add(ClassConstructorParameter(
           name: name,
           isNamed: isNamed,
           position: position,
+          type: type,
         ));
       }
     }
