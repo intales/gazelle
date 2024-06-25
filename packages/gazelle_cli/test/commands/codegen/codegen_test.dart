@@ -40,6 +40,7 @@ void main() {
       final baseDirectory = Directory(basePath);
       final modelsDirectory = Directory("$basePath/models");
       const entitiesPath = "$basePath/entities";
+      const projectName = "test_project";
       await File("$entitiesPath/user.dart")
           .create(recursive: true)
           .then((file) => file.writeAsString(DartFormatter().format(_user)));
@@ -48,7 +49,8 @@ void main() {
           .then((file) => file.writeAsString(DartFormatter().format(_propic)));
 
       // Act
-      await codegen(entitiesPath);
+
+      await codegen(entitiesPath, projectName);
 
       // Assert
       final fileNames = modelsDirectory
@@ -57,6 +59,7 @@ void main() {
           .toList();
       expect(fileNames.contains("user_model_type.dart"), true);
       expect(fileNames.contains("propic_model_type.dart"), true);
+      expect(fileNames.contains("${projectName}_model_provider.dart"), true);
 
       // Tear down
       await baseDirectory.delete(recursive: true);

@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'analyze.dart';
+import 'generate_gazelle_model_provider_file.dart';
 import 'generate_gazelle_model_type_file.dart';
 
 /// Generates models for serialization.
-Future<void> codegen(String entitiesDirectoryPath) async {
+Future<void> codegen(
+  String entitiesDirectoryPath,
+  String projectName,
+) async {
   final modelsDirectoryPath =
       "${Directory(entitiesDirectoryPath).parent.path}/models";
   final classDefinitions = await analyze(entitiesDirectoryPath);
@@ -42,6 +46,17 @@ Future<void> codegen(String entitiesDirectoryPath) async {
 
     modelTypeFiles.add(modelTypeFile);
   }
+
+  final modelTypeFileName =
+      "$modelsDirectoryPath/${projectName}_model_provider.dart";
+
+  await generateModelProviderFile(
+    projectName,
+    classDefinitions.map((e) => e.classDefinition).toList(),
+    modelTypeFiles,
+    classDefinitions.map((e) => File(e.fileName)).toList(),
+    modelTypeFileName,
+  );
 }
 
 extension _ListGroupByX<T> on List<T> {
