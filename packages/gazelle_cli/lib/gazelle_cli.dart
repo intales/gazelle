@@ -6,10 +6,15 @@ import 'commands/dockerize/dockerize.dart';
 import 'commands/run/run.dart';
 
 /// Runs Gazelle CLI with given arguments.
-void run(List<String> arguments) =>
-    CommandRunner("gazelle", "Gazelle CLI for Gazelle framework.")
-      ..addCommand(CreateCommand())
-      ..addCommand(DockerizeCommand())
-      ..addCommand(RunCommand())
-      ..addCommand(DeleteCommand())
-      ..run(arguments);
+void run(List<String> arguments) async {
+  final runner = CommandRunner("gazelle", "Gazelle CLI for Gazelle framework.")
+    ..addCommand(CreateCommand())
+    ..addCommand(DockerizeCommand())
+    ..addCommand(RunCommand())
+    ..addCommand(DeleteCommand());
+  try {
+    await runner.run(arguments);
+  } catch (e) {
+    print(e);
+  }
+}

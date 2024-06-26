@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:cli_spin/cli_spin.dart';
 
+import '../../commons/functions/get_input.dart';
 import '../../commons/functions/load_project_configuration.dart';
+import 'create_handler.dart';
 import 'create_project.dart';
 import 'create_route.dart';
 
@@ -19,6 +21,7 @@ class CreateCommand extends Command {
   CreateCommand() {
     addSubcommand(_CreateProjectCommand());
     addSubcommand(_CreateRouteCommand());
+    addSubcommand(_CreatHandlerCommand());
   }
 }
 
@@ -114,6 +117,86 @@ class _CreateRouteCommand extends Command {
         "$routeName route created 🚀",
       );
     } on LoadProjectConfigurationGazelleNotFoundError catch (e) {
+      spinner.fail(e.errorMessage);
+      exit(e.errorCode);
+    } on Exception catch (e) {
+      spinner.fail(e.toString());
+      exit(2);
+    }
+  }
+}
+
+/// CLI command to create a new Gazelle handler.
+class _CreatHandlerCommand extends Command {
+  @override
+  String get name => "handler";
+
+  @override
+  String get description => "Creates a new Gazelle handler.";
+
+  /// Creates a [_CreatHandlerCommand].
+  _CreatHandlerCommand();
+
+  @override
+  void run() async {
+    CliSpin spinner = CliSpin();
+    try {
+      await loadProjectConfiguration();
+
+      final handlerName = getInput(
+        "What is the route for this handler?",
+        onEmpty: "Please provide a name for your route to proceed!",
+        onValidated: (input) =>
+            input.replaceAll(RegExp(r'\s+'), "_").toLowerCase(),
+      );
+
+      const httpMethods = ["GET", "POST", "PUT", "PATCH", "DELETE"];
+
+      final httpMethod = getInput(
+        "What HTTP method does your handler respond to?",
+        onEmpty: "Please provide an HTTP method to proceed!",
+        validator: (input) => httpMethods
+                .contains(input.replaceAll(RegExp(r'\s+'), "").toUpperCase())
+            ? null
+            : "Please provide a valid HTTP method from the following: $httpMethods",
+        defaultValue: "GET",
+        onValidated: (input) =>
+            input.replaceAll(RegExp(r'\s+'), "").toUpperCase(),
+      );
+
+      final path = getInput(
+        "Where would you like to create the handler?",
+        defaultValue: "lib/routes/${handlerName}_route/handlers",
+        onEmpty: "Please provide a valid path to proceed:",
+        validator: (input) {
+          final handlerFile = File(
+              "$input/${handlerName.toLowerCase()}_${httpMethod.toLowerCase()}_handler.dart");
+          return handlerFile.existsSync()
+              ? "A handler with the same name already exists at the provided path."
+              : null;
+        },
+        onValidated: (input) =>
+            (Directory(input)..createSync(recursive: true)).path,
+      );
+
+      stdout.writeln();
+
+      spinner = CliSpin(
+        text: "Creating $handlerName handler...",
+        spinner: CliSpinners.dots,
+      ).start();
+
+      await createHandler(
+        routeName: handlerName,
+        httpMethod: httpMethod,
+        path: path,
+      );
+
+      spinner.success("$handlerName handler created 🚀");
+    } on LoadProjectConfigurationGazelleNotFoundError catch (e) {
+      spinner.fail(e.errorMessage);
+      exit(e.errorCode);
+    } on LoadProjectConfigurationPubspecNotFoundError catch (e) {
       spinner.fail(e.errorMessage);
       exit(e.errorCode);
     } on Exception catch (e) {
