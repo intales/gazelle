@@ -9,12 +9,13 @@ Future<List<FileClassDefinition>> analyzeFile(String path) async {
   if (!file.existsSync()) return [];
 
   final content = await file.readAsString();
-  final classDefinitions = analyzeClasses(content)
-      .map((classDefinition) => FileClassDefinition(
-            classDefinition: classDefinition,
-            fileName: path.split("/").last,
-          ))
-      .toList();
+  final classDefinitions =
+      analyzeClasses(content).then((definitions) => definitions
+          .map((classDefinition) => FileClassDefinition(
+                classDefinition: classDefinition,
+                fileName: path.split("/").last,
+              ))
+          .toList());
 
   return classDefinitions;
 }

@@ -1,5 +1,8 @@
-import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
+import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/file_system/overlay_file_system.dart';
+import 'package:analyzer/file_system/physical_file_system.dart';
 //ignore: implementation_imports
 import 'package:analyzer/src/dart/ast/ast.dart';
 
@@ -17,14 +20,28 @@ class AnalyzeClassesException implements Exception {
 }
 
 /// Analyzes a list of Dart classes.
-List<ClassDefinition> analyzeClasses(String classContent) {
+Future<List<ClassDefinition>> analyzeClasses(String classContent) async {
   if (classContent.isEmpty) const AnalyzeClassesException();
 
-  final parsingResult = parseString(content: classContent);
-  final compilationUnit = parsingResult.unit;
+  const filePath = "/code_to_analyze.dart";
+  final collection = AnalysisContextCollection(
+    includedPaths: const [filePath],
+    resourceProvider: OverlayResourceProvider(PhysicalResourceProvider())
+      ..setOverlay(
+        filePath,
+        content: classContent,
+        modificationStamp: 0,
+      ),
+  );
+
+  final compilationUnit = await collection
+      .contextFor(filePath)
+      .currentSession
+      .getResolvedUnit(filePath)
+      .then((unit) => unit as ResolvedUnitResult);
 
   final visitor = _ClassVisitor();
-  compilationUnit.visitChildren(visitor);
+  compilationUnit.unit.visitChildren(visitor);
 
   return visitor.classes.toList();
 }
@@ -68,6 +85,8 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
             .where((prop) => prop.name == parameter.name.toString())
             .firstOrNull
             ?.type;
+
+        print(parameter.declaredElement?.type.toString());
 
         constructorParamters.add(ClassConstructorParameter(
           name: name,

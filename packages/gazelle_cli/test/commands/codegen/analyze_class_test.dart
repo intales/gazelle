@@ -28,7 +28,7 @@ void main() {
       """;
 
       // Act
-      final result = analyzeClasses(classContent);
+      final result = await analyzeClasses(classContent);
       final userDefinition = result.first;
       final postDefinition = result.last;
 

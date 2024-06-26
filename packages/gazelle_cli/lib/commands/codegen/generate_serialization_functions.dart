@@ -42,7 +42,14 @@ String _generateFromJsonConstructorProps(
       .toList()
     ..sort((a, b) => a.position!.compareTo(b.position!));
   for (final positionalParameter in positionalParameters) {
-    String parameter = "json[\"${positionalParameter.name}\"]";
+    String parameter = switch (positionalParameter.type) {
+      "DateTime" => "DateTime.parse(json[\"${positionalParameter.name}\"])",
+      "Duration" =>
+        "Duration(microseconds: json[\"${positionalParameter.name}\"])",
+      "BigInt" => "BigInt.fromValue(json[\"${positionalParameter.name}\"])",
+      "Uri" => "Uri.parse(json[\"${positionalParameter.name}\"])",
+      _ => "json[\"${positionalParameter.name}\"]"
+    };
     if (positionalParameter.type != null &&
         !_isPrimitive(positionalParameter.type!)) {
       parameter =
@@ -55,8 +62,15 @@ String _generateFromJsonConstructorProps(
   final namedParameters =
       constructorParameters.where((parameter) => parameter.isNamed);
   for (final namedParameter in namedParameters) {
-    String parameter =
-        "${namedParameter.name}: json[\"${namedParameter.name}\"],";
+    String parameter = "${namedParameter.name}: ";
+    parameter += switch (namedParameter.type) {
+      "DateTime" => "DateTime.parse(json[\"${namedParameter.name}\"])",
+      "Duration" => "Duration(microseconds: json[\"${namedParameter.name}\"])",
+      "BigInt" => "BigInt.fromValue(json[\"${namedParameter.name}\"])",
+      "Uri" => "Uri.parse(json[\"${namedParameter.name}\"])",
+      _ => "json[\"${namedParameter.name}\"]"
+    };
+    parameter += ",";
     if (namedParameter.type != null && !_isPrimitive(namedParameter.type!)) {
       parameter =
           "${namedParameter.name}: ${namedParameter.type!}ModelType().fromJson(json[\"${namedParameter.name}\"]),";
@@ -90,7 +104,14 @@ String _generateToJsonProperties(
   for (final propDefinition in classPropertyDefinitions) {
     String parameter = "\"${propDefinition.name}\": ";
     if (_isPrimitive(propDefinition.type.toString())) {
-      parameter += "value.${propDefinition.name}";
+      parameter += "value.";
+      parameter += switch (propDefinition.type) {
+        "DateTime" => "${propDefinition.name}.toIso8601String()",
+        "Duration" => "${propDefinition.name}.microseconds)",
+        "BigInt" => "${propDefinition.name}.toString()",
+        "Uri" => "${propDefinition.name}.toString()",
+        _ => propDefinition.name,
+      };
     } else {
       parameter +=
           "${propDefinition.type}ModelType().toJson(value.${propDefinition.name})";
