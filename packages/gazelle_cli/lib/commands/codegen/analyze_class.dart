@@ -78,17 +78,35 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
           i < constructorDeclaration.parameters.parameters.length;
           i++) {
         final parameter = constructorDeclaration.parameters.parameters[i];
+        final element = parameter.declaredElement!;
+
         final name = parameter.name?.value().toString();
-        final isNamed = name != null;
-        final position = isNamed ? null : i;
-        final type = classProperties
-            .where((prop) => prop.name == parameter.name.toString())
-            .firstOrNull
-            ?.type;
+        final position = name == null ? i : null;
+        final dartType = element.type;
+        final type = TypeDefinition(
+          name: dartType.getDisplayString(),
+          source: dartType.element!.source?.fullName,
+          isInt: dartType.isDartCoreInt,
+          isMap: dartType.isDartCoreMap,
+          isNum: dartType.isDartCoreNum,
+          isSet: dartType.isDartCoreSet,
+          isBool: dartType.isDartCoreBool,
+          isEnum: dartType.isDartCoreEnum,
+          isList: dartType.isDartCoreList,
+          isNull: dartType.isDartCoreNull,
+          isDouble: dartType.isDartCoreDouble,
+          isObject: dartType.isDartCoreObject,
+          isRecord: dartType.isDartCoreRecord,
+          isString: dartType.isDartCoreString,
+          isSymbol: dartType.isDartCoreSymbol,
+          isFuture: dartType.isDartAsyncFuture,
+          isStream: dartType.isDartAsyncStream,
+          isIterable: dartType.isDartCoreIterable,
+          isFutureOr: dartType.isDartAsyncFutureOr,
+        );
 
         constructorParamters.add(ClassConstructorParameter(
           name: name,
-          isNamed: isNamed,
           position: position,
           type: type,
         ));
