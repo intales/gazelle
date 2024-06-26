@@ -144,8 +144,8 @@ class _CreatHandlerCommand extends Command {
       await loadProjectConfiguration();
 
       final handlerName = getInput(
-        "What would you like to name your new handler?",
-        onEmpty: "Please provide a name for your handler to proceed!",
+        "What is the route for this handler?",
+        onEmpty: "Please provide a name for your route to proceed!",
         onValidated: (input) =>
             input.replaceAll(RegExp(r'\s+'), "_").toLowerCase(),
       );
@@ -178,6 +178,8 @@ class _CreatHandlerCommand extends Command {
         onValidated: (input) =>
             (Directory(input)..createSync(recursive: true)).path,
       );
+
+      stdout.writeln();
 
       spinner = CliSpin(
         text: "Creating $handlerName handler...",
