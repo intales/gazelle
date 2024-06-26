@@ -86,8 +86,6 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
             .firstOrNull
             ?.type;
 
-        print(parameter.declaredElement?.type.toString());
-
         constructorParamters.add(ClassConstructorParameter(
           name: name,
           isNamed: isNamed,

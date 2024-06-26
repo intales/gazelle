@@ -18,7 +18,7 @@ class PostModelType extends GazelleModelType<Post> {
     return Post(
       id: json["id"],
       content: json["content"],
-      user: InvalidTypeModelType().fromJson(json["user"]),
+      user: UserModelType().fromJson(json["user"]),
       createdAt: DateTime.parse(json["createdAt"]),
     );
   }
