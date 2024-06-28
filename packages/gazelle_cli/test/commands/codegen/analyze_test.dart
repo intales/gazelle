@@ -1,52 +1,80 @@
 import 'dart:io';
 
-import 'package:gazelle_cli/commands/codegen/analyze.dart';
+import 'package:gazelle_cli/commands/codegen/analyze_entities.dart';
 import 'package:test/test.dart';
+
+const _userClass = """
+class User {
+  final String id;
+  final String username;
+
+  const User({
+    required this.id,
+    required this.username,
+  });
+}
+""";
+
+const _postClass = """
+import 'user.dart';
+
+class Post {
+  final String id;
+  final String content;
+  final User user;
+
+  const Post({
+    required this.id,
+    required this.content,
+    required this.user,
+  });
+}
+""";
 
 void main() {
   group('Analyze tests', () {
-    test('Should return a list of class definitions', () async {
+    test('Should analyze some dart classes', () async {
       // Arrange
-      const directoryPath = "tmp/analyze_test";
-      const userDefinition = """
-      class User {
-        final String name;
-	final int age;
-
-	const User({
-	  required this.name,
-	  required this.age,
-	});
+      final entitiesDirectoryPath = "tmp/analyze_tests/entities";
+      final entitiesDirectory = Directory(entitiesDirectoryPath);
+      if (entitiesDirectory.existsSync()) {
+        entitiesDirectory.deleteSync(recursive: true);
       }
-      """;
-      const userDefinitionPath = "$directoryPath/user.dart";
-      const postDefinition = """
-      class Post {
-        final String username;
-	final int id;
-
-	const Post({
-	  required this.username,
-	  required this.id,
-	});
-      }
-      """;
-      const postDefinitionPath = "$directoryPath/post.dart";
-      final directory = await Directory(directoryPath).create(recursive: true);
-      final userDefinitionFile =
-          await File(userDefinitionPath).create(recursive: true);
-      final postDefinitionFile =
-          await File(postDefinitionPath).create(recursive: true);
-      await userDefinitionFile.writeAsString(userDefinition);
-      await postDefinitionFile.writeAsString(postDefinition);
+      entitiesDirectory.createSync(recursive: true);
+      final userFile = File("$entitiesDirectoryPath/user.dart")
+        ..createSync(recursive: true)
+        ..writeAsStringSync(_userClass);
+      final postFile = File("$entitiesDirectoryPath/post.dart")
+        ..createSync(recursive: true)
+        ..writeAsStringSync(_postClass);
 
       // Act
-      final result = await analyze(directoryPath);
+      final result = await analyzeEntities(entitiesDirectory);
 
       // Assert
-      expect(result.length, 2);
+      final userDefinition = result
+          .where((e) => e.fileName == userFile.absolute.path)
+          .singleOrNull;
+      final postDefinition = result
+          .where((e) => e.fileName == postFile.absolute.path)
+          .singleOrNull;
 
-      await directory.delete(recursive: true);
+      expect(userDefinition, isNotNull);
+      expect(postDefinition, isNotNull);
+
+      final userClasses = userDefinition!.classes;
+      final postClasses = postDefinition!.classes;
+
+      expect(userClasses.length, 1);
+      expect(postClasses.length, 1);
+
+      final postImports = postDefinition.importsPaths;
+
+      expect(postImports.length, 1);
+      print(postImports.firstOrNull);
+
+      // Tear down
+      entitiesDirectory.deleteSync(recursive: true);
     });
   });
 }

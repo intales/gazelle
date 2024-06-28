@@ -1,3 +1,30 @@
+/// Represents a source file.
+class SourceFileDefinition {
+  /// The imports needed by this file.
+  final Set<String> importsPaths;
+
+  /// The other parts of this file.
+  final Set<String> partsPaths;
+
+  /// The main part file.
+  final String? partOf;
+
+  /// The classes inside this file.
+  final Set<ClassDefinition> classes;
+
+  /// The name of this file.
+  final String fileName;
+
+  /// Builds a [SourceFileDefinition].
+  const SourceFileDefinition({
+    required this.fileName,
+    required this.classes,
+    this.importsPaths = const {},
+    this.partsPaths = const {},
+    this.partOf,
+  });
+}
+
 /// Represents the definition of a class.
 class ClassDefinition {
   /// The class name.

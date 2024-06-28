@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/file_system/overlay_file_system.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 //ignore: implementation_imports
 import 'package:analyzer/src/dart/ast/ast.dart';
@@ -20,30 +21,45 @@ class AnalyzeClassesException implements Exception {
 }
 
 /// Analyzes a list of Dart classes.
-Future<List<ClassDefinition>> analyzeClasses(String classContent) async {
-  if (classContent.isEmpty) const AnalyzeClassesException();
-
-  const filePath = "/code_to_analyze.dart";
+Future<List<SourceFileDefinition>> analyzeEntities(
+  Directory entitiesDirectory,
+) async {
   final collection = AnalysisContextCollection(
-    includedPaths: const [filePath],
-    resourceProvider: OverlayResourceProvider(PhysicalResourceProvider())
-      ..setOverlay(
-        filePath,
-        content: classContent,
-        modificationStamp: 0,
-      ),
+    includedPaths: [entitiesDirectory.absolute.path],
+    resourceProvider: PhysicalResourceProvider.INSTANCE,
   );
 
-  final compilationUnit = await collection
-      .contextFor(filePath)
-      .currentSession
-      .getResolvedUnit(filePath)
-      .then((unit) => unit as ResolvedUnitResult);
+  final sourceFileDefinitions = <SourceFileDefinition>[];
+  for (final context in collection.contexts) {
+    for (final filePath in context.contextRoot.analyzedFiles()) {
+      if (!filePath.endsWith(".dart")) {
+        continue;
+      }
 
-  final visitor = _ClassVisitor();
-  compilationUnit.unit.visitChildren(visitor);
+      final unit = await context.currentSession
+          .getResolvedUnit(filePath)
+          .then((unit) => (unit as ResolvedUnitResult).unit);
 
-  return visitor.classes.toList();
+      final imports = unit.directives.whereType<ImportDirective>().toSet();
+      final parts = unit.directives.whereType<PartDirective>().toSet();
+      final partOf = unit.directives.whereType<PartOfDirective>().firstOrNull;
+
+      final visitor = _ClassVisitor();
+      unit.visitChildren(visitor);
+
+      final sourceFileDefinition = SourceFileDefinition(
+        fileName: filePath,
+        classes: visitor.classes,
+        importsPaths: imports.map((e) => e.uri.stringValue ?? "").toSet(),
+        partsPaths: parts.map((e) => e.uri.stringValue ?? "").toSet(),
+        partOf: partOf?.uri?.stringValue,
+      );
+
+      sourceFileDefinitions.add(sourceFileDefinition);
+    }
+  }
+
+  return sourceFileDefinitions;
 }
 
 class _ClassVisitor extends GeneralizingAstVisitor<void> {
