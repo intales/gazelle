@@ -71,7 +71,7 @@ void main() {
       final postImports = postDefinition.importsPaths;
 
       expect(postImports.length, 1);
-      print(postImports.firstOrNull);
+      expect(postImports.first, "user.dart");
 
       // Tear down
       entitiesDirectory.deleteSync(recursive: true);
