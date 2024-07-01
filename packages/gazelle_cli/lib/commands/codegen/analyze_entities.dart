@@ -9,17 +9,6 @@ import 'package:analyzer/src/dart/ast/ast.dart';
 
 import 'class_definition.dart';
 
-/// Defines an error while analyzing Dart classes.
-class AnalyzeClassesException implements Exception {
-  /// The error message.
-  final String message;
-
-  /// Builds a [AnalyzeClassesException].
-  const AnalyzeClassesException({
-    this.message = "Class content is empty!",
-  });
-}
-
 /// Analyzes a list of Dart classes.
 Future<List<SourceFileDefinition>> analyzeEntities(
   Directory entitiesDirectory,
@@ -80,7 +69,28 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
       if (member is! FieldDeclaration) continue;
 
       for (final variable in member.fields.variables) {
-        final type = member.fields.type.toString();
+        final dartType = variable.declaredElement!.type;
+        final type = TypeDefinition(
+          name: dartType.getDisplayString(),
+          source: dartType.element!.source?.fullName,
+          isInt: dartType.isDartCoreInt,
+          isMap: dartType.isDartCoreMap,
+          isNum: dartType.isDartCoreNum,
+          isSet: dartType.isDartCoreSet,
+          isBool: dartType.isDartCoreBool,
+          isEnum: dartType.isDartCoreEnum,
+          isList: dartType.isDartCoreList,
+          isNull: dartType.isDartCoreNull,
+          isDouble: dartType.isDartCoreDouble,
+          isObject: dartType.isDartCoreObject,
+          isRecord: dartType.isDartCoreRecord,
+          isString: dartType.isDartCoreString,
+          isSymbol: dartType.isDartCoreSymbol,
+          isFuture: dartType.isDartAsyncFuture,
+          isStream: dartType.isDartAsyncStream,
+          isIterable: dartType.isDartCoreIterable,
+          isFutureOr: dartType.isDartAsyncFutureOr,
+        );
         final propertyName = variable.name.value().toString();
         classProperties.add(ClassPropertyDefinition(
           name: propertyName,

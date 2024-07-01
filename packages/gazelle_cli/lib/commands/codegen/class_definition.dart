@@ -50,7 +50,7 @@ class ClassPropertyDefinition {
   final String name;
 
   /// The type of the property.
-  final String type;
+  final TypeDefinition type;
 
   /// Builds a [ClassPropertyDefinition].
   const ClassPropertyDefinition({
