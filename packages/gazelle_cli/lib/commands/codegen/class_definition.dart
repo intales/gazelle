@@ -140,10 +140,21 @@ class TypeDefinition {
   /// Returns `true` if the type represents a `FutureOr`.
   final bool isFutureOr;
 
+  /// The generic value type of this type.
+  final TypeDefinition? valueType;
+
+  /// The generic key type of this type.
+  final TypeDefinition? keyType;
+
+  /// Return `true` if this type is primitive.
+  bool get isPrimitive => isInt || isNum || isString || isBool || isObject;
+
   /// Builds a [TypeDefinition] instance
   const TypeDefinition({
     this.source,
     required this.name,
+    this.valueType,
+    this.keyType,
     this.isInt = false,
     this.isMap = false,
     this.isNum = false,

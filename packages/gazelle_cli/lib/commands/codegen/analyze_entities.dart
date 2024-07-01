@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 //ignore: implementation_imports
 import 'package:analyzer/src/dart/ast/ast.dart';
@@ -69,28 +70,8 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
       if (member is! FieldDeclaration) continue;
 
       for (final variable in member.fields.variables) {
-        final dartType = variable.declaredElement!.type;
-        final type = TypeDefinition(
-          name: dartType.getDisplayString(),
-          source: dartType.element!.source?.fullName,
-          isInt: dartType.isDartCoreInt,
-          isMap: dartType.isDartCoreMap,
-          isNum: dartType.isDartCoreNum,
-          isSet: dartType.isDartCoreSet,
-          isBool: dartType.isDartCoreBool,
-          isEnum: dartType.isDartCoreEnum,
-          isList: dartType.isDartCoreList,
-          isNull: dartType.isDartCoreNull,
-          isDouble: dartType.isDartCoreDouble,
-          isObject: dartType.isDartCoreObject,
-          isRecord: dartType.isDartCoreRecord,
-          isString: dartType.isDartCoreString,
-          isSymbol: dartType.isDartCoreSymbol,
-          isFuture: dartType.isDartAsyncFuture,
-          isStream: dartType.isDartAsyncStream,
-          isIterable: dartType.isDartCoreIterable,
-          isFutureOr: dartType.isDartAsyncFutureOr,
-        );
+        final dartType = variable.declaredElement!.type as InterfaceType;
+        final type = _getTypeDefinition(dartType);
         final propertyName = variable.name.value().toString();
         classProperties.add(ClassPropertyDefinition(
           name: propertyName,
@@ -108,29 +89,8 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
 
         final name = parameter.name?.value().toString();
         final position = name == null ? i : null;
-        final dartType = element.type;
-        final type = TypeDefinition(
-          name: dartType.getDisplayString(),
-          source: dartType.element!.source?.fullName,
-          isInt: dartType.isDartCoreInt,
-          isMap: dartType.isDartCoreMap,
-          isNum: dartType.isDartCoreNum,
-          isSet: dartType.isDartCoreSet,
-          isBool: dartType.isDartCoreBool,
-          isEnum: dartType.isDartCoreEnum,
-          isList: dartType.isDartCoreList,
-          isNull: dartType.isDartCoreNull,
-          isDouble: dartType.isDartCoreDouble,
-          isObject: dartType.isDartCoreObject,
-          isRecord: dartType.isDartCoreRecord,
-          isString: dartType.isDartCoreString,
-          isSymbol: dartType.isDartCoreSymbol,
-          isFuture: dartType.isDartAsyncFuture,
-          isStream: dartType.isDartAsyncStream,
-          isIterable: dartType.isDartCoreIterable,
-          isFutureOr: dartType.isDartAsyncFutureOr,
-        );
-
+        final dartType = element.type as InterfaceType;
+        final type = _getTypeDefinition(dartType);
         constructorParamters.add(ClassConstructorParameter(
           name: name,
           position: position,
@@ -145,4 +105,36 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
       constructorParameters: constructorParamters,
     ));
   }
+}
+
+TypeDefinition _getTypeDefinition(InterfaceType dartType) {
+  return TypeDefinition(
+    name: dartType.getDisplayString(),
+    source: dartType.element.source.fullName,
+    isInt: dartType.isDartCoreInt,
+    isMap: dartType.isDartCoreMap,
+    isNum: dartType.isDartCoreNum,
+    isSet: dartType.isDartCoreSet,
+    isBool: dartType.isDartCoreBool,
+    isEnum: dartType.isDartCoreEnum,
+    isList: dartType.isDartCoreList,
+    isNull: dartType.isDartCoreNull,
+    isDouble: dartType.isDartCoreDouble,
+    isObject: dartType.isDartCoreObject,
+    isRecord: dartType.isDartCoreRecord,
+    isString: dartType.isDartCoreString,
+    isSymbol: dartType.isDartCoreSymbol,
+    isFuture: dartType.isDartAsyncFuture,
+    isStream: dartType.isDartAsyncStream,
+    isIterable: dartType.isDartCoreIterable,
+    isFutureOr: dartType.isDartAsyncFutureOr,
+    valueType: dartType.isDartCoreList
+        ? _getTypeDefinition(dartType.typeArguments[0] as InterfaceType)
+        : dartType.isDartCoreMap
+            ? _getTypeDefinition(dartType.typeArguments[1] as InterfaceType)
+            : null,
+    keyType: dartType.isDartCoreMap
+        ? _getTypeDefinition(dartType.typeArguments[0] as InterfaceType)
+        : null,
+  );
 }
