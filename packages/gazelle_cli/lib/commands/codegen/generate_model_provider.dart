@@ -63,8 +63,7 @@ String _generateModelProvider({
   required List<File> modelTypesFiles,
 }) {
   final entitiesImports = sourceFiles
-      .expand((e) => e.importsPaths)
-      .map((e) => "$entitiesBasePath/$e")
+      .map((e) => "$entitiesBasePath/${e.fileName.split("/").last}")
       .map(cb.Directive.import)
       .toList();
 
