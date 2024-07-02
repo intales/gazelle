@@ -170,6 +170,7 @@ void main() {
         }
       }
 
+      print(result.modelProvider.readAsStringSync());
       expect(
         result.modelProvider
             .readAsStringSync()
