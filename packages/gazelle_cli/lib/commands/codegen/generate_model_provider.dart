@@ -246,6 +246,14 @@ String _generateFromJsonParameter(ClassConstructorParameter param) {
       parameter.write('${param.type.valueType!.name}ModelType().fromJson(v)');
     }
     parameter.write('))');
+  } else if (param.type.isDateTime) {
+    parameter.write("DateTime.parse(json[\"${param.name}\"])");
+  } else if (param.type.isDuration) {
+    parameter.write("Duration(microseconds: json[\"${param.name}\"])");
+  } else if (param.type.isBigInt) {
+    parameter.write("BigInt.from(json[\"${param.name}\"])");
+  } else if (param.type.isUri) {
+    parameter.write("Uri.parse(json[\"${param.name}\"])");
   } else {
     parameter
         .write('${param.type.name}ModelType().fromJson(json["${param.name}"])');
@@ -278,6 +286,14 @@ String _generateToJsonParameter(ClassPropertyDefinition prop) {
       parameter.write('${prop.type.valueType!.name}ModelType().toJson(v)');
     }
     parameter.write('))');
+  } else if (prop.type.isDateTime) {
+    parameter.write("value.${prop.name}.toIso8601String()");
+  } else if (prop.type.isDuration) {
+    parameter.write("value.${prop.name}.inMicroseconds");
+  } else if (prop.type.isBigInt) {
+    parameter.write("value.${prop.name}.toString()");
+  } else if (prop.type.isUri) {
+    parameter.write("value.${prop.name}.toString()");
   } else {
     parameter.write('${prop.type.name}ModelType().toJson(value.${prop.name})');
   }

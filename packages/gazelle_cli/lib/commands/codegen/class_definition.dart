@@ -140,6 +140,18 @@ class TypeDefinition {
   /// Returns `true` if the type represents a `FutureOr`.
   final bool isFutureOr;
 
+  /// Returns `true` if the type represents a `DateTime`.
+  final bool isDateTime;
+
+  /// Returns `true` if the type represents a `Duration`.
+  final bool isDuration;
+
+  /// Returns `true` if the type represents a `BigInt`.
+  final bool isBigInt;
+
+  /// Returns `true` if the type represents an `Uri`.
+  final bool isUri;
+
   /// The generic value type of this type.
   final TypeDefinition? valueType;
 
@@ -172,5 +184,9 @@ class TypeDefinition {
     this.isStream = false,
     this.isIterable = false,
     this.isFutureOr = false,
+    this.isDateTime = false,
+    this.isDuration = false,
+    this.isBigInt = false,
+    this.isUri = false,
   });
 }

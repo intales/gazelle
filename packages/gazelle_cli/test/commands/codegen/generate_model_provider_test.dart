@@ -13,12 +13,14 @@ class User {
   final String username;
   final List<Post> posts;
   final Map<String, String> metadata;
+  final DateTime createdAt;
 
   const User({
     required this.id,
     required this.username,
     required this.posts,
     required this.metadata,
+    required this.createdAt,
   });
 }
 """;
@@ -57,6 +59,7 @@ class UserModelType extends GazelleModelType<User> {
           .map((item) => PostModelType().fromJson(item))
           .toList(),
       metadata: (json["metadata"] as Map).map((k, v) => MapEntry(k, v)),
+      createdAt: DateTime.parse(json["createdAt"]),
     );
   }
 
@@ -67,6 +70,7 @@ class UserModelType extends GazelleModelType<User> {
       "username": value.username,
       "posts": value.posts.map((item) => PostModelType().toJson(item)).toList(),
       "metadata": value.metadata.map((k, v) => MapEntry(k, v)),
+      "createdAt": value.createdAt.toIso8601String(),
     };
   }
 }
@@ -95,25 +99,6 @@ class PostModelType extends GazelleModelType<Post> {
       "content": value.content,
       "user": UserModelType().toJson(value.user),
       "tags": value.tags,
-    };
-  }
-}
-""";
-
-const _expectedModelProvider = """
-import 'package:gazelle_core/gazelle_core.dart';
-
-import 'entities/post.dart';
-import 'entities/user.dart';
-import 'post_model_type.dart';
-import 'user_model_type.dart';
-
-class ModelProvider extends GazelleModelProvider {
-  @override
-  Map<Type, GazelleModelType> get modelTypes {
-    return {
-      Post: PostModelType(),
-      User: UserModelType(),
     };
   }
 }

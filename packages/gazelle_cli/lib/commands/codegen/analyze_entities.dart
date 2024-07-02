@@ -128,6 +128,10 @@ TypeDefinition _getTypeDefinition(InterfaceType dartType) {
     isStream: dartType.isDartAsyncStream,
     isIterable: dartType.isDartCoreIterable,
     isFutureOr: dartType.isDartAsyncFutureOr,
+    isDateTime: dartType.getDisplayString() == "DateTime",
+    isDuration: dartType.getDisplayString() == "Duration",
+    isBigInt: dartType.getDisplayString() == "BigInt",
+    isUri: dartType.getDisplayString() == "Uri",
     valueType: dartType.isDartCoreList
         ? _getTypeDefinition(dartType.typeArguments[0] as InterfaceType)
         : dartType.isDartCoreMap
