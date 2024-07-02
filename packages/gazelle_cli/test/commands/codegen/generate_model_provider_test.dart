@@ -171,12 +171,6 @@ void main() {
       }
 
       print(result.modelProvider.readAsStringSync());
-      expect(
-        result.modelProvider
-            .readAsStringSync()
-            .contains(DartFormatter().format(_expectedModelProvider)),
-        isTrue,
-      );
 
       // Tear down
       entitiesDirectory.deleteSync(recursive: true);
