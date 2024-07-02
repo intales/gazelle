@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dart_style/dart_style.dart';
 import 'package:gazelle_cli/commands/codegen/analyze_entities.dart';
 import 'package:gazelle_cli/commands/codegen/generate_model_provider.dart';
 import 'package:test/test.dart';
@@ -115,6 +116,7 @@ class ModelProvider extends GazelleModelProvider {
       User: UserModelType(),
     };
   }
+}
 """;
 
 void main() {
@@ -152,13 +154,17 @@ void main() {
       for (final modelType in result.modelTypes) {
         if (modelType.path.contains("post")) {
           expect(
-            modelType.readAsStringSync().contains(_expectedPostModelType),
+            modelType
+                .readAsStringSync()
+                .contains(DartFormatter().format(_expectedPostModelType)),
             isTrue,
           );
         }
         if (modelType.path.contains("user")) {
           expect(
-            modelType.readAsStringSync().contains(_expectedUserModelType),
+            modelType
+                .readAsStringSync()
+                .contains(DartFormatter().format(_expectedUserModelType)),
             isTrue,
           );
         }
@@ -167,7 +173,7 @@ void main() {
       expect(
         result.modelProvider
             .readAsStringSync()
-            .contains(_expectedModelProvider),
+            .contains(DartFormatter().format(_expectedModelProvider)),
         isTrue,
       );
 
