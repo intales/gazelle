@@ -263,39 +263,59 @@ String _generateFromJsonParameter(ClassConstructorParameter param) {
 
 String _generateToJsonParameter(ClassPropertyDefinition prop) {
   final parameter = StringBuffer('''"${prop.name}": ''');
-  if (prop.type.isPrimitive) {
-    parameter.write('value.${prop.name}');
-  } else if (prop.type.isList || prop.type.isSet) {
-    if (prop.type.valueType!.isPrimitive) {
-      parameter.write('value.${prop.name}');
-    } else {
-      final toIterable = prop.type.isList ? "toList()" : "toSet()";
-      parameter.write(
-          'value.${prop.name}.map((item) => ${prop.type.valueType!.name}ModelType().toJson(item)).$toIterable');
-    }
-  } else if (prop.type.isMap) {
-    parameter.write('value.${prop.name}.map((k, v) => MapEntry(');
-    if (prop.type.keyType!.isPrimitive) {
-      parameter.write('k, ');
-    } else {
-      parameter.write('${prop.type.keyType!.name}ModelType().toJson(k)');
-    }
-    if (prop.type.valueType!.isPrimitive) {
-      parameter.write('v');
-    } else {
-      parameter.write('${prop.type.valueType!.name}ModelType().toJson(v)');
-    }
-    parameter.write('))');
-  } else if (prop.type.isDateTime) {
-    parameter.write("value.${prop.name}.toIso8601String()");
-  } else if (prop.type.isDuration) {
-    parameter.write("value.${prop.name}.inMicroseconds");
-  } else if (prop.type.isBigInt) {
-    parameter.write("value.${prop.name}.toString()");
-  } else if (prop.type.isUri) {
-    parameter.write("value.${prop.name}.toString()");
-  } else {
-    parameter.write('${prop.type.name}ModelType().toJson(value.${prop.name})');
-  }
+  parameter.write(_serializeJsonValue(prop.name, prop.type));
   return parameter.toString();
+}
+
+String _parseJsonValue(String name, TypeDefinition type) {
+  if (type.isPrimitive) {
+    return "json[\"$name\"]";
+  }
+  if (type.isDateTime) {
+    return "DateTime.parse(json[\"$name\"])";
+  }
+  if (type.isDuration) {
+    return "Duration(microseconds: json[\"$name\"])";
+  }
+  if (type.isUri) {
+    return "Uri.parse(json[\"$name\"])";
+  }
+  if (type.isBigInt) {
+    return "BigInt.parse(json[\"$name\"])";
+  }
+  return "${type.name}ModelType().fromJson(json[\"$name\"])";
+}
+
+String _serializeJsonValue(
+  String name,
+  TypeDefinition type, {
+  bool valuePrefix = true,
+}) {
+  final buffer = StringBuffer(valuePrefix ? "value." : "");
+  if (type.isPrimitive) {
+    buffer.write(name);
+  } else if (type.isDateTime) {
+    buffer.write("$name.toIso8601String()");
+  } else if (type.isDuration) {
+    buffer.write("$name.inMicroseconds");
+  } else if (type.isUri) {
+    buffer.write("$name.toString()");
+  } else if (type.isBigInt) {
+    buffer.write("$name.toString()");
+  } else if (type.isList || type.isSet) {
+    final valueType = type.valueType!;
+    final toStatement = type.isList ? "toList()" : "toSet()";
+    buffer.write(
+        '$name.map((item) => ${_serializeJsonValue("item", valueType, valuePrefix: false)}).$toStatement');
+  } else if (type.isMap) {
+    final keyType = type.keyType!;
+    final valueType = type.valueType!;
+    buffer.write(
+        '$name.map((k, v) => MapEntry(${_serializeJsonValue("k", keyType, valuePrefix: false)}, ${_serializeJsonValue("v", valueType, valuePrefix: false)}))');
+  } else {
+    buffer.clear();
+    buffer.write(
+        "${type.name}ModelType().toJson(${valuePrefix ? "value." : ""}$name)");
+  }
+  return buffer.toString();
 }

@@ -98,7 +98,7 @@ class PostModelType extends GazelleModelType<Post> {
       "id": value.id,
       "content": value.content,
       "user": UserModelType().toJson(value.user),
-      "tags": value.tags,
+      "tags": value.tags.map((item) => item).toList(),
     };
   }
 }
@@ -139,18 +139,14 @@ void main() {
       for (final modelType in result.modelTypes) {
         if (modelType.path.contains("post")) {
           expect(
-            modelType
-                .readAsStringSync()
-                .contains(DartFormatter().format(_expectedPostModelType)),
-            isTrue,
+            modelType.readAsStringSync(),
+            equals(DartFormatter().format(_expectedPostModelType)),
           );
         }
         if (modelType.path.contains("user")) {
           expect(
-            modelType
-                .readAsStringSync()
-                .contains(DartFormatter().format(_expectedUserModelType)),
-            isTrue,
+            modelType.readAsStringSync(),
+            equals(_expectedUserModelType),
           );
         }
       }

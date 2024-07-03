@@ -159,7 +159,7 @@ class TypeDefinition {
   final TypeDefinition? keyType;
 
   /// Return `true` if this type is primitive.
-  bool get isPrimitive => isInt || isNum || isString || isBool || isObject;
+  bool get isPrimitive => isInt || isNum || isString || isBool;
 
   /// Builds a [TypeDefinition] instance
   const TypeDefinition({
