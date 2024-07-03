@@ -88,7 +88,7 @@ class PostModelType extends GazelleModelType<Post> {
       id: json["id"],
       content: json["content"],
       user: UserModelType().fromJson(json["user"]),
-      tags: json["tags"],
+      tags: (json["tags"] as List).map((item) => item).toList(),
     );
   }
 
