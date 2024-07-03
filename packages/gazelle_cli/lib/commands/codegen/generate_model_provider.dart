@@ -184,6 +184,8 @@ cb.Method _generateFromJsonMethod(ClassDefinition classDefinition) {
           ...namedParameters.map((e) => "${_generateFromJsonParameter(e)},"),
         ].join("\n");
 
+        print(parameters);
+
         block.statements.add(cb.Code("""
           return ${classDefinition.name}(
             $parameters
@@ -240,6 +242,9 @@ String _parseJsonValue(
 }) {
   final buffer = StringBuffer();
   final objectReference = insideCollection ? name : 'json["$name"]';
+  if (type.isNullable) {
+    buffer.write('$objectReference != null ? ');
+  }
   if (type.isPrimitive) {
     buffer.write(objectReference);
   } else if (type.isDateTime) {
@@ -261,8 +266,10 @@ String _parseJsonValue(
     buffer.write(
         '($objectReference as Map).map((k, v) => MapEntry(${_parseJsonValue("k", keyType, insideCollection: true)}, ${_parseJsonValue("v", valueType, insideCollection: true)}))');
   } else {
-    buffer.clear();
     buffer.write('${type.name}ModelType().fromJson($objectReference)');
+  }
+  if (type.isNullable) {
+    buffer.write(' : null');
   }
   return buffer.toString();
 }
@@ -276,27 +283,27 @@ String _serializeJsonValue(
   if (type.isPrimitive) {
     buffer.write(name);
   } else if (type.isDateTime) {
-    buffer.write("$name.toIso8601String()");
+    buffer.write("$name${type.isNullable ? "?" : ""}.toIso8601String()");
   } else if (type.isDuration) {
-    buffer.write("$name.inMicroseconds");
+    buffer.write("$name${type.isNullable ? "?" : ""}.inMicroseconds");
   } else if (type.isUri) {
-    buffer.write("$name.toString()");
+    buffer.write("$name${type.isNullable ? "?" : ""}.toString()");
   } else if (type.isBigInt) {
-    buffer.write("$name.toString()");
+    buffer.write("$name${type.isNullable ? "?" : ""}.toString()");
   } else if (type.isList || type.isSet) {
     final valueType = type.valueType!;
     final toStatement = type.isList ? "toList()" : "toSet()";
     buffer.write(
-        '$name.map((item) => ${_serializeJsonValue("item", valueType, valuePrefix: false)}).$toStatement');
+        '$name${type.isNullable ? "?" : ""}.map((item) => ${_serializeJsonValue("item", valueType, valuePrefix: false)}).$toStatement');
   } else if (type.isMap) {
     final keyType = type.keyType!;
     final valueType = type.valueType!;
     buffer.write(
-        '$name.map((k, v) => MapEntry(${_serializeJsonValue("k", keyType, valuePrefix: false)}, ${_serializeJsonValue("v", valueType, valuePrefix: false)}))');
+        '$name${type.isNullable ? "?" : ""}.map((k, v) => MapEntry(${_serializeJsonValue("k", keyType, valuePrefix: false)}, ${_serializeJsonValue("v", valueType, valuePrefix: false)}))');
   } else {
     buffer.clear();
     buffer.write(
-        "${type.name}ModelType().toJson(${valuePrefix ? "value." : ""}$name)");
+        "${type.isNullable ? "${valuePrefix ? "value." : ""}$name != null ?" : ""}${type.name}ModelType().toJson(${valuePrefix ? "value." : ""}$name)${type.isNullable ? " : null" : ""}");
   }
   return buffer.toString();
 }

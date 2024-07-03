@@ -89,6 +89,9 @@ class TypeDefinition {
   /// The name of the type
   final String name;
 
+  /// Returns `true` if type is nullable.
+  final bool isNullable;
+
   /// Returns `true` if the type represents an `int`.
   final bool isInt;
 
@@ -165,6 +168,7 @@ class TypeDefinition {
   const TypeDefinition({
     this.source,
     required this.name,
+    required this.isNullable,
     this.valueType,
     this.keyType,
     this.isInt = false,

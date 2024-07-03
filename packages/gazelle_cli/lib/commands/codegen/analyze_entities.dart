@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 //ignore: implementation_imports
@@ -109,7 +110,8 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
 
 TypeDefinition _getTypeDefinition(InterfaceType dartType) {
   return TypeDefinition(
-    name: dartType.getDisplayString(),
+    name: dartType.getDisplayString().replaceAll("?", ""),
+    isNullable: dartType.nullabilitySuffix == NullabilitySuffix.question,
     source: dartType.element.source.fullName,
     isInt: dartType.isDartCoreInt,
     isMap: dartType.isDartCoreMap,

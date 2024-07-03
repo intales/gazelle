@@ -11,7 +11,7 @@ import 'post.dart';
 class User {
   final String id;
   final String username;
-  final List<Post> posts;
+  final List<Post>? posts;
   final Map<String, String> metadata;
   final DateTime createdAt;
 
@@ -31,13 +31,13 @@ import 'user.dart';
 class Post {
   final String id;
   final String content;
-  final User user;
+  final User? user;
   final List<String> tags;
 
   const Post({
     required this.id,
     required this.content,
-    required this.user,
+    this.user,
     required this.tags,
   });
 }
@@ -55,9 +55,9 @@ class UserModelType extends GazelleModelType<User> {
     return User(
       id: json["id"],
       username: json["username"],
-      posts: (json["posts"] as List)
+      posts: json["posts"] != null ? (json["posts"] as List)
           .map((item) => PostModelType().fromJson(item))
-          .toList(),
+          .toList() : null,
       metadata: (json["metadata"] as Map).map((k, v) => MapEntry(k, v)),
       createdAt: DateTime.parse(json["createdAt"]),
     );
@@ -68,7 +68,7 @@ class UserModelType extends GazelleModelType<User> {
     return {
       "id": value.id,
       "username": value.username,
-      "posts": value.posts.map((item) => PostModelType().toJson(item)).toList(),
+      "posts": value.posts?.map((item) => PostModelType().toJson(item)).toList(),
       "metadata": value.metadata.map((k, v) => MapEntry(k, v)),
       "createdAt": value.createdAt.toIso8601String(),
     };
@@ -87,7 +87,7 @@ class PostModelType extends GazelleModelType<Post> {
     return Post(
       id: json["id"],
       content: json["content"],
-      user: UserModelType().fromJson(json["user"]),
+      user: json["user"] != null ? UserModelType().fromJson(json["user"]) : null,
       tags: (json["tags"] as List).map((item) => item).toList(),
     );
   }
@@ -97,7 +97,7 @@ class PostModelType extends GazelleModelType<Post> {
     return {
       "id": value.id,
       "content": value.content,
-      "user": UserModelType().toJson(value.user),
+      "user": value.user != null ? UserModelType().toJson(value.user) : null,
       "tags": value.tags.map((item) => item).toList(),
     };
   }
@@ -146,7 +146,7 @@ void main() {
         if (modelType.path.contains("user")) {
           expect(
             modelType.readAsStringSync(),
-            equals(_expectedUserModelType),
+            equals(DartFormatter().format(_expectedUserModelType)),
           );
         }
       }
