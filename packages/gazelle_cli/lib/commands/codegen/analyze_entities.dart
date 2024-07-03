@@ -8,7 +8,7 @@ import 'package:analyzer/file_system/physical_file_system.dart';
 //ignore: implementation_imports
 import 'package:analyzer/src/dart/ast/ast.dart';
 
-import 'class_definition.dart';
+import 'source_file_definition.dart';
 
 /// Analyzes a list of Dart classes.
 Future<List<SourceFileDefinition>> analyzeEntities(
