@@ -1,3 +1,7 @@
+## 0.4.0+1
+
+ - **FIX**(gazelle_cli): Codegen.
+
 ## 0.4.0
 
  - Added support for serialization
