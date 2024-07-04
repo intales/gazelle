@@ -53,12 +53,12 @@ class UserModelType extends GazelleModelType<User> {
   @override
   User fromJson(Map<String, dynamic> json) {
     return User(
-      id: json["id"],
-      username: json["username"],
+      id: json["id"] as String,
+      username: json["username"] as String,
       posts: json["posts"] != null ? (json["posts"] as List)
           .map((item) => PostModelType().fromJson(item))
           .toList() : null,
-      metadata: (json["metadata"] as Map).map((k, v) => MapEntry(k, v)),
+      metadata: (json["metadata"] as Map).map((k, v) => MapEntry(k as String, v as String)),
       createdAt: DateTime.parse(json["createdAt"]),
     );
   }
@@ -85,10 +85,10 @@ class PostModelType extends GazelleModelType<Post> {
   @override
   Post fromJson(Map<String, dynamic> json) {
     return Post(
-      id: json["id"],
-      content: json["content"],
+      id: json["id"] as String,
+      content: json["content"] as String,
       user: json["user"] != null ? UserModelType().fromJson(json["user"]) : null,
-      tags: (json["tags"] as List).map((item) => item).toList(),
+      tags: (json["tags"] as List).map((item) => item as String).toList(),
     );
   }
 
@@ -97,7 +97,7 @@ class PostModelType extends GazelleModelType<Post> {
     return {
       "id": value.id,
       "content": value.content,
-      "user": value.user != null ? UserModelType().toJson(value.user) : null,
+      "user": value.user != null ? UserModelType().toJson(value.user!) : null,
       "tags": value.tags.map((item) => item).toList(),
     };
   }
@@ -173,8 +173,6 @@ void main() {
 
       expect(result.modelProvider.readAsStringSync(),
           equals(DartFormatter().format(_expectedModelProvider)));
-
-      print(result.modelProvider.readAsStringSync());
 
       // Tear down
       entitiesDirectory.deleteSync(recursive: true);

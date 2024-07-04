@@ -255,7 +255,7 @@ String _parseJsonValue(
     buffer.write('$objectReference != null ? ');
   }
   if (type.isPrimitive) {
-    buffer.write(objectReference);
+    buffer.write('$objectReference as ${type.name}');
   } else if (type.isDateTime) {
     buffer.write('DateTime.parse($objectReference)');
   } else if (type.isDuration) {
@@ -312,7 +312,7 @@ String _serializeJsonValue(
   } else {
     buffer.clear();
     buffer.write(
-        "${type.isNullable ? "${valuePrefix ? "value." : ""}$name != null ?" : ""}${type.name}ModelType().toJson(${valuePrefix ? "value." : ""}$name)${type.isNullable ? " : null" : ""}");
+        "${type.isNullable ? "${valuePrefix ? "value." : ""}$name != null ?" : ""}${type.name}ModelType().toJson(${valuePrefix ? "value." : ""}$name${type.isNullable ? "!) : null" : ")"}");
   }
   return buffer.toString();
 }
