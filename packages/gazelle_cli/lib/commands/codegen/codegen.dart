@@ -35,7 +35,7 @@ class _CodegenModelsCommand extends Command {
   void run() async {
     CliSpin spinner = CliSpin();
     try {
-      await loadProjectConfiguration();
+      final projectConfiguration = await loadProjectConfiguration();
 
       spinner = CliSpin(
         text: "Generating models...",
@@ -44,6 +44,7 @@ class _CodegenModelsCommand extends Command {
 
       final sourceFiles = await analyzeEntities(Directory(_entitiesPath));
       generateModelProvider(
+        projectName: projectConfiguration.name,
         sourceFiles: sourceFiles,
         entitiesBasePath: _entitiesBasePath,
         destinationPath: _destinationPath,
