@@ -62,12 +62,13 @@ String _getPubspecTemplate(String projectName) => """
 name: $projectName 
 description: A new Gazelle project.
 version: 0.1.0
+publish_to: "none"
 
 environment:
   sdk: ^$dartSdkVersion
 
 dependencies:
-  gazelle_core: ^0.3.0
+  gazelle_core: ^0.4.0
 
 dev_dependencies:
   lints: ">=2.1.0 <4.0.0"
@@ -132,6 +133,8 @@ Future<String> createProject({
   await File("$libPath/$projectName.dart")
       .create(recursive: true)
       .then((file) => file.writeAsString(DartFormatter().format(main)));
+
+  await Directory("$libPath/entities").create(recursive: true);
 
   await File("$binPath/$projectName.dart")
       .create(recursive: true)
