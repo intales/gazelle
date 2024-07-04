@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-07-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_core` - `v0.4.0`](#gazelle_core---v040)
+ - [`gazelle_jwt` - `v0.3.0+1`](#gazelle_jwt---v0301)
+ - [`gazelle_logger` - `v0.3.0+1`](#gazelle_logger---v0301)
+ - [`gazelle_cors` - `v0.3.0+1`](#gazelle_cors---v0301)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gazelle_jwt` - `v0.3.0+1`
+ - `gazelle_logger` - `v0.3.0+1`
+ - `gazelle_cors` - `v0.3.0+1`
+
+---
+
+#### `gazelle_core` - `v0.4.0`
+
+ - Added support for serialziation
+
+ - **FIX**(gazelle_core): Serialization ([#37](https://github.com/intales/gazelle/issues/37)).
+ - **FEAT**(gazelle_core): Serialization ([#35](https://github.com/intales/gazelle/issues/35)).
+
+
 ## 2024-06-18
 
 ### Changes

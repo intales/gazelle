@@ -1,3 +1,10 @@
+## 0.4.0
+
+ - Added support for serialziation
+
+ - **FIX**(gazelle_core): Serialization ([#37](https://github.com/intales/gazelle/issues/37)).
+ - **FEAT**(gazelle_core): Serialization ([#35](https://github.com/intales/gazelle/issues/35)).
+
 ## 0.3.0
 
  - Revamped developer experience!
