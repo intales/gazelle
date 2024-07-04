@@ -11,6 +11,25 @@ import 'package:analyzer/src/dart/ast/ast.dart';
 
 import 'source_file_definition.dart';
 
+/// Represents an error for [analyzeEntities].
+class AnalyzeEntitiesException implements Exception {
+  /// The error message.
+  final String message;
+
+  /// Builds a [AnalyzeEntitiesException].
+  const AnalyzeEntitiesException({
+    required this.message,
+  });
+
+  /// Builds a [AnalyzeEntitiesException] with external type error.
+  const AnalyzeEntitiesException.externalType({
+    this.message = "Can't reference an external type.",
+  });
+
+  @override
+  String toString() => "AnalyzeEntitiesException: $message";
+}
+
 /// Analyzes a list of Dart classes.
 Future<List<SourceFileDefinition>> analyzeEntities(
   Directory entitiesDirectory,
@@ -72,6 +91,9 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
 
       for (final variable in member.fields.variables) {
         final dartType = variable.declaredElement!.type as InterfaceType;
+        if (_isExternalType(dartType)) {
+          throw AnalyzeEntitiesException.externalType();
+        }
         final type = _getTypeDefinition(dartType);
         final propertyName = variable.name.value().toString();
         classProperties.add(ClassPropertyDefinition(
@@ -91,6 +113,9 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
         final name = parameter.name?.value().toString();
         final position = name == null ? i : null;
         final dartType = element.type as InterfaceType;
+        if (_isExternalType(dartType)) {
+          throw AnalyzeEntitiesException.externalType();
+        }
         final type = _getTypeDefinition(dartType);
         constructorParamters.add(ClassConstructorParameter(
           name: name,
@@ -144,3 +169,6 @@ TypeDefinition _getTypeDefinition(InterfaceType dartType) {
         : null,
   );
 }
+
+bool _isExternalType(DartType type) =>
+    type.element!.source?.uri.scheme == 'package';
