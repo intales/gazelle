@@ -22,6 +22,7 @@ class GenerateModelProviderResult {
 
 /// Generates a `GazelleModelProvider` for the current project.
 GenerateModelProviderResult generateModelProvider({
+  required String projectName,
   required List<SourceFileDefinition> sourceFiles,
   required String entitiesBasePath,
   required String destinationPath,
@@ -42,14 +43,16 @@ GenerateModelProviderResult generateModelProvider({
   }
 
   final modelProvider = _generateModelProvider(
+    projectName: projectName,
     sourceFiles: sourceFiles,
     entitiesBasePath: entitiesBasePath,
     modelTypesFiles: modelTypesFiles,
   );
 
-  final modelProviderFile = File("$destinationPath/model_provider.dart")
-    ..createSync(recursive: true)
-    ..writeAsStringSync(modelProvider);
+  final modelProviderFile =
+      File("$destinationPath/${projectName}_model_provider.dart")
+        ..createSync(recursive: true)
+        ..writeAsStringSync(modelProvider);
 
   return GenerateModelProviderResult(
     modelProvider: modelProviderFile,
@@ -58,6 +61,7 @@ GenerateModelProviderResult generateModelProvider({
 }
 
 String _generateModelProvider({
+  required String projectName,
   required List<SourceFileDefinition> sourceFiles,
   required String entitiesBasePath,
   required List<File> modelTypesFiles,
@@ -81,9 +85,14 @@ String _generateModelProvider({
   }
   modelTypesCode.writeln('};');
 
+  final modelProviderName = projectName
+      .split("_")
+      .map((part) => part.replaceFirst(part[0], part[0].toUpperCase()))
+      .join();
+
   final clazz = cb.Class((clazz) {
     clazz
-      ..name = "ModelProvider"
+      ..name = "${modelProviderName}ModelProvider"
       ..extend = cb.refer("GazelleModelProvider")
       ..methods.addAll([
         cb.Method((method) {
@@ -183,8 +192,6 @@ cb.Method _generateFromJsonMethod(ClassDefinition classDefinition) {
               .map((e) => "${_generateFromJsonParameter(e)},"),
           ...namedParameters.map((e) => "${_generateFromJsonParameter(e)},"),
         ].join("\n");
-
-        print(parameters);
 
         block.statements.add(cb.Code("""
           return ${classDefinition.name}(

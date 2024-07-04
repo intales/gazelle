@@ -104,6 +104,25 @@ class PostModelType extends GazelleModelType<Post> {
 }
 """;
 
+const _expectedModelProvider = """
+import 'package:gazelle_core/gazelle_core.dart';
+
+import 'entities/post.dart';
+import 'entities/user.dart';
+import 'post_model_type.dart';
+import 'user_model_type.dart';
+
+class TestModelProvider extends GazelleModelProvider {
+  @override
+  Map<Type, GazelleModelType> get modelTypes {
+    return {
+      Post: PostModelType(),
+      User: UserModelType(),
+    };
+  }
+}
+""";
+
 void main() {
   group('GenerateModelProvider tests', () {
     test('Should generate a model provider', () async {
@@ -130,6 +149,7 @@ void main() {
       // Act
       final classes = await analyzeEntities(entitiesDirectory);
       final result = generateModelProvider(
+        projectName: "Test",
         sourceFiles: classes,
         entitiesBasePath: entitiesDirectoryPath.split("/").last,
         destinationPath: modelTypesPath,
@@ -151,7 +171,8 @@ void main() {
         }
       }
 
-      print(result.modelProvider.readAsStringSync());
+      expect(result.modelProvider.readAsStringSync(),
+          equals(DartFormatter().format(_expectedModelProvider)));
 
       // Tear down
       entitiesDirectory.deleteSync(recursive: true);
