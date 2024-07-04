@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gazelle_cli` - `v0.4.2`](#gazelle_cli---v042)
+
+---
+
+#### `gazelle_cli` - `v0.4.2`
+
+ - **FIX**(gazelle_cli): Codegen nullability fix.
+
+
+## 2024-07-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gazelle_cli` - `v0.4.1`](#gazelle_cli---v041)
 
 ---

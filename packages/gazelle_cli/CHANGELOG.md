@@ -1,3 +1,7 @@
+## 0.4.2
+
+ - **FIX**(gazelle_cli): Codegen nullability fix.
+
 ## 0.4.1
 
  - **FIX**(gazelle_cli): Type analysis.
