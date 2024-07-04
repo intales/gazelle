@@ -171,4 +171,4 @@ TypeDefinition _getTypeDefinition(InterfaceType dartType) {
 }
 
 bool _isExternalType(DartType type) =>
-    type.element!.source?.uri.scheme == 'package';
+    type.element!.source?.uri.path.contains(".pub-cache") ?? false;
