@@ -1,3 +1,12 @@
+## 0.4.0
+
+ - Added support for serialization
+
+ - **FIX**(gazelle_cli): Delete Command.
+ - **FEAT**(gazelle_cli): Added support for core 0.4.0.
+ - **FEAT**(gazelle_cli): serialization codegen.
+ - **FEAT**(gazelle_cli): Create handler cli command.
+
 ## 0.3.0
 
  - Enhanced `create` command with `create project` and `create route`.

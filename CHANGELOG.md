@@ -15,6 +15,32 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gazelle_cli` - `v0.4.0`](#gazelle_cli---v040)
+
+---
+
+#### `gazelle_cli` - `v0.4.0`
+
+ - Added support for serialization
+
+ - **FIX**(gazelle_cli): Delete Command.
+ - **FEAT**(gazelle_cli): Added support for core 0.4.0.
+ - **FEAT**(gazelle_cli): serialization codegen.
+ - **FEAT**(gazelle_cli): Create handler cli command.
+
+
+## 2024-07-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gazelle_core` - `v0.4.0`](#gazelle_core---v040)
  - [`gazelle_jwt` - `v0.3.0+1`](#gazelle_jwt---v0301)
  - [`gazelle_logger` - `v0.3.0+1`](#gazelle_logger---v0301)
