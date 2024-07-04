@@ -79,6 +79,8 @@ String _generateModelProvider({
   final gazelleImport =
       cb.Directive.import("package:gazelle_core/gazelle_core.dart");
 
+  sourceFiles.sort((a, b) => a.fileName.compareTo(b.fileName));
+
   final modelTypesCode = StringBuffer('return {');
   for (final entity in sourceFiles.expand((e) => e.classes)) {
     modelTypesCode.writeln('${entity.name}: ${entity.name}ModelType(),');

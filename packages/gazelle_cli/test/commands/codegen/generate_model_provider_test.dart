@@ -174,6 +174,8 @@ void main() {
       expect(result.modelProvider.readAsStringSync(),
           equals(DartFormatter().format(_expectedModelProvider)));
 
+      print(result.modelProvider.readAsStringSync());
+
       // Tear down
       entitiesDirectory.deleteSync(recursive: true);
       modelTypesDirectory.deleteSync(recursive: true);
