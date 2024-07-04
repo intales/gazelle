@@ -1,3 +1,7 @@
+## 0.4.1
+
+ - **FIX**(gazelle_cli): Type analysis.
+
 ## 0.4.0+1
 
  - **FIX**(gazelle_cli): Codegen.

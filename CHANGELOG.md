@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gazelle_cli` - `v0.4.1`](#gazelle_cli---v041)
+
+---
+
+#### `gazelle_cli` - `v0.4.1`
+
+ - **FIX**(gazelle_cli): Type analysis.
+
+
+## 2024-07-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gazelle_cli` - `v0.4.0+1`](#gazelle_cli---v0401)
 
 ---
