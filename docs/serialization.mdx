@@ -1,0 +1,252 @@
+---
+name: Serialization
+---
+
+# Serialization
+
+Gazelle handles serialization under the hood via `GazelleModelType<T>` and `GazelleModelProvider` types.
+`GazelleModelType<T>` is an interface that exposes `fromJson` and `toJson` methods to serialize
+and de-serialize `T`, where `T` is an entity inside your application, basic types
+(`String`, `int`, `bool`, etc...) are handled automatically.
+
+## Declaring a custom entity
+
+<Warning>Gazelle currently does not support serialization for types outside your Gazelle project (eg: 3rd party Dart packages)</Warning>
+
+To create an entity, you need to create a class under the `lib/entities` directory
+inside your Gazelle project.
+
+Example:
+```dart
+// lib/entities/user.dart
+import 'post.dart';
+
+class User {
+  final String id;
+  final String username;
+  final List<Post>? posts;
+  final Map<String, String> metadata;
+  final DateTime createdAt;
+
+  const User({
+    required this.id,
+    required this.username,
+    required this.posts,
+    required this.metadata,
+    required this.createdAt,
+  });
+}
+```
+```dart
+// lib/entities/post.dart
+import 'user.dart';
+
+class Post {
+  final String id;
+  final String content;
+  final User? user;
+  final List<String> tags;
+
+  const Post({
+    required this.id,
+    required this.content,
+    this.user,
+    required this.tags,
+  });
+}
+```
+
+## Returning an entity in a GazelleResponse
+To return an entity in a response, just pass your entity instance inside
+the `body` parameter of a `GazelleResponse`:
+```dart
+GazelleResponse usersGet(
+  GazelleContext context,
+  GazelleRequest request,
+  GazelleResponse response,
+) {
+  final users = [
+    User(
+      id: "some_random_id",
+      username: "r.hendricks",
+      posts: [],
+      metadata: {
+        'company': 'Pied Piper',
+      },
+      createdAt: DateTime.now(),
+    ),
+    User(
+      id: "some_random_id",
+      username: "g.belson",
+      posts: [],
+      metadata: {
+        'company': 'Hooli',
+      },
+      createdAt: DateTime.now(),
+    ),
+    User(
+      id: "some_random_id",
+      username: "b.gilfoyle",
+      posts: [],
+      metadata: {
+        'company': 'Pied Piper',
+      },
+      createdAt: DateTime.now(),
+    ),
+  ];
+  return GazelleResponse(
+    statusCode: GazelleHttpStatusCode.success.ok_200,
+    body: users,
+  );
+}
+```
+
+## Creating ModelTypes and ModelProvider
+To create serialization functions for your entities, launch this CLI command:
+```bash
+gazelle codegen models
+```
+The CLI will generate the necessary code to handle seriliazation for you inside
+the `lib/models` directory.
+The output should be something like this:
+```dart
+// lib/models/user_model_type.dart
+import 'package:gazelle_core/gazelle_core.dart';
+
+import '../entities/user.dart';
+import 'post_model_type.dart';
+
+class UserModelType extends GazelleModelType<User> {
+  @override
+  User fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json["id"] as String,
+      username: json["username"] as String,
+      posts: json["posts"] != null
+          ? (json["posts"] as List)
+              .map((item) => PostModelType().fromJson(item))
+              .toList()
+          : null,
+      metadata: (json["metadata"] as Map)
+          .map((k, v) => MapEntry(k as String, v as String)),
+      createdAt: DateTime.parse(json["createdAt"]),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson(User value) {
+    return {
+      "id": value.id,
+      "username": value.username,
+      "posts":
+          value.posts?.map((item) => PostModelType().toJson(item)).toList(),
+      "metadata": value.metadata.map((k, v) => MapEntry(k, v)),
+      "createdAt": value.createdAt.toIso8601String(),
+    };
+  }
+}
+```
+```dart
+// lib/models/post_model_type.dart
+import 'package:gazelle_core/gazelle_core.dart';
+
+import '../entities/post.dart';
+import 'user_model_type.dart';
+
+class PostModelType extends GazelleModelType<Post> {
+  @override
+  Post fromJson(Map<String, dynamic> json) {
+    return Post(
+      id: json["id"] as String,
+      content: json["content"] as String,
+      user:
+          json["user"] != null ? UserModelType().fromJson(json["user"]) : null,
+      tags: (json["tags"] as List).map((item) => item as String).toList(),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson(Post value) {
+    return {
+      "id": value.id,
+      "content": value.content,
+      "user": value.user != null ? UserModelType().toJson(value.user!) : null,
+      "tags": value.tags.map((item) => item).toList(),
+    };
+  }
+}
+```
+```dart
+// lib/models/my_awesome_app_model_provider.dart
+import 'package:gazelle_core/gazelle_core.dart';
+
+import '../entities/post.dart';
+import '../entities/user.dart';
+import 'post_model_type.dart';
+import 'user_model_type.dart';
+
+class MyAwesomeAppModelProvider extends GazelleModelProvider {
+  @override
+  Map<Type, GazelleModelType> get modelTypes {
+    return {
+      Post: PostModelType(),
+      User: UserModelType(),
+    };
+  }
+}
+```
+When code generation is complete, just pass your `ModelProvider` to your
+`GazelleApp`:
+```dart
+// lib/my_awesome_app.dart
+import 'package:gazelle_core/gazelle_core.dart';
+import 'package:my_awesome_app/models/my_awesome_app_model_provider.dart';
+import 'package:my_awesome_app/routes/users_route/users_route.dart';
+
+Future<void> runApp(List<String> args) async {
+  final app = GazelleApp(
+    modelProvider: MyAwesomeAppModelProvider(),
+    routes: [
+      usersRoute,
+    ],
+  );
+
+  await app.start();
+  print("Gazelle listening at ${app.serverAddress}");
+}
+```
+
+That's it! You successfully set up serialization inside a Gazelle project!
+If you have followed this example, calling `http://localhost/users` should
+return this json:
+```json
+[
+  {
+    "id": "some_random_id",
+    "username": "r.hendricks",
+    "posts": [],
+    "metadata": {
+      "company": "Pied Piper"
+    },
+    "createdAt": "2024-07-05T11:12:55.466474"
+  },
+  {
+    "id": "some_random_id",
+    "username": "g.belson",
+    "posts": [],
+    "metadata": {
+      "company": "Hooli"
+    },
+    "createdAt": "2024-07-05T11:12:55.466589"
+  },
+  {
+    "id": "some_random_id",
+    "username": "b.gilfoyle",
+    "posts": [],
+    "metadata": {
+      "company": "Pied Piper"
+    },
+    "createdAt": "2024-07-05T11:12:55.466592"
+  }
+]
+```
