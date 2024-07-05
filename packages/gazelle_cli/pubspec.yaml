@@ -18,4 +18,5 @@ dependencies:
   cli_spin: ^1.0.1
   code_builder: ^4.10.0
   dart_style: ^2.3.6
+  path: ^1.9.0
   yaml: ^3.1.2

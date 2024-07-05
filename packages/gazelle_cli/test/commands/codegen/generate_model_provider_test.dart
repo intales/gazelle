@@ -6,7 +6,7 @@ import 'package:gazelle_cli/commands/codegen/generate_model_provider.dart';
 import 'package:test/test.dart';
 
 const _userClass = """
-import 'post.dart';
+import '../post.dart';
 
 class User {
   final String id;
@@ -26,7 +26,7 @@ class User {
 """;
 
 const _postClass = """
-import 'user.dart';
+import 'user/user.dart';
 
 class Post {
   final String id;
@@ -46,8 +46,8 @@ class Post {
 const _expectedUserModelType = """
 import 'package:gazelle_core/gazelle_core.dart';
 
-import 'entities/user.dart';
-import 'post_model_type.dart';
+import '../../entities/user/user.dart';
+import '../post_model_type.dart';
 
 class UserModelType extends GazelleModelType<User> {
   @override
@@ -78,8 +78,8 @@ class UserModelType extends GazelleModelType<User> {
 const _expectedPostModelType = """
 import 'package:gazelle_core/gazelle_core.dart';
 
-import 'entities/post.dart';
-import 'user_model_type.dart';
+import '../entities/post.dart';
+import 'user/user_model_type.dart';
 
 class PostModelType extends GazelleModelType<Post> {
   @override
@@ -107,10 +107,10 @@ class PostModelType extends GazelleModelType<Post> {
 const _expectedModelProvider = """
 import 'package:gazelle_core/gazelle_core.dart';
 
-import 'entities/post.dart';
-import 'entities/user.dart';
+import '../entities/post.dart';
+import '../entities/user/user.dart';
 import 'post_model_type.dart';
-import 'user_model_type.dart';
+import 'user/user_model_type.dart';
 
 class TestModelProvider extends GazelleModelProvider {
   @override
@@ -139,7 +139,7 @@ void main() {
         modelTypesDirectory.deleteSync(recursive: true);
       }
       entitiesDirectory.createSync(recursive: true);
-      File("$entitiesDirectoryPath/user.dart")
+      File("$entitiesDirectoryPath/user/user.dart")
         ..createSync(recursive: true)
         ..writeAsStringSync(_userClass);
       File("$entitiesDirectoryPath/post.dart")
