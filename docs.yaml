@@ -25,6 +25,8 @@ sidebar:
       - "/hooks"
     - - Plugins
       - "/plugins"
+    - - Serialization
+      - "/serialization"
 - - CLI
   - - - Overview
       - "/cli_overview"
