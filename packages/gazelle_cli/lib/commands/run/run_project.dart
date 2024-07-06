@@ -43,6 +43,9 @@ void verbosePrint(dynamic message) {
 
 /// The main entry point of the application.
 void main(List<String> arguments) async {
+  // Changing the current directory to the project directory
+  Directory.current = Directory.current.parent;
+
   final reloader = await HotReloader.create(
     automaticReload: false,
     watchDependencies: false,
@@ -53,11 +56,7 @@ void main(List<String> arguments) async {
     onAfterReload: (ctx) => print('Reloaded'),
   );
 
-  final tmpDirList =
-      Directory.current.absolute.path.split(Platform.pathSeparator);
-
-  final projectDir =
-      tmpDirList.sublist(0, tmpDirList.length - 1).join(Platform.pathSeparator);
+  final projectDir = Directory.current.absolute.path;
 
   final lib = Directory("\$projectDir/lib");
   final pubspec = File("\$projectDir/pubspec.yaml");
