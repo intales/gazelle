@@ -1,3 +1,7 @@
+## 0.4.2+1
+
+ - **FIX**(gazelle_cli): serialization codegen.
+
 ## 0.4.2
 
  - **FIX**(gazelle_cli): Codegen nullability fix.
