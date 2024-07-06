@@ -148,7 +148,7 @@ void main() {
 
       // Act
       final classes = await analyzeEntities(entitiesDirectory);
-      final result = generateModelProvider(
+      final result = await generateModelProvider(
         projectName: "Test",
         sourceFiles: classes,
         entitiesBasePath: entitiesDirectoryPath.split("/").last,
@@ -156,23 +156,26 @@ void main() {
       );
 
       // Assert
-      for (final modelType in result.modelTypes) {
-        if (modelType.path.contains("post")) {
+      final modelProvider = await result.modelProvider.readAsString();
+      expect(modelProvider,
+          equals(DartFormatter().format(_expectedModelProvider)));
+
+      final modelTypes =
+          await Future.wait(result.modelTypes.map((e) => e.readAsString()));
+      for (final modelType in modelTypes) {
+        if (modelType.contains("class PostModelType")) {
           expect(
-            modelType.readAsStringSync(),
+            modelType,
             equals(DartFormatter().format(_expectedPostModelType)),
           );
         }
-        if (modelType.path.contains("user")) {
+        if (modelType.contains("class UserModelType")) {
           expect(
-            modelType.readAsStringSync(),
+            modelType,
             equals(DartFormatter().format(_expectedUserModelType)),
           );
         }
       }
-
-      expect(result.modelProvider.readAsStringSync(),
-          equals(DartFormatter().format(_expectedModelProvider)));
 
       // Tear down
       entitiesDirectory.deleteSync(recursive: true);

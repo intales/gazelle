@@ -6,54 +6,6 @@ import 'package:path/path.dart' as p;
 
 import 'source_file_definition.dart';
 
-Directory _findCommonDirectory(List<String> paths) {
-  final splitPaths = paths.map((path) => path.split('/')).toList();
-
-  int minLength =
-      splitPaths.map((parts) => parts.length).reduce((a, b) => a < b ? a : b);
-
-  List<String> commonParts = [];
-
-  for (int i = 0; i < minLength; i++) {
-    String currentPart = splitPaths[0][i];
-    bool allMatch = splitPaths.every((parts) => parts[i] == currentPart);
-
-    if (allMatch) {
-      commonParts.add(currentPart);
-    } else {
-      break;
-    }
-  }
-
-  return Directory(commonParts.join('/'));
-}
-
-String _calculateRelativePath(String from, String to) {
-  from = p.absolute(from);
-  to = p.absolute(to);
-
-  List<String> fromParts = p.split(from);
-  List<String> toParts = p.split(to);
-
-  int commonLength = 0;
-  for (int i = 0; i < fromParts.length && i < toParts.length; i++) {
-    if (fromParts[i] == toParts[i]) {
-      commonLength++;
-    } else {
-      break;
-    }
-  }
-
-  int levelsUp = fromParts.length - commonLength - 1;
-
-  List<String> relativePathParts = List.filled(levelsUp, '..', growable: true);
-  relativePathParts.addAll(toParts.sublist(commonLength));
-
-  final result = p.joinAll(relativePathParts);
-
-  return result;
-}
-
 /// Represents the result of `GenerateModelProvider`.
 class GenerateModelProviderResult {
   /// The model provider.
@@ -70,17 +22,16 @@ class GenerateModelProviderResult {
 }
 
 /// Generates a `GazelleModelProvider` for the current project.
-GenerateModelProviderResult generateModelProvider({
+Future<GenerateModelProviderResult> generateModelProvider({
   required String projectName,
   required List<SourceFileDefinition> sourceFiles,
   required String entitiesBasePath,
   required String destinationPath,
-}) {
+}) async {
   final entitiesBaseDirectory =
       _findCommonDirectory(sourceFiles.map((e) => e.fileName).toList());
   final commonDirectory = entitiesBaseDirectory.parent;
-  final modelsBaseDirectory = Directory("${commonDirectory.path}/models")
-    ..createSync(recursive: true);
+  final modelsBaseDirectoryPath = "${commonDirectory.path}/models";
 
   final modelTypesFiles = <File>[];
   for (final sourceFile in sourceFiles) {
@@ -91,15 +42,15 @@ GenerateModelProviderResult generateModelProvider({
     }
 
     final modelTypeFileName =
-        '${modelsBaseDirectory.path}/${relativePath.replaceAll(".dart", "_model_type.dart")}';
+        '$modelsBaseDirectoryPath/${relativePath.replaceAll(".dart", "_model_type.dart")}';
     final modelType = _generateModelType(
       sourceFile: sourceFile,
       fileName: modelTypeFileName,
     );
 
-    final modelTypeFile = File(modelTypeFileName)
-      ..createSync(recursive: true)
-      ..writeAsStringSync(modelType);
+    final modelTypeFile = await File(modelTypeFileName)
+        .create(recursive: true)
+        .then((file) => file.writeAsString(modelType));
     modelTypesFiles.add(modelTypeFile);
   }
 
@@ -114,9 +65,9 @@ GenerateModelProviderResult generateModelProvider({
     fileName: modelProviderFileName,
   );
 
-  final modelProviderFile = File(modelProviderFileName)
-    ..createSync(recursive: true)
-    ..writeAsStringSync(modelProvider);
+  final modelProviderFile = await File(modelProviderFileName)
+      .create(recursive: true)
+      .then((file) => file.writeAsString(modelProvider));
 
   return GenerateModelProviderResult(
     modelProvider: modelProviderFile,
@@ -382,4 +333,56 @@ String _serializeJsonValue(
         "${type.isNullable ? "${valuePrefix ? "value." : ""}$name != null ?" : ""}${type.name}ModelType().toJson(${valuePrefix ? "value." : ""}$name${type.isNullable ? "!) : null" : ")"}");
   }
   return buffer.toString();
+}
+
+Directory _findCommonDirectory(List<String> paths) {
+  final splitPaths = paths.map((path) => path.split('/')).toList();
+
+  int minLength =
+      splitPaths.map((parts) => parts.length).reduce((a, b) => a < b ? a : b);
+
+  List<String> commonParts = [];
+
+  for (int i = 0; i < minLength; i++) {
+    String currentPart = splitPaths[0][i];
+    bool allMatch = splitPaths.every((parts) => parts[i] == currentPart);
+
+    if (allMatch) {
+      commonParts.add(currentPart);
+    } else {
+      break;
+    }
+  }
+
+  if (paths.length == 1 && commonParts.isNotEmpty) {
+    commonParts.removeLast();
+  }
+
+  return Directory(commonParts.join('/'));
+}
+
+String _calculateRelativePath(String from, String to) {
+  from = p.absolute(from);
+  to = p.absolute(to);
+
+  List<String> fromParts = p.split(from);
+  List<String> toParts = p.split(to);
+
+  int commonLength = 0;
+  for (int i = 0; i < fromParts.length && i < toParts.length; i++) {
+    if (fromParts[i] == toParts[i]) {
+      commonLength++;
+    } else {
+      break;
+    }
+  }
+
+  int levelsUp = fromParts.length - commonLength - 1;
+
+  List<String> relativePathParts = List.filled(levelsUp, '..', growable: true);
+  relativePathParts.addAll(toParts.sublist(commonLength));
+
+  final result = p.joinAll(relativePathParts);
+
+  return result;
 }
