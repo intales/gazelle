@@ -16,15 +16,13 @@ class AnalyzeEntitiesException implements Exception {
   /// The error message.
   final String message;
 
-  /// Builds a [AnalyzeEntitiesException].
-  const AnalyzeEntitiesException({
-    required this.message,
-  });
-
   /// Builds a [AnalyzeEntitiesException] with external type error.
-  const AnalyzeEntitiesException.externalType({
-    this.message = "Can't reference an external type.",
-  });
+  const AnalyzeEntitiesException.externalType()
+      : message = "Can't reference an external type.";
+
+  /// Builds a [AnalyzeEntitiesException] with no entities error.
+  const AnalyzeEntitiesException.noEntities()
+      : message = "There are no entities in your project.";
 
   @override
   String toString() => "AnalyzeEntitiesException: $message";
@@ -34,6 +32,10 @@ class AnalyzeEntitiesException implements Exception {
 Future<List<SourceFileDefinition>> analyzeEntities(
   Directory entitiesDirectory,
 ) async {
+  if (await entitiesDirectory.list().isEmpty) {
+    throw AnalyzeEntitiesException.noEntities();
+  }
+
   final collection = AnalysisContextCollection(
     includedPaths: [entitiesDirectory.absolute.path],
     resourceProvider: PhysicalResourceProvider.INSTANCE,

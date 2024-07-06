@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:code_builder/code_builder.dart' as cb;
 import 'package:dart_style/dart_style.dart';
+import 'package:path/path.dart' as p;
 
 import 'source_file_definition.dart';
 
@@ -21,38 +22,52 @@ class GenerateModelProviderResult {
 }
 
 /// Generates a `GazelleModelProvider` for the current project.
-GenerateModelProviderResult generateModelProvider({
+Future<GenerateModelProviderResult> generateModelProvider({
   required String projectName,
   required List<SourceFileDefinition> sourceFiles,
   required String entitiesBasePath,
   required String destinationPath,
-}) {
+}) async {
+  final entitiesBaseDirectory =
+      _findCommonDirectory(sourceFiles.map((e) => e.fileName).toList());
+  final commonDirectory = entitiesBaseDirectory.parent;
+  final modelsBaseDirectoryPath = "${commonDirectory.path}/models";
+
   final modelTypesFiles = <File>[];
   for (final sourceFile in sourceFiles) {
-    final modelType = _generateModelType(
-      sourceFile: sourceFile,
-      entitiesBasePath: entitiesBasePath,
-    );
+    String relativePath =
+        sourceFile.fileName.replaceFirst(entitiesBaseDirectory.path, '');
+    if (relativePath.startsWith('/')) {
+      relativePath = relativePath.substring(1);
+    }
 
     final modelTypeFileName =
-        "$destinationPath/${sourceFile.fileName.split("/").last.replaceAll(".dart", "_model_type.dart")}";
-    final modelTypeFile = File(modelTypeFileName)
-      ..createSync(recursive: true)
-      ..writeAsStringSync(modelType);
+        '$modelsBaseDirectoryPath/${relativePath.replaceAll(".dart", "_model_type.dart")}';
+    final modelType = _generateModelType(
+      sourceFile: sourceFile,
+      fileName: modelTypeFileName,
+    );
+
+    final modelTypeFile = await File(modelTypeFileName)
+        .create(recursive: true)
+        .then((file) => file.writeAsString(modelType));
     modelTypesFiles.add(modelTypeFile);
   }
+
+  final modelProviderFileName =
+      "$destinationPath/${projectName}_model_provider.dart";
 
   final modelProvider = _generateModelProvider(
     projectName: projectName,
     sourceFiles: sourceFiles,
     entitiesBasePath: entitiesBasePath,
     modelTypesFiles: modelTypesFiles,
+    fileName: modelProviderFileName,
   );
 
-  final modelProviderFile =
-      File("$destinationPath/${projectName}_model_provider.dart")
-        ..createSync(recursive: true)
-        ..writeAsStringSync(modelProvider);
+  final modelProviderFile = await File(modelProviderFileName)
+      .create(recursive: true)
+      .then((file) => file.writeAsString(modelProvider));
 
   return GenerateModelProviderResult(
     modelProvider: modelProviderFile,
@@ -65,14 +80,15 @@ String _generateModelProvider({
   required List<SourceFileDefinition> sourceFiles,
   required String entitiesBasePath,
   required List<File> modelTypesFiles,
+  required String fileName,
 }) {
   final entitiesImports = sourceFiles
-      .map((e) => "$entitiesBasePath/${e.fileName.split("/").last}")
+      .map((e) => _calculateRelativePath(fileName, e.fileName))
       .map(cb.Directive.import)
       .toList();
 
   final modelTypesImports = modelTypesFiles
-      .map((e) => e.path.split("/").last)
+      .map((e) => _calculateRelativePath(fileName, e.path))
       .map(cb.Directive.import)
       .toList();
 
@@ -126,15 +142,17 @@ String _generateModelProvider({
 
 String _generateModelType({
   required SourceFileDefinition sourceFile,
-  required String entitiesBasePath,
+  required String fileName,
 }) {
   final imports = sourceFile.importsPaths
       .map((e) => "${e.replaceAll(".dart", "")}_model_type.dart")
       .map(cb.Directive.import)
       .toList()
     ..add(cb.Directive.import("package:gazelle_core/gazelle_core.dart"))
-    ..add(cb.Directive.import(
-        "$entitiesBasePath/${sourceFile.fileName.split("/").last}"));
+    ..add(cb.Directive.import(_calculateRelativePath(
+      fileName,
+      sourceFile.fileName,
+    )));
 
   final classes = sourceFile.classes
       .map((clazz) => _generateModelTypeClass(classDefinition: clazz))
@@ -315,4 +333,56 @@ String _serializeJsonValue(
         "${type.isNullable ? "${valuePrefix ? "value." : ""}$name != null ?" : ""}${type.name}ModelType().toJson(${valuePrefix ? "value." : ""}$name${type.isNullable ? "!) : null" : ")"}");
   }
   return buffer.toString();
+}
+
+Directory _findCommonDirectory(List<String> paths) {
+  final splitPaths = paths.map((path) => path.split('/')).toList();
+
+  int minLength =
+      splitPaths.map((parts) => parts.length).reduce((a, b) => a < b ? a : b);
+
+  List<String> commonParts = [];
+
+  for (int i = 0; i < minLength; i++) {
+    String currentPart = splitPaths[0][i];
+    bool allMatch = splitPaths.every((parts) => parts[i] == currentPart);
+
+    if (allMatch) {
+      commonParts.add(currentPart);
+    } else {
+      break;
+    }
+  }
+
+  if (paths.length == 1 && commonParts.isNotEmpty) {
+    commonParts.removeLast();
+  }
+
+  return Directory(commonParts.join('/'));
+}
+
+String _calculateRelativePath(String from, String to) {
+  from = p.absolute(from);
+  to = p.absolute(to);
+
+  List<String> fromParts = p.split(from);
+  List<String> toParts = p.split(to);
+
+  int commonLength = 0;
+  for (int i = 0; i < fromParts.length && i < toParts.length; i++) {
+    if (fromParts[i] == toParts[i]) {
+      commonLength++;
+    } else {
+      break;
+    }
+  }
+
+  int levelsUp = fromParts.length - commonLength - 1;
+
+  List<String> relativePathParts = List.filled(levelsUp, '..', growable: true);
+  relativePathParts.addAll(toParts.sublist(commonLength));
+
+  final result = p.joinAll(relativePathParts);
+
+  return result;
 }

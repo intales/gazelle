@@ -43,7 +43,7 @@ class _CodegenModelsCommand extends Command {
       ).start();
 
       final sourceFiles = await analyzeEntities(Directory(_entitiesPath));
-      generateModelProvider(
+      final models = await generateModelProvider(
         projectName: projectConfiguration.name,
         sourceFiles: sourceFiles,
         entitiesBasePath: _entitiesBasePath,
@@ -51,7 +51,7 @@ class _CodegenModelsCommand extends Command {
       );
 
       spinner.success(
-        "Models generated 🚀",
+        "Models generated 🚀\nAdd ${models.modelProvider.path.split("/").last} to your GazelleApp!",
       );
     } on LoadProjectConfigurationGazelleNotFoundError catch (e) {
       spinner.fail(e.errorMessage);
