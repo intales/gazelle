@@ -46,5 +46,4 @@ void _setupSignalHandlers() {
 void _resetTerminalSettings(ProcessSignal signal) {
   stdin.lineMode = true;
   stdin.echoMode = true;
-  exit(0); // Exit the application after cleanup
 }
