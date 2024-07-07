@@ -43,6 +43,8 @@ void verbosePrint(dynamic message) {
 
 /// The main entry point of the application.
 void main(List<String> arguments) async {
+  Directory.current = Directory.current.parent;
+
   final reloader = await HotReloader.create(
     automaticReload: false,
     watchDependencies: false,
@@ -53,30 +55,7 @@ void main(List<String> arguments) async {
     onAfterReload: (ctx) => print('Reloaded'),
   );
 
-  final tmpDirList =
-      Directory.current.absolute.path.split(Platform.pathSeparator);
-
-  final projectDir =
-      tmpDirList.sublist(0, tmpDirList.length - 1).join(Platform.pathSeparator);
-
-  final lib = Directory("\$projectDir/lib");
-  final pubspec = File("\$projectDir/pubspec.yaml");
-
-  void onModify(FileSystemEvent event) {
-    if (event.type == FileSystemEvent.delete) {
-      verbosePrint("Ignoring delete event on '\${event.path}'.");
-      return;
-    }
-    if (event.path.endsWith('.dart') || event.path.endsWith('pubspec.yaml')) {
-      verbosePrint("File '\${event.path}' modified.");
-      reload(reloader);
-    } else {
-      verbosePrint("Ignoring '\${event.path}' as it is not a dart file.");
-    }
-  }
-
-  lib.watch(recursive: true).listen(onModify);
-  pubspec.watch().listen(onModify);
+  await _addWatchers(reloader);
 
   ProcessSignal.sigint.watch().listen((event) {
     verbosePrint("Stopping Reload Service...");
@@ -93,9 +72,66 @@ void main(List<String> arguments) async {
   await main_project.runApp(arguments);
 }
 
-/// This executionIndex is just to implement debouncing
+/// Adds watchers to the project directory and its subdirectories.
+Future<void> _addWatchers(HotReloader reloader) async {
+  if (!FileSystemEntity.isWatchSupported) {
+    print(
+        "File system watch is not supported on this platform.\\nHot reload will not trigger automatically on file/directory changes.");
+    return;
+  }
+
+  final projectDir = Directory.current.absolute.path;
+  final lib = Directory("\$projectDir/lib");
+  final pubspec = File("\$projectDir/pubspec.yaml");
+
+  void onModify(FileSystemEvent event) {
+    final isDirectory =
+        event.isDirectory || FileSystemEntity.isDirectorySync(event.path);
+    final isFile = !isDirectory;
+
+    if (event.type == FileSystemEvent.delete) {
+      verbosePrint("Ignoring delete event on '\${event.path}'.");
+      return;
+    }
+
+    if (isDirectory) {
+      if (event.type == FileSystemEvent.create && Platform.isLinux) {
+        /// As Linux doesn't supports recursive watch,
+        /// watchers on newly created directories have to be added manually
+        _recursiveWatch(Directory(event.path), onModify);
+      } else {
+        verbosePrint("Directory '\${event.path}' modified.");
+      }
+    }
+
+    if (isFile) {
+      if (!event.path.endsWith('.dart') &&
+          !event.path.endsWith('pubspec.yaml')) {
+        verbosePrint("Ignoring '\${event.path}' as it is not a dart file.");
+        return;
+      }
+      verbosePrint("File '\${event.path}' modified.");
+    }
+
+    reload(reloader);
+  }
+
+  pubspec.watch().listen(onModify);
+
+  if (Platform.isLinux) {
+    /// As Linux doesn't supports recursive watch, we will have to watch each
+    /// directory individually
+    _recursiveWatch(lib, onModify);
+  } else {
+    /// On Windows and MacOS, we can just watch the lib directory recursively
+    lib.watch(recursive: true).listen(onModify);
+  }
+}
+
+/// This executionIndex is meant for implementing debouncing
 int executionIndex = 0;
 
+/// Reloads the code after a delay.
 void reload(HotReloader reloader) async {
   int tmp = ++executionIndex;
   await Future.delayed(Duration(milliseconds: $timeout));
@@ -106,6 +142,15 @@ void reload(HotReloader reloader) async {
   if (tmp != executionIndex) return;
 
   reloader.reloadCode();
+}
+
+/// Recursively watches a directory and its subdirectories.
+void _recursiveWatch(Directory dir, Function(FileSystemEvent) onModify) {
+  verbosePrint("Watching directory: \${dir.path}");
+  dir.watch().listen(onModify);
+  dir.listSync().whereType<Directory>().forEach((subDir) {
+    _recursiveWatch(subDir, onModify);
+  });
 }
 """;
 
