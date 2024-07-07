@@ -1,3 +1,7 @@
+## 0.4.2+2
+
+ - **FIX**(gazelle_cli): maintain working directory.
+
 ## 0.4.2+1
 
  - **FIX**(gazelle_cli): serialization codegen.

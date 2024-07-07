@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-07-07
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_cli` - `v0.4.2+2`](#gazelle_cli---v0422)
+
+---
+
+#### `gazelle_cli` - `v0.4.2+2`
+
+ - **FIX**(gazelle_cli): maintain working directory.
+
+
 ## 2024-07-06
 
 ### Changes
