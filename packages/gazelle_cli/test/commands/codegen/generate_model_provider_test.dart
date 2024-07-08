@@ -13,14 +13,14 @@ class User {
   final String username;
   final List<Post>? posts;
   final Map<String, String> metadata;
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   const User({
     required this.id,
     required this.username,
     required this.posts,
     required this.metadata,
-    required this.createdAt,
+    this.createdAt,
   });
 }
 """;
@@ -59,7 +59,7 @@ class UserModelType extends GazelleModelType<User> {
           .map((item) => PostModelType().fromJson(item))
           .toList() : null,
       metadata: (json["metadata"] as Map).map((k, v) => MapEntry(k as String, v as String)),
-      createdAt: DateTime.parse(json["createdAt"]),
+      createdAt: json["createdAt"] != null ? DateTime.parse(json["createdAt"]) : null,
     );
   }
 
@@ -70,7 +70,7 @@ class UserModelType extends GazelleModelType<User> {
       "username": value.username,
       "posts": value.posts?.map((item) => PostModelType().toJson(item)).toList(),
       "metadata": value.metadata.map((k, v) => MapEntry(k, v)),
-      "createdAt": value.createdAt.toIso8601String(),
+      "createdAt": value.createdAt?.toIso8601String(),
     };
   }
 }

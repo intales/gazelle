@@ -136,8 +136,9 @@ class _ClassVisitor extends GeneralizingAstVisitor<void> {
 }
 
 TypeDefinition _getTypeDefinition(InterfaceType dartType) {
+  final typeName = dartType.getDisplayString().replaceAll("?", "");
   return TypeDefinition(
-    name: dartType.getDisplayString().replaceAll("?", ""),
+    name: typeName,
     isNullable: dartType.nullabilitySuffix == NullabilitySuffix.question,
     source: dartType.element.source.fullName,
     isInt: dartType.isDartCoreInt,
@@ -157,10 +158,10 @@ TypeDefinition _getTypeDefinition(InterfaceType dartType) {
     isStream: dartType.isDartAsyncStream,
     isIterable: dartType.isDartCoreIterable,
     isFutureOr: dartType.isDartAsyncFutureOr,
-    isDateTime: dartType.getDisplayString() == "DateTime",
-    isDuration: dartType.getDisplayString() == "Duration",
-    isBigInt: dartType.getDisplayString() == "BigInt",
-    isUri: dartType.getDisplayString() == "Uri",
+    isDateTime: typeName == "DateTime",
+    isDuration: typeName == "Duration",
+    isBigInt: typeName == "BigInt",
+    isUri: typeName == "Uri",
     valueType: dartType.isDartCoreList
         ? _getTypeDefinition(dartType.typeArguments[0] as InterfaceType)
         : dartType.isDartCoreMap
