@@ -1,3 +1,7 @@
+## 0.4.2+3
+
+ - **FIX**(gazelle_cli): codegen nullablilty.
+
 ## 0.4.2+2
 
  - **FIX**(gazelle_cli): maintain working directory.
