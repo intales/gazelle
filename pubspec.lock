@@ -81,6 +81,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  gazelle_core:
+    dependency: "direct main"
+    description:
+      name: gazelle_core
+      sha256: c7637c3710a7d5eab5de10c3f7c7cfac0789ff646a7302249eae595da1cbae43
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   glob:
     dependency: transitive
     description:

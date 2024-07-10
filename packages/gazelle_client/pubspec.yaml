@@ -1,14 +1,14 @@
 name: gazelle_client
-description: A starting point for Dart libraries or applications.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+description: An easy to use client to connect to Gazelle.
+version: 0.1.0
+repository: https://github.com/intales/gazelle/tree/main/packages/gazelle_client
 
 environment:
   sdk: ^3.4.3
 
-# Add regular dependencies here.
 dependencies:
-  # path: ^1.8.0
+  gazelle_core: ^0.4.0
+  http: ^1.2.1
 
 dev_dependencies:
   lints: ^3.0.0
