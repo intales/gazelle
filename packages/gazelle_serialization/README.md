@@ -1,39 +1,65 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Gazelle Serialization Library
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+This library is part of the Gazelle backend framework.
+It provides serialization and deserialization functionality for Dart objects,
+supporting both primitive types and custom models.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
+## Key Features
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+- Serialization of Dart objects to JSON format
+- Deserialization of JSON objects to Dart instances
+- Support for primitive types (String, num, bool, DateTime)
+- Handling of lists and nested objects
+- Extensible through `GazelleModelProvider` and `GazelleModelType`
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+### Serialization
 
+To serialize an object:
 ```dart
-const like = 'sample';
+final jsonObject = serialize(object: myObject, modelProvider: myModelProvider);
 ```
 
-## Additional information
+### Deserialization
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+To deserialize an object:
+```dart
+final myObject = deserialize<MyType>(jsonObject: jsonData, modelProvider: myModelProvider);
+```
+
+To deserialize an list of objects:
+```dart
+final myObjects = deserializeList<MyType>(jsonObject: jsonData, modelProvider: myModelProvider);
+```
+
+### Defining custom models
+1. Create a class that extends `GazelleModelType`:
+```dart
+class MyTypeModel extends GazelleModelType<MyType> {
+  @override
+  Map<String, dynamic> toJson(MyType value) {
+    // Implement serialization logic
+  }
+
+  @override
+  MyType fromJson(Map<String, dynamic> json) {
+    // Implement deserialization logic
+  }
+}
+```
+
+2. Create a `GazelleModelProvider`:
+```dart
+class MyModelProvider extends GazelleModelProvider {
+  @override
+  Map<Type, GazelleModelType> get modelTypes => {
+    MyType: MyTypeModel(),
+    // Add other custom types here
+  };
+}
+```
+## Notes
+
+- The library automatically handles the serialization of DateTime to ISO 8601 format.
+- For unrecognized types, the library will return the string representation of the object.
