@@ -7,7 +7,7 @@ environment:
   sdk: ^3.4.3
 
 dependencies:
-  gazelle_core: ^0.4.0
+  gazelle_serialization: ^0.1.1
   http: ^1.2.1
 
 dev_dependencies:

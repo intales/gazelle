@@ -1,5 +1,5 @@
 import 'package:gazelle_client/src/api/gazelle_route_client.dart';
-import 'package:gazelle_core/gazelle_core.dart';
+import 'package:gazelle_serialization/gazelle_serialization.dart';
 import 'package:http/http.dart' as http;
 
 class GazelleApiClient {

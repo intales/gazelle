@@ -1,7 +1,9 @@
-import 'package:gazelle_core/gazelle_core.dart';
+import 'dart:convert';
+
+import 'package:gazelle_serialization/gazelle_serialization.dart';
 import 'package:http/http.dart' as http;
 
-class GazelleRouteClient<T> {
+class GazelleRouteClient {
   final GazelleModelProvider gazelleModelProvider;
   final http.Client httpClient;
   final String path;
@@ -12,13 +14,13 @@ class GazelleRouteClient<T> {
     required this.path,
   });
 
-  GazelleRouteClient<R> call<R>(String path) => GazelleRouteClient<R>(
+  GazelleRouteClient call(String path) => GazelleRouteClient(
         gazelleModelProvider: gazelleModelProvider,
         httpClient: httpClient,
         path: "${this.path}/$path",
       );
 
-  Future<String> get({Map<String, dynamic>? queryParams}) async {
+  Future<T> get<T>({Map<String, dynamic>? queryParams}) async {
     Uri uri = Uri.parse(path);
 
     if (queryParams != null && queryParams.isNotEmpty) {
@@ -31,42 +33,73 @@ class GazelleRouteClient<T> {
 
     final response = await httpClient.get(uri);
 
-    return response.body;
+    return _deserialize<T>(response.body);
   }
 
-  Future<String> post({Map<String, dynamic>? body}) async {
+  Future<List<T>> list<T>({Map<String, dynamic>? queryParams}) async {
+    Uri uri = Uri.parse(path);
+
+    if (queryParams != null && queryParams.isNotEmpty) {
+      final stringQueryParams = queryParams.map(
+        (key, value) => MapEntry(key, value.toString()),
+      );
+
+      uri = uri.replace(queryParameters: stringQueryParams);
+    }
+
+    final response = await httpClient.get(uri);
+
+    return _deserializeList<T>(response.body);
+  }
+
+  Future<T> post<T>({required T body}) async {
     final response = await httpClient.post(
       Uri.parse(path),
-      body: body,
+      body: _serialize<T>(body),
     );
 
-    return response.body;
+    return _deserialize<T>(response.body);
   }
 
-  Future<String> put({Map<String, dynamic>? body}) async {
+  Future<T> put<T>({required T body}) async {
     final response = await httpClient.put(
       Uri.parse(path),
-      body: body,
+      body: _serialize<T>(body),
     );
 
-    return response.body;
+    return _deserialize<T>(response.body);
   }
 
-  Future<String> patch({Map<String, dynamic>? body}) async {
+  Future<T> patch<T>({required T body}) async {
     final response = await httpClient.patch(
       Uri.parse(path),
-      body: body,
+      body: _serialize<T>(body),
     );
 
-    return response.body;
+    return _deserialize<T>(response.body);
   }
 
-  Future<String> delete({Map<String, dynamic>? body}) async {
+  Future<T> delete<T>({required T body}) async {
     final response = await httpClient.delete(
       Uri.parse(path),
-      body: body,
+      body: _serialize<T>(body),
     );
 
-    return response.body;
+    return _deserialize<T>(response.body);
   }
+
+  String _serialize<T>(T object) => jsonEncode(serialize(
+        object: object,
+        modelProvider: gazelleModelProvider,
+      ));
+
+  T _deserialize<T>(String json) => deserialize<T>(
+        jsonObject: jsonDecode(json),
+        modelProvider: gazelleModelProvider,
+      );
+
+  List<T> _deserializeList<T>(String json) => deserializeList<T>(
+        list: jsonDecode(json),
+        modelProvider: gazelleModelProvider,
+      );
 }
