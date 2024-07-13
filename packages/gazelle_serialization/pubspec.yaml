@@ -1,0 +1,13 @@
+name: gazelle_serialization
+description: Serialization logic for Gazelle applications.
+version: 0.1.0
+repository: https://github.com/intales/gazelle/tree/main/packages/gazelle_serialization
+
+environment:
+  sdk: ^3.4.3
+
+dependencies:
+
+dev_dependencies:
+  lints: ^3.0.0
+  test: ^1.24.0
