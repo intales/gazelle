@@ -1,6 +1,6 @@
 /// Represents a model class to be serialzed by Gazelle.
 abstract class GazelleModelType<T> {
-  /// Base constructor of a [GazelleModel].
+  /// Base constructor of a [GazelleModelType].
   const GazelleModelType();
 
   /// Transforms [value] into a json map.

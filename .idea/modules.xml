@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/packages/gazelle_cors/melos_gazelle_cors.iml" filepath="$PROJECT_DIR$/packages/gazelle_cors/melos_gazelle_cors.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/gazelle_jwt/melos_gazelle_jwt.iml" filepath="$PROJECT_DIR$/packages/gazelle_jwt/melos_gazelle_jwt.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/gazelle_logger/melos_gazelle_logger.iml" filepath="$PROJECT_DIR$/packages/gazelle_logger/melos_gazelle_logger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/packages/gazelle_serialization/melos_gazelle_serialization.iml" filepath="$PROJECT_DIR$/packages/gazelle_serialization/melos_gazelle_serialization.iml" />
       <module fileurl="file://$PROJECT_DIR$/melos_gazelle.iml" filepath="$PROJECT_DIR$/melos_gazelle.iml" />
     </modules>
   </component>
