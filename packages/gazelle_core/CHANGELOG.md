@@ -1,3 +1,7 @@
+## 0.4.0+1
+
+ - **REFACTOR**(gazelle_core): serialization.
+
 ## 0.4.0
 
  - Added support for serialziation
