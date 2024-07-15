@@ -3,6 +3,42 @@ import 'dart:convert';
 import 'package:gazelle_serialization/gazelle_serialization.dart';
 import 'package:http/http.dart' as http;
 
+/// Defines an error in the API client.
+///
+/// This exception is thrown whenever a request
+/// contains an error.
+class GazelleApiClientException implements Exception {
+  /// The path where the error occurred.
+  final String path;
+
+  /// The http method.
+  final String httpMethod;
+
+  /// The status code of the error.
+  final int statusCode;
+
+  /// The body of the error.
+  final String body;
+
+  /// Builds a [GazelleApiClientException].
+  const GazelleApiClientException({
+    required this.path,
+    required this.httpMethod,
+    required this.statusCode,
+    required this.body,
+  });
+
+  @override
+  String toString() {
+    final buffer = StringBuffer("GazelleApiClientException:")
+      ..writeln("PATH: $path")
+      ..writeln("METHOD: $httpMethod")
+      ..writeln("STATUS CODE: $statusCode")
+      ..writeln("BODY: $body");
+    return buffer.toString();
+  }
+}
+
 /// Represents a route for the API client.
 class GazelleRouteClient {
   final GazelleModelProvider _gazelleModelProvider;
@@ -37,7 +73,7 @@ class GazelleRouteClient {
       uri = uri.replace(queryParameters: stringQueryParams);
     }
 
-    final response = await _httpClient.get(uri);
+    final response = await _sendRequest(() => _httpClient.get(uri));
 
     return _deserialize<T>(response.body);
   }
@@ -54,49 +90,66 @@ class GazelleRouteClient {
       uri = uri.replace(queryParameters: stringQueryParams);
     }
 
-    final response = await _httpClient.get(uri);
+    final response = await _sendRequest(() => _httpClient.get(uri));
 
     return _deserializeList<T>(response.body);
   }
 
   /// Sends a POST request for [T].
   Future<T> post<T>({required T body}) async {
-    final response = await _httpClient.post(
-      Uri.parse(_path),
-      body: _serialize<T>(body),
-    );
+    final response = await _sendRequest(() => _httpClient.post(
+          Uri.parse(_path),
+          body: _serialize<T>(body),
+        ));
 
     return _deserialize<T>(response.body);
   }
 
   /// Sends a PUT request for [T].
   Future<T> put<T>({required T body}) async {
-    final response = await _httpClient.put(
-      Uri.parse(_path),
-      body: _serialize<T>(body),
-    );
+    final response = await _sendRequest(() => _httpClient.put(
+          Uri.parse(_path),
+          body: _serialize<T>(body),
+        ));
 
     return _deserialize<T>(response.body);
   }
 
   /// Sends a PATCH request for [T].
   Future<T> patch<T>({required T body}) async {
-    final response = await _httpClient.patch(
-      Uri.parse(_path),
-      body: _serialize<T>(body),
-    );
+    final response = await _sendRequest(() => _httpClient.patch(
+          Uri.parse(_path),
+          body: _serialize<T>(body),
+        ));
 
     return _deserialize<T>(response.body);
   }
 
   /// Sends a DELETE request for [T].
   Future<T> delete<T>({required T body}) async {
-    final response = await _httpClient.delete(
-      Uri.parse(_path),
-      body: _serialize<T>(body),
-    );
+    final response = await _sendRequest(() => _httpClient.delete(
+          Uri.parse(_path),
+          body: _serialize<T>(body),
+        ));
 
     return _deserialize<T>(response.body);
+  }
+
+  Future<http.Response> _sendRequest(
+    Future<http.Response> Function() callback,
+  ) async {
+    final response = await callback();
+
+    if (response.statusCode >= 299) {
+      throw GazelleApiClientException(
+        path: response.request!.url.path,
+        httpMethod: response.request!.method,
+        statusCode: response.statusCode,
+        body: response.body,
+      );
+    }
+
+    return response;
   }
 
   String _serialize<T>(T object) => jsonEncode(serialize(
