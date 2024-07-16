@@ -159,7 +159,7 @@ class GazelleRouteClient {
   }) async {
     final response = await callback();
 
-    if (response.statusCode >= 299) {
+    if (response.statusCode > 299) {
       throw GazelleApiClientException(
         path: _path,
         httpMethod: method,
