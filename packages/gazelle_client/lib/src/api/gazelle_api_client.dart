@@ -24,4 +24,7 @@ class GazelleApiClient {
         httpClient: _httpClient,
         path: "$_baseUrl/$path",
       );
+
+  /// Closes the HTTP client.
+  void close() => _httpClient.close();
 }
