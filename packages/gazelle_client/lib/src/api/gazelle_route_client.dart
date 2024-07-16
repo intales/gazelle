@@ -73,7 +73,10 @@ class GazelleRouteClient {
       uri = uri.replace(queryParameters: stringQueryParams);
     }
 
-    final response = await _sendRequest(() => _httpClient.get(uri));
+    final response = await _sendRequest(
+      callback: () => _httpClient.get(uri),
+      method: "GET",
+    );
 
     return _deserialize<T>(response.body);
   }
@@ -90,60 +93,76 @@ class GazelleRouteClient {
       uri = uri.replace(queryParameters: stringQueryParams);
     }
 
-    final response = await _sendRequest(() => _httpClient.get(uri));
+    final response = await _sendRequest(
+      callback: () => _httpClient.get(uri),
+      method: "GET",
+    );
 
     return _deserializeList<T>(response.body);
   }
 
   /// Sends a POST request for [T].
   Future<T> post<T>({required T body}) async {
-    final response = await _sendRequest(() => _httpClient.post(
-          Uri.parse(_path),
-          body: _serialize<T>(body),
-        ));
+    final response = await _sendRequest(
+      callback: () => _httpClient.post(
+        Uri.parse(_path),
+        body: _serialize<T>(body),
+      ),
+      method: "POST",
+    );
 
     return _deserialize<T>(response.body);
   }
 
   /// Sends a PUT request for [T].
   Future<T> put<T>({required T body}) async {
-    final response = await _sendRequest(() => _httpClient.put(
-          Uri.parse(_path),
-          body: _serialize<T>(body),
-        ));
+    final response = await _sendRequest(
+      callback: () => _httpClient.put(
+        Uri.parse(_path),
+        body: _serialize<T>(body),
+      ),
+      method: "PUT",
+    );
 
     return _deserialize<T>(response.body);
   }
 
   /// Sends a PATCH request for [T].
   Future<T> patch<T>({required T body}) async {
-    final response = await _sendRequest(() => _httpClient.patch(
-          Uri.parse(_path),
-          body: _serialize<T>(body),
-        ));
+    final response = await _sendRequest(
+      callback: () => _httpClient.patch(
+        Uri.parse(_path),
+        body: _serialize<T>(body),
+      ),
+      method: "PATCH",
+    );
 
     return _deserialize<T>(response.body);
   }
 
   /// Sends a DELETE request for [T].
   Future<T> delete<T>({required T body}) async {
-    final response = await _sendRequest(() => _httpClient.delete(
-          Uri.parse(_path),
-          body: _serialize<T>(body),
-        ));
+    final response = await _sendRequest(
+      callback: () => _httpClient.delete(
+        Uri.parse(_path),
+        body: _serialize<T>(body),
+      ),
+      method: "DELETE",
+    );
 
     return _deserialize<T>(response.body);
   }
 
-  Future<http.Response> _sendRequest(
-    Future<http.Response> Function() callback,
-  ) async {
+  Future<http.Response> _sendRequest({
+    required Future<http.Response> Function() callback,
+    required String method,
+  }) async {
     final response = await callback();
 
     if (response.statusCode >= 299) {
       throw GazelleApiClientException(
-        path: response.request!.url.path,
-        httpMethod: response.request!.method,
+        path: _path,
+        httpMethod: method,
         statusCode: response.statusCode,
         body: response.body,
       );
