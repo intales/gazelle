@@ -1,39 +1,63 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Gazelle Client
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A flexible and powerful Dart client for interacting with Gazelle backend APIs.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Easy-to-use API client for Gazelle backend applications
+- Support for all major HTTP methods (GET, POST, PUT, PATCH, DELETE)
+- Built-in error handling with custom exceptions
+- Flexible serialization and deserialization of API responses
+- Query parameter support for GET requests
+- Fluent interface for building API paths
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add `gazelle_client` to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  gazelle_client: ^1.0.0
+```
+
+Then run `dart pub get` 
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+Here's a simple example of how to use the Gazelle Client:
 
 ```dart
-const like = 'sample';
+import 'package:gazelle_client/gazelle_client.dart';
+
+void main() async {
+  final client = GazelleClient.init(
+    baseUrl: 'https://api.example.com',
+    modelProvider: YourModelProvider(),
+  );
+
+  // GET request
+  final user = await client.api('users').get<User>(queryParams: {'id': 1});
+
+  // POST request
+  final newUser = User(name: 'John Doe', email: 'john@example.com');
+  final createdUser = await client.api('users').post<User>(body: newUser);
+
+  // Don't forget to close the client when you're done
+  client.api.close();
+}
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+For more detailed information on using the Gazelle Client, please refer to our
+documentation.
+
+## Error Handling
+
+The client includes built-in error handling. If a request fails, it will throw a
+`GazelleApiClientException` with details about the error.
+
+## Custom Model Providers
+
+You need to implement your own `GazelleModelProvider` to handle serialization
+and deserialization of your specific models or generate it with the Gazelle CLI.
