@@ -4,3 +4,5 @@ environment:
   sdk: '>=3.3.2 <4.0.0'
 dev_dependencies:
   melos: ^5.2.2
+dependencies:
+  gazelle_core: ^0.4.0
