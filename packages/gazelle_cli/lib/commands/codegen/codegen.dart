@@ -6,6 +6,7 @@ import 'package:cli_spin/cli_spin.dart';
 import '../../commons/functions/load_project_configuration.dart';
 import 'analyze_entities.dart';
 import 'generate_model_provider.dart';
+import 'generate_models_barrel_file.dart';
 
 /// CLI command to generate code.
 class CodegenCommand extends Command {
@@ -21,9 +22,10 @@ class CodegenCommand extends Command {
 }
 
 class _CodegenModelsCommand extends Command {
-  static const _entitiesPath = "lib/entities";
+  static const _entitiesPath = "models/lib/entities";
   static const _entitiesBasePath = "../entities";
-  static const _destinationPath = "lib/models";
+  static const _destinationPath = "models/lib/models";
+  static const _barrelFilePath = "models/lib";
 
   @override
   String get name => "models";
@@ -48,6 +50,12 @@ class _CodegenModelsCommand extends Command {
         sourceFiles: sourceFiles,
         entitiesBasePath: _entitiesBasePath,
         destinationPath: _destinationPath,
+      );
+      await generateModelsBarrelFile(
+        entitiesPath: sourceFiles.map((e) => e.fileName).toList(),
+        modelsPath: models.modelTypes.map((e) => e.path).toList(),
+        modelProviderPath: models.modelProvider.path,
+        barrelFilePath: _barrelFilePath,
       );
 
       spinner.success(

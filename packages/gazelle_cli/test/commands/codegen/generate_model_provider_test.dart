@@ -44,7 +44,7 @@ class Post {
 """;
 
 const _expectedUserModelType = """
-import 'package:gazelle_core/gazelle_core.dart';
+import 'package:gazelle_serialization/gazelle_serialization.dart';
 
 import '../../entities/user/user.dart';
 import '../post_model_type.dart';
@@ -76,7 +76,7 @@ class UserModelType extends GazelleModelType<User> {
 }
 """;
 const _expectedPostModelType = """
-import 'package:gazelle_core/gazelle_core.dart';
+import 'package:gazelle_serialization/gazelle_serialization.dart';
 
 import '../entities/post.dart';
 import 'user/user_model_type.dart';
@@ -105,7 +105,7 @@ class PostModelType extends GazelleModelType<Post> {
 """;
 
 const _expectedModelProvider = """
-import 'package:gazelle_core/gazelle_core.dart';
+import 'package:gazelle_serialization/gazelle_serialization.dart';
 
 import '../entities/post.dart';
 import '../entities/user/user.dart';

@@ -40,7 +40,7 @@ class LoadProjectConfigurationGazelleNotFoundError {
 /// Throws [LoadProjectConfigurationPubspecNotFoundError] if `pubspec.yaml` is not found.
 Future<ProjectConfiguration> loadProjectConfiguration({String? path}) async {
   Directory directory = Directory(path ?? Directory.current.path);
-  final markerFile = "pubspec.yaml";
+  final markerFile = "gazelle.yaml";
 
   late final String pubspecPath;
   while (true) {
@@ -54,6 +54,8 @@ Future<ProjectConfiguration> loadProjectConfiguration({String? path}) async {
     if (parent.path == directory.path) {
       throw LoadProjectConfigurationPubspecNotFoundError();
     }
+
+    directory = parent;
   }
 
   final pubspec = File(pubspecPath);
@@ -64,8 +66,5 @@ Future<ProjectConfiguration> loadProjectConfiguration({String? path}) async {
 
   final yaml = loadYaml(await pubspec.readAsString()) as YamlMap;
 
-  if (!yaml.containsKey("gazelle")) {
-    throw const LoadProjectConfigurationGazelleNotFoundError();
-  }
   return ProjectConfiguration.fromYaml(yaml);
 }

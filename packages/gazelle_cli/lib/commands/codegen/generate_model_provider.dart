@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:code_builder/code_builder.dart' as cb;
 import 'package:dart_style/dart_style.dart';
-import 'package:path/path.dart' as p;
 
+import 'calculate_relative_path.dart';
 import 'source_file_definition.dart';
 
 /// Represents the result of `GenerateModelProvider`.
@@ -83,17 +83,17 @@ String _generateModelProvider({
   required String fileName,
 }) {
   final entitiesImports = sourceFiles
-      .map((e) => _calculateRelativePath(fileName, e.fileName))
+      .map((e) => calculateRelativePath(fileName, e.fileName))
       .map(cb.Directive.import)
       .toList();
 
   final modelTypesImports = modelTypesFiles
-      .map((e) => _calculateRelativePath(fileName, e.path))
+      .map((e) => calculateRelativePath(fileName, e.path))
       .map(cb.Directive.import)
       .toList();
 
-  final gazelleImport =
-      cb.Directive.import("package:gazelle_core/gazelle_core.dart");
+  final gazelleImport = cb.Directive.import(
+      "package:gazelle_serialization/gazelle_serialization.dart");
 
   sourceFiles.sort((a, b) => a.fileName.compareTo(b.fileName));
 
@@ -148,8 +148,9 @@ String _generateModelType({
       .map((e) => "${e.replaceAll(".dart", "")}_model_type.dart")
       .map(cb.Directive.import)
       .toList()
-    ..add(cb.Directive.import("package:gazelle_core/gazelle_core.dart"))
-    ..add(cb.Directive.import(_calculateRelativePath(
+    ..add(cb.Directive.import(
+        "package:gazelle_serialization/gazelle_serialization.dart"))
+    ..add(cb.Directive.import(calculateRelativePath(
       fileName,
       sourceFile.fileName,
     )));
@@ -359,30 +360,4 @@ Directory _findCommonDirectory(List<String> paths) {
   }
 
   return Directory(commonParts.join('/'));
-}
-
-String _calculateRelativePath(String from, String to) {
-  from = p.absolute(from);
-  to = p.absolute(to);
-
-  List<String> fromParts = p.split(from);
-  List<String> toParts = p.split(to);
-
-  int commonLength = 0;
-  for (int i = 0; i < fromParts.length && i < toParts.length; i++) {
-    if (fromParts[i] == toParts[i]) {
-      commonLength++;
-    } else {
-      break;
-    }
-  }
-
-  int levelsUp = fromParts.length - commonLength - 1;
-
-  List<String> relativePathParts = List.filled(levelsUp, '..', growable: true);
-  relativePathParts.addAll(toParts.sublist(commonLength));
-
-  final result = p.joinAll(relativePathParts);
-
-  return result;
 }
