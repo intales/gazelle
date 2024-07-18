@@ -1,6 +1,6 @@
 name: gazelle_client
 description: An easy to use client to connect to Gazelle.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/intales/gazelle/tree/main/packages/gazelle_client
 
 environment:

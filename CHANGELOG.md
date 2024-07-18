@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-07-18
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`gazelle_cli` - `v0.5.0`](#gazelle_cli---v050)
+
+Packages with other changes:
+
+ - [`gazelle_client` - `v0.1.1`](#gazelle_client---v011)
+
+---
+
+#### `gazelle_cli` - `v0.5.0`
+
+ - **BREAKING** **FEAT**(gazelle_cli): Project Structure ([#48](https://github.com/intales/gazelle/issues/48)).
+
+#### `gazelle_client` - `v0.1.1`
+
+ - **FEAT**(gazelle_client): API Client ([#47](https://github.com/intales/gazelle/issues/47)).
+
+
 ## 2024-07-13
 
 ### Changes

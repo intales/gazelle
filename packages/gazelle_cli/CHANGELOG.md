@@ -1,3 +1,9 @@
+## 0.5.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**(gazelle_cli): Project Structure ([#48](https://github.com/intales/gazelle/issues/48)).
+
 ## 0.4.2+3
 
  - **FIX**(gazelle_cli): codegen nullablilty.
