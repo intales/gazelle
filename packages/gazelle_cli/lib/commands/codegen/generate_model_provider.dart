@@ -277,12 +277,6 @@ String _parseJsonValue(
     buffer.write('$objectReference as ${type.name}');
   } else if (type.isDateTime) {
     buffer.write('DateTime.parse($objectReference)');
-  } else if (type.isDuration) {
-    buffer.write('Duration(microseconds: $objectReference)');
-  } else if (type.isUri) {
-    buffer.write('Uri.parse($objectReference)');
-  } else if (type.isBigInt) {
-    buffer.write('BigInt.from($objectReference)');
   } else if (type.isList || type.isSet) {
     final valueType = type.valueType!;
     final castType = type.isList ? "List" : "Set";
@@ -312,12 +306,6 @@ String _serializeJsonValue(
     buffer.write(name);
   } else if (type.isDateTime) {
     buffer.write("$name${type.isNullable ? "?" : ""}.toIso8601String()");
-  } else if (type.isDuration) {
-    buffer.write("$name${type.isNullable ? "?" : ""}.inMicroseconds");
-  } else if (type.isUri) {
-    buffer.write("$name${type.isNullable ? "?" : ""}.toString()");
-  } else if (type.isBigInt) {
-    buffer.write("$name${type.isNullable ? "?" : ""}.toString()");
   } else if (type.isList || type.isSet) {
     final valueType = type.valueType!;
     final toStatement = type.isList ? "toList()" : "toSet()";
