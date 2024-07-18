@@ -5,32 +5,26 @@ import 'package:gazelle_cli/commons/functions/load_project_configuration.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group("LoadProjectConfiguration tests", () {
-    test("Should throw error when pubspec doesn't exist", () async {
+  group('LoadProjectConfiguration tests', () {
+    test('Should find a gazelle configuration', () async {
       // Arrange
-      const path = "tmp/load_project_configuration_tests";
+      final path = "tmp/load_project_configuration_tests";
+      final directory = Directory(path);
 
-      try {
-        await Directory(path).delete(recursive: true);
-      } catch (_) {
-        print("$path does not exist, creating it now.");
+      if (directory.existsSync()) {
+        directory.deleteSync(recursive: true);
       }
+      directory.createSync(recursive: true);
 
-      await Directory(path).create(recursive: true);
-
-      final projectPath = await createProject(
+      // Act
+      final project = await createProject(
         projectName: "test_project",
         path: path,
       );
+      final result =
+          await loadProjectConfiguration(path: "$project/server/lib");
 
-      // Act
-      final result = await loadProjectConfiguration(path: projectPath);
-
-      // Assert
       expect(result.name, "test_project");
-
-      // Tear down
-      await Directory(path).delete(recursive: true);
     });
   });
 }

@@ -21,10 +21,15 @@ void main() {
       final result = await createProject(projectName: "test", path: path);
 
       // Assert
-      expect(File("$result/pubspec.yaml").existsSync(), isTrue);
-      expect(File("$result/bin/test.dart").existsSync(), isTrue);
-      expect(File("$result/lib/test.dart").existsSync(), isTrue);
-      expect(Directory("$result/lib/entities").existsSync(), isTrue);
+      expect(File("$result/gazelle.yaml").existsSync(), isTrue);
+
+      expect(File("$result/server/pubspec.yaml").existsSync(), isTrue);
+      expect(File("$result/server/bin/server.dart").existsSync(), isTrue);
+      expect(File("$result/server/lib/server.dart").existsSync(), isTrue);
+
+      expect(File("$result/models/pubspec.yaml").existsSync(), isTrue);
+      expect(File("$result/models/lib/models.dart").existsSync(), isTrue);
+      expect(Directory("$result/models/lib/entities").existsSync(), isTrue);
 
       await Directory(path).delete(recursive: true);
     });

@@ -159,9 +159,6 @@ TypeDefinition _getTypeDefinition(InterfaceType dartType) {
     isIterable: dartType.isDartCoreIterable,
     isFutureOr: dartType.isDartAsyncFutureOr,
     isDateTime: typeName == "DateTime",
-    isDuration: typeName == "Duration",
-    isBigInt: typeName == "BigInt",
-    isUri: typeName == "Uri",
     valueType: dartType.isDartCoreList
         ? _getTypeDefinition(dartType.typeArguments[0] as InterfaceType)
         : dartType.isDartCoreMap
