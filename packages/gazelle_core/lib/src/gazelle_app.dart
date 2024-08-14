@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:gazelle_serialization/gazelle_serialization.dart';
@@ -9,6 +10,15 @@ import 'gazelle_plugin.dart';
 import 'gazelle_response_to_http_response.dart';
 import 'gazelle_route.dart';
 import 'gazelle_ssl_certificate.dart';
+
+/// The running modes of a Gazelle applications.
+enum GazelleAppMode {
+  /// This enables a Gazelle app to act as a server.
+  server,
+
+  /// This enables a Gazelle app to export its routes to JSON.
+  exportRoutes,
+}
 
 /// A lightweight and flexible HTTP server framework for Dart.
 ///
@@ -100,10 +110,22 @@ class GazelleApp {
   /// Binds the server to the specified [address] and [port], and listens for
   /// incoming requests. Once the server is started, it will continue listening
   /// until stopped using the [stop] method.
-  Future<void> start() async {
+  Future<void> start({
+    GazelleAppMode mode = GazelleAppMode.server,
+  }) async {
     await _context.registerPlugins(_plugins.toSet());
     _context.addRoutes(_routes);
 
+    switch (mode) {
+      case GazelleAppMode.server:
+        return _startServerMode();
+      case GazelleAppMode.exportRoutes:
+        return _startExportRoutesMode();
+      default:
+    }
+  }
+
+  Future<void> _startServerMode() async {
     _server = await _createServer();
     _port = _server.port;
 
@@ -116,6 +138,11 @@ class GazelleApp {
     });
 
     _isListening = true;
+  }
+
+  Future<void> _startExportRoutesMode() async {
+    final routes = _context.routesStructure;
+    print(jsonEncode(routes));
   }
 
   /// Stops the HTTP server.

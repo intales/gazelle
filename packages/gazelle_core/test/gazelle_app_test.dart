@@ -56,6 +56,18 @@ void main() {
       expect(app.isListening, isFalse);
     });
 
+    test('Should start a GazelleApp and export routes structure', () async {
+      // Arrange
+      final app = GazelleApp(routes: [
+        GazelleRoute(name: "users"),
+      ]);
+
+      // Act
+      await app.start(mode: GazelleAppMode.exportRoutes);
+
+      // Assert
+    });
+
     test('Should register a plugin', () async {
       // Arrange
       final plugin = _TestPlugin();
