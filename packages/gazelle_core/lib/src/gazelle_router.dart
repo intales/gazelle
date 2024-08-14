@@ -50,6 +50,39 @@ class GazelleRouter {
   GazelleRouter()
       : _routes = GazelleTrie<GazelleRouterItem>(wildcard: wildcard);
 
+  /// Exports the router structure.
+  ///
+  /// This method is used primarily by the CLI to generate
+  /// a client class that can be used by other Dart applications
+  /// like Flutter apps.
+  Map<String, dynamic> get routesStructure => _exportNode(_routes.root);
+
+  Map<String, dynamic> _exportNode(GazelleTrieNode<GazelleRouterItem> node) {
+    if (node.name.isEmpty && node.children.length == 1 && node.value == null) {
+      return _exportNode(node.children.values.first);
+    }
+
+    Map<String, dynamic> result = {
+      'name': node.name,
+      'methods': {},
+      'children': {},
+    };
+
+    if (node.value != null) {
+      if (node.value!.get != null) result['methods']['get'] = true;
+      if (node.value!.post != null) result['methods']['post'] = true;
+      if (node.value!.put != null) result['methods']['put'] = true;
+      if (node.value!.patch != null) result['methods']['patch'] = true;
+      if (node.value!.delete != null) result['methods']['delete'] = true;
+    }
+
+    for (var child in node.children.values) {
+      result['children'][child.name] = _exportNode(child);
+    }
+
+    return result;
+  }
+
   /// Adds routes to this router.
   void addRoutes(
     List<GazelleRoute> routes,

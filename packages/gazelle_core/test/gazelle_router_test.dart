@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
@@ -51,6 +53,65 @@ void main() {
       } catch (e) {
         expect(e, isA<RouterWhitespaceExcpetion>());
       }
+    });
+
+    test('Should export the router structure to a map', () {
+      // Arrange
+      final context = GazelleContext.create();
+      final router = GazelleRouter();
+      const expected = {
+        "name": "",
+        "methods": {},
+        "children": {
+          "users": {
+            "name": "users",
+            "methods": {},
+            "children": {
+              "userId": {
+                "name": "userId",
+                "methods": {},
+                "children": {
+                  "posts": {
+                    "name": "posts",
+                    "methods": {},
+                    "children": {},
+                  },
+                }
+              }
+            }
+          },
+          "posts": {
+            "name": "posts",
+            "methods": {},
+            "children": {},
+          },
+        }
+      };
+      final routes = [
+        GazelleRoute(
+          name: "users",
+          children: [
+            GazelleRoute.parameter(
+              name: "userId",
+              children: [
+                GazelleRoute(
+                  name: "posts",
+                ),
+              ],
+            ),
+          ],
+        ),
+        GazelleRoute(
+          name: "posts",
+        ),
+      ];
+      router.addRoutes(routes, context);
+
+      // Act
+      final result = router.routesStructure;
+
+      // Assert
+      expect(result, expected);
     });
   });
 }
