@@ -63,7 +63,7 @@ class GazelleRouter {
     }
 
     Map<String, dynamic> result = {
-      'name': node.name,
+      'name': "${node.isWildcard ? ":" : ""}${node.name}",
       'methods': {},
       'children': {},
     };

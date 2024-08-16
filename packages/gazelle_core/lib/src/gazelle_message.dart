@@ -92,12 +92,12 @@ class GazelleRequest extends GazelleMessage {
 ///
 /// Encapsulates information about the HTTP response including the status code,
 /// headers, and body.
-class GazelleResponse<T> extends GazelleMessage {
+class GazelleResponse extends GazelleMessage {
   /// The HTTP status code of the response.
   final GazelleHttpStatusCode statusCode;
 
   /// The body of the response.
-  final T? body;
+  final dynamic body;
 
   /// Constructs a GazelleResponse instance.
   ///

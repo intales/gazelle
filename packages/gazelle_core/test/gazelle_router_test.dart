@@ -66,7 +66,7 @@ void main() {
             "methods": {},
             "children": {
               "userId": {
-                "name": "userId",
+                "name": ":userId",
                 "methods": {},
                 "children": {
                   "posts": {
