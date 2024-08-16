@@ -53,6 +53,11 @@ Future<void> runApp(List<String> args) async {
     ],
   );
 
+  if (args.contains("--export-routes")) {
+    await app.start(mode: GazelleAppMode.exportRoutes);
+    return;
+  }
+
   await app.start();
   print("Gazelle listening at \${app.serverAddress}");
 }
