@@ -90,7 +90,6 @@ class _CodegenClientCommand extends Command {
     CliSpin spinner = CliSpin();
     try {
       final projectConfiguration = await loadProjectConfiguration();
-      print(projectConfiguration.path);
 
       spinner = CliSpin(
         text: "Generating client...",
