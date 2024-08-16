@@ -17,6 +17,8 @@ environment:
 dependencies:
   gazelle_serialization: ^0.1.1
   gazelle_client: ^0.1.1
+  models:
+    path: ../models
 
 dev_dependencies:
   lints: ">=2.1.0 <4.0.0"
@@ -31,7 +33,9 @@ Future<void> generateClient({
   final routeStructure = jsonDecode(structure);
   final code = StringBuffer();
 
+  code.writeln("import 'package:models/models.dart';");
   code.writeln("import 'package:gazelle_client/gazelle_client.dart';");
+  code.writeln("export 'package:models/models.dart';");
   code.writeln(
       "export 'package:gazelle_client/gazelle_client.dart' hide GazelleRouteClient, GazelleApiClient;");
   code.writeln();
@@ -70,8 +74,9 @@ Future<String> _createClientPackage({
 
 void _generateRouteProperties(
   Map<String, dynamic> node,
-  StringBuffer code,
-) {
+  StringBuffer code, {
+  bool extension = false,
+}) {
   if (node['children'] != null) {
     for (var entry in node['children'].entries) {
       final className = _snakeToPascalCase(entry.key);
@@ -80,10 +85,10 @@ void _generateRouteProperties(
 
       if (entry.value['name'].startsWith(':')) {
         code.writeln(
-            "$className $propertyName(String value) => $className(this(value));");
+            "$className $propertyName(String value) => $className(${extension ? "this" : ""}(value));");
       } else {
         code.writeln(
-            "$className get $propertyName => $className(this('$propertyName'));");
+            "$className get $propertyName => $className(${extension ? "this" : ""}('${entry.key}'));");
       }
     }
   }
@@ -100,28 +105,28 @@ void _generateRouteClasses(
     code.writeln("class $className {");
     code.writeln("final GazelleRouteClient _client;");
     code.writeln("$className(this._client);");
-    code.writeln("GazelleRouteClient call(String path) => _client(path);");
 
     if (entry.value['methods'] != null) {
+      final returnType = entry.value['returnType'];
       if (entry.value['methods']['get'] == true) {
         code.writeln(
-            "Future<dynamic> get({Map<String, dynamic>? queryParams}) => _client.get(queryParams: queryParams);");
+            "Future<$returnType> get({Map<String, dynamic>? queryParams}) => _client.get<$returnType>(queryParams: queryParams);");
       }
       if (entry.value['methods']['post'] == true) {
         code.writeln(
-            "Future<dynamic> post(dynamic body) => _client.post(body: body);");
+            "Future<$returnType> post(dynamic body) => _client.post<$returnType>(body: body);");
       }
       if (entry.value['methods']['put'] == true) {
         code.writeln(
-            "Future<dynamic> put(dynamic body) => _client.put(body: body);");
+            "Future<$returnType> put(dynamic body) => _client.put<$returnType>(body: body);");
       }
       if (entry.value['methods']['patch'] == true) {
         code.writeln(
-            "Future<dynamic> patch(dynamic body) => _client.patch(body: body);");
+            "Future<$returnType> patch(dynamic body) => _client.patch<$returnType>(body: body);");
       }
       if (entry.value['methods']['delete'] == true) {
         code.writeln(
-            "Future<dynamic> delete(dynamic body) => _client.delete(body: body);");
+            "Future<$returnType> delete(dynamic body) => _client.delete<$returnType>(body: body);");
       }
     }
 
