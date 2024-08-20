@@ -59,7 +59,7 @@ void main() {
     test('Should start a GazelleApp and export routes structure', () async {
       // Arrange
       final app = GazelleApp(routes: [
-        GazelleRoute(name: "users"),
+        GazelleRoute<String>(name: "users"),
       ]);
 
       // Act

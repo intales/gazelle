@@ -1,4 +1,5 @@
 import 'gazelle_context.dart';
+import 'gazelle_generic_type_parameter.dart';
 import 'gazelle_hooks.dart';
 import 'gazelle_http_header.dart';
 import 'gazelle_http_method.dart';
@@ -8,7 +9,7 @@ import 'gazelle_route.dart';
 import 'gazelle_router.dart';
 
 /// Represents a route inside [GazelleRouter].
-class GazelleRouterItem {
+class GazelleRouterItem<T> with GazelleGenericTypeParameter<T> {
   /// The route's context.
   final GazelleContext context;
 
@@ -16,28 +17,27 @@ class GazelleRouterItem {
   final String name;
 
   /// The handler for the GET method.
-  final GazelleRouteHandler? get;
+  final GazelleRouteHandler<T>? get;
 
   /// The handler for the POST method.
-  final GazelleRouteHandler? post;
+  final GazelleRouteHandler<T>? post;
 
   /// The handler for the PUT method.
-  final GazelleRouteHandler? put;
+  final GazelleRouteHandler<T>? put;
 
   /// The handler for the PATCH method.
-  final GazelleRouteHandler? patch;
+  final GazelleRouteHandler<T>? patch;
 
   /// The handler for the DELETE method.
-  final GazelleRouteHandler? delete;
+  final GazelleRouteHandler<T>? delete;
 
   /// The handler for the HEAD method.
-  GazelleRouteHandler? get head {
+  GazelleRouteHandler<T>? get head {
     if (get == null) return null;
     return (context, request, response) async {
       final getResponse = await get!(context, request, response);
-      return GazelleResponse(
+      return GazelleResponse<T>(
         statusCode: getResponse.statusCode,
-        body: getResponse.body,
         headers: getResponse.headers,
         metadata: getResponse.metadata,
       );
@@ -45,7 +45,7 @@ class GazelleRouterItem {
   }
 
   /// The handler for the OPTIONS method.
-  Future<GazelleResponse> options(
+  Future<GazelleResponse<T>> options(
     GazelleContext context,
     GazelleRequest request,
     GazelleResponse response,
@@ -65,7 +65,7 @@ class GazelleRouterItem {
 
     availableMethods.add(GazelleHttpMethod.options.name);
 
-    return GazelleResponse(
+    return GazelleResponse<T>(
       statusCode: GazelleHttpStatusCode.success.noContent_204,
       headers: [GazelleHttpHeader.allow.addValues(availableMethods)],
     );
@@ -102,18 +102,18 @@ class GazelleRouterItem {
       };
 
   /// Creates a copy of this GazelleRoute with the specified attributes overridden.
-  GazelleRouterItem copyWith({
+  GazelleRouterItem<T> copyWith({
     String? name,
-    GazelleRouteHandler? get,
-    GazelleRouteHandler? post,
-    GazelleRouteHandler? put,
-    GazelleRouteHandler? patch,
-    GazelleRouteHandler? delete,
+    GazelleRouteHandler<T>? get,
+    GazelleRouteHandler<T>? post,
+    GazelleRouteHandler<T>? put,
+    GazelleRouteHandler<T>? patch,
+    GazelleRouteHandler<T>? delete,
     List<GazellePreRequestHook>? preRequestHooks,
     List<GazellePostResponseHook>? postResponseHooks,
     GazelleContext? context,
   }) =>
-      GazelleRouterItem(
+      GazelleRouterItem<T>(
         name: name ?? this.name,
         get: get ?? this.get,
         post: post ?? this.post,

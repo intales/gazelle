@@ -59,18 +59,22 @@ void main() {
       final router = GazelleRouter();
       const expected = {
         "name": "",
+        "returnType": "dynamic",
         "methods": {},
         "children": {
           "users": {
             "name": "users",
+            "returnType": "String",
             "methods": {},
             "children": {
               "userId": {
                 "name": ":userId",
+                "returnType": "String",
                 "methods": {},
                 "children": {
                   "posts": {
                     "name": "posts",
+                    "returnType": "String",
                     "methods": {},
                     "children": {},
                   },
@@ -80,26 +84,27 @@ void main() {
           },
           "posts": {
             "name": "posts",
+            "returnType": "int",
             "methods": {},
             "children": {},
           },
         }
       };
       final routes = [
-        GazelleRoute(
+        GazelleRoute<String>(
           name: "users",
           children: [
-            GazelleRoute.parameter(
+            GazelleRoute<String>.parameter(
               name: "userId",
               children: [
-                GazelleRoute(
+                GazelleRoute<String>(
                   name: "posts",
                 ),
               ],
             ),
           ],
         ),
-        GazelleRoute(
+        GazelleRoute<int>(
           name: "posts",
         ),
       ];

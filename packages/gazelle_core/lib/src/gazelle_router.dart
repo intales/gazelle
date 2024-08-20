@@ -64,6 +64,7 @@ class GazelleRouter {
 
     Map<String, dynamic> result = {
       'name': "${node.isWildcard ? ":" : ""}${node.name}",
+      'returnType': node.value!.genericTypeParameter.toString(),
       'methods': {},
       'children': {},
     };
@@ -105,22 +106,8 @@ class GazelleRouter {
       throw RouterWhitespaceExcpetion(route.name);
     }
 
-    List<String> path = [...parentPath, route.name];
-    final routerItem = GazelleRouterItem(
-      context: context,
-      name: route.name,
-      get: route.get,
-      post: route.post,
-      put: route.put,
-      patch: route.patch,
-      delete: route.delete,
-      preRequestHooks: route.preRequestHooks != null
-          ? route.preRequestHooks!(context)
-          : const [],
-      postResponseHooks: route.postResponseHooks != null
-          ? route.postResponseHooks!(context)
-          : const [],
-    );
+    final path = [...parentPath, route.name];
+    final routerItem = route.toRouterItem(context);
 
     _routes.insert(path, routerItem);
 

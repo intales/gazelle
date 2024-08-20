@@ -114,19 +114,19 @@ void _generateRouteClasses(
       }
       if (entry.value['methods']['post'] == true) {
         code.writeln(
-            "Future<$returnType> post(dynamic body) => _client.post<$returnType>(body: body);");
+            "Future<$returnType> post($returnType body) => _client.post<$returnType>(body: body);");
       }
       if (entry.value['methods']['put'] == true) {
         code.writeln(
-            "Future<$returnType> put(dynamic body) => _client.put<$returnType>(body: body);");
+            "Future<$returnType> put($returnType body) => _client.put<$returnType>(body: body);");
       }
       if (entry.value['methods']['patch'] == true) {
         code.writeln(
-            "Future<$returnType> patch(dynamic body) => _client.patch<$returnType>(body: body);");
+            "Future<$returnType> patch($returnType body) => _client.patch<$returnType>(body: body);");
       }
       if (entry.value['methods']['delete'] == true) {
         code.writeln(
-            "Future<$returnType> delete(dynamic body) => _client.delete<$returnType>(body: body);");
+            "Future<$returnType> delete($returnType body) => _client.delete<$returnType>(body: body);");
       }
     }
 
