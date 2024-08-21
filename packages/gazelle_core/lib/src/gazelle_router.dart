@@ -62,20 +62,42 @@ class GazelleRouter {
       return _exportNode(node.children.values.first);
     }
 
-    Map<String, dynamic> result = {
+    final Map<String, dynamic> result = {
       'name': "${node.isWildcard ? ":" : ""}${node.name}",
-      'returnType': node.value!.genericTypeParameter.toString(),
       'methods': {},
       'children': {},
     };
 
+    final Map<String, dynamic> methods = {};
     if (node.value != null) {
-      if (node.value!.get != null) result['methods']['get'] = true;
-      if (node.value!.post != null) result['methods']['post'] = true;
-      if (node.value!.put != null) result['methods']['put'] = true;
-      if (node.value!.patch != null) result['methods']['patch'] = true;
-      if (node.value!.delete != null) result['methods']['delete'] = true;
+      if (node.value!.get != null) {
+        methods['get'] = {
+          'returnType': node.value!.get!.genericTypeParameter.toString(),
+        };
+      }
+      if (node.value!.post != null) {
+        methods['post'] = {
+          'returnType': node.value!.get!.genericTypeParameter.toString(),
+        };
+      }
+      if (node.value!.put != null) {
+        methods['put'] = {
+          'returnType': node.value!.get!.genericTypeParameter.toString(),
+        };
+      }
+      if (node.value!.patch != null) {
+        methods['patch'] = {
+          'returnType': node.value!.get!.genericTypeParameter.toString(),
+        };
+      }
+      if (node.value!.delete != null) {
+        methods['delete'] = {
+          'returnType': node.value!.get!.genericTypeParameter.toString(),
+        };
+      }
     }
+
+    result['methods'] = methods;
 
     for (var child in node.children.values) {
       result['children'][child.name] = _exportNode(child);

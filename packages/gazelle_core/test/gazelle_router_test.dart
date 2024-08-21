@@ -22,10 +22,13 @@ void main() {
       // Act
       router.addRoutes([
         GazelleRoute(
-            name: "test",
-            get: (context, request, response) async => GazelleResponse(
-                  statusCode: GazelleHttpStatusCode.success.ok_200,
-                )),
+          name: "test",
+          get: GazelleRouteHandler(
+            (context, request, response) async => GazelleResponse(
+              statusCode: GazelleHttpStatusCode.success.ok_200,
+            ),
+          ),
+        ),
       ], GazelleContext.create());
 
       await http.get(
@@ -55,27 +58,32 @@ void main() {
 
     test('Should export the router structure to a map', () {
       // Arrange
+      final handler = GazelleRouteHandler(
+        (_, __, ___) => GazelleResponse(
+          body: "Test",
+        ),
+      );
       final context = GazelleContext.create();
       final router = GazelleRouter();
       const expected = {
         "name": "",
-        "returnType": "dynamic",
         "methods": {},
         "children": {
           "users": {
             "name": "users",
-            "returnType": "String",
             "methods": {},
             "children": {
               "userId": {
                 "name": ":userId",
-                "returnType": "String",
                 "methods": {},
                 "children": {
                   "posts": {
                     "name": "posts",
-                    "returnType": "String",
-                    "methods": {},
+                    "methods": {
+                      "get": {
+                        "returnType": "String",
+                      }
+                    },
                     "children": {},
                   },
                 }
@@ -84,27 +92,27 @@ void main() {
           },
           "posts": {
             "name": "posts",
-            "returnType": "int",
             "methods": {},
             "children": {},
           },
         }
       };
       final routes = [
-        GazelleRoute<String>(
+        GazelleRoute(
           name: "users",
           children: [
-            GazelleRoute<String>.parameter(
+            GazelleRoute.parameter(
               name: "userId",
               children: [
-                GazelleRoute<String>(
+                GazelleRoute(
                   name: "posts",
+                  get: handler,
                 ),
               ],
             ),
           ],
         ),
-        GazelleRoute<int>(
+        GazelleRoute(
           name: "posts",
         ),
       ];

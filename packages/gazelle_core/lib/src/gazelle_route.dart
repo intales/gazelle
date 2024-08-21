@@ -1,19 +1,32 @@
 import 'dart:async';
 
 import 'gazelle_context.dart';
+import 'gazelle_generic_type_parameter.dart';
 import 'gazelle_hooks.dart';
 import 'gazelle_message.dart';
 import 'gazelle_router.dart';
 import 'gazelle_router_item.dart';
 
 /// Represents a handler for a Gazelle route.
-///
-/// It is a function thpat takes a [GazelleRequest] as input and returns a [Future] of [GazelleResponse].
-typedef GazelleRouteHandler<T> = FutureOr<GazelleResponse<T>> Function(
-  GazelleContext context,
-  GazelleRequest request,
-  GazelleResponse response,
-);
+class GazelleRouteHandler<T> with GazelleGenericTypeParameter<T> {
+  /// The request handler.
+  final FutureOr<GazelleResponse<T>> Function(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) handler;
+
+  /// Builds a [GazelleRouteHandler].
+  const GazelleRouteHandler(this.handler);
+
+  /// Runs the [handler].
+  FutureOr<GazelleResponse<T>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) =>
+      handler(context, request, response);
+}
 
 /// Represents a callback to build a list of pre-request hooks.
 typedef GazellePreRequestHooksBuilder = List<GazellePreRequestHook> Function(
@@ -27,24 +40,24 @@ typedef GazellePostResponseHooksBuilder = List<GazellePostResponseHook>
 );
 
 /// Represents a route for your backend.
-class GazelleRoute<T> {
+class GazelleRoute {
   /// The name of the route.
   final String name;
 
   /// The handler for the GET method.
-  final GazelleRouteHandler<T>? get;
+  final GazelleRouteHandler? get;
 
   /// The handler for the POST method.
-  final GazelleRouteHandler<T>? post;
+  final GazelleRouteHandler? post;
 
   /// The handler for the PUT method.
-  final GazelleRouteHandler<T>? put;
+  final GazelleRouteHandler? put;
 
   /// The handler for the PATCH method.
-  final GazelleRouteHandler<T>? patch;
+  final GazelleRouteHandler? patch;
 
   /// The handler for the DELETE method.
-  final GazelleRouteHandler<T>? delete;
+  final GazelleRouteHandler? delete;
 
   /// The pre-request hooks associated with the route.
   final GazellePreRequestHooksBuilder? preRequestHooks;
@@ -82,18 +95,19 @@ class GazelleRoute<T> {
   }) : name = "${GazelleRouter.wildcard}$name";
 
   /// Converts this route to a router item.
-  GazelleRouterItem<T> toRouterItem(GazelleContext context) =>
-      GazelleRouterItem<T>(
-        context: context,
-        name: name,
-        get: get,
-        post: post,
-        put: put,
-        patch: patch,
-        delete: delete,
-        preRequestHooks:
-            preRequestHooks != null ? preRequestHooks!(context) : const [],
-        postResponseHooks:
-            postResponseHooks != null ? postResponseHooks!(context) : const [],
-      );
+  GazelleRouterItem toRouterItem(GazelleContext context) {
+    return GazelleRouterItem(
+      context: context,
+      name: name,
+      get: get,
+      post: post,
+      put: put,
+      patch: patch,
+      delete: delete,
+      preRequestHooks:
+          preRequestHooks != null ? preRequestHooks!(context) : const [],
+      postResponseHooks:
+          postResponseHooks != null ? postResponseHooks!(context) : const [],
+    );
+  }
 }

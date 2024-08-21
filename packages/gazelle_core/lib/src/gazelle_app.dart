@@ -110,11 +110,13 @@ class GazelleApp {
   /// Binds the server to the specified [address] and [port], and listens for
   /// incoming requests. Once the server is started, it will continue listening
   /// until stopped using the [stop] method.
-  Future<void> start({
-    GazelleAppMode mode = GazelleAppMode.server,
-  }) async {
+  Future<void> start({List<String>? args}) async {
     await _context.registerPlugins(_plugins.toSet());
     _context.addRoutes(_routes);
+
+    final mode = args?.contains("--export-routes") ?? false
+        ? GazelleAppMode.exportRoutes
+        : GazelleAppMode.server;
 
     switch (mode) {
       case GazelleAppMode.server:
