@@ -6,9 +6,11 @@ Future<void> main() async {
       routes: [
         GazelleRoute(
           name: "hello_gazelle",
-          get: (context, request, response) => GazelleResponse(
-            statusCode: GazelleHttpStatusCode.success.ok_200,
-            body: "Hello, Gazelle!",
+          get: GazelleRouteHandler(
+            (context, request, response) => GazelleResponse(
+              statusCode: GazelleHttpStatusCode.success.ok_200,
+              body: "Hello, Gazelle!",
+            ),
           ),
         ),
       ],

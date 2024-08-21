@@ -42,6 +42,9 @@ class GazelleContext {
   /// Adds routes to the router.
   void addRoutes(List<GazelleRoute> routes) => _router.addRoutes(routes, this);
 
+  /// Exports the routes structure.
+  Map<String, dynamic> get routesStructure => _router.routesStructure;
+
   /// Searches for a route that matches the provided HTTP request.
   ///
   /// Returns the search result if a matching route is found, or null otherwise.

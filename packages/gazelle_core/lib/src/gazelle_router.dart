@@ -50,6 +50,62 @@ class GazelleRouter {
   GazelleRouter()
       : _routes = GazelleTrie<GazelleRouterItem>(wildcard: wildcard);
 
+  /// Exports the router structure.
+  ///
+  /// This method is used primarily by the CLI to generate
+  /// a client class that can be used by other Dart applications
+  /// like Flutter apps.
+  Map<String, dynamic> get routesStructure => _exportNode(_routes.root);
+
+  Map<String, dynamic> _exportNode(GazelleTrieNode<GazelleRouterItem> node) {
+    if (node.name.isEmpty && node.children.length == 1 && node.value == null) {
+      return _exportNode(node.children.values.first);
+    }
+
+    final Map<String, dynamic> result = {
+      'name': "${node.isWildcard ? ":" : ""}${node.name}",
+      'methods': {},
+      'children': {},
+    };
+
+    final Map<String, dynamic> methods = {};
+    if (node.value != null) {
+      if (node.value!.get != null) {
+        methods['get'] = {
+          'returnType': node.value!.get!.genericTypeParameter.toString(),
+        };
+      }
+      if (node.value!.post != null) {
+        methods['post'] = {
+          'returnType': node.value!.get!.genericTypeParameter.toString(),
+        };
+      }
+      if (node.value!.put != null) {
+        methods['put'] = {
+          'returnType': node.value!.get!.genericTypeParameter.toString(),
+        };
+      }
+      if (node.value!.patch != null) {
+        methods['patch'] = {
+          'returnType': node.value!.get!.genericTypeParameter.toString(),
+        };
+      }
+      if (node.value!.delete != null) {
+        methods['delete'] = {
+          'returnType': node.value!.get!.genericTypeParameter.toString(),
+        };
+      }
+    }
+
+    result['methods'] = methods;
+
+    for (var child in node.children.values) {
+      result['children'][child.name] = _exportNode(child);
+    }
+
+    return result;
+  }
+
   /// Adds routes to this router.
   void addRoutes(
     List<GazelleRoute> routes,
@@ -72,22 +128,8 @@ class GazelleRouter {
       throw RouterWhitespaceExcpetion(route.name);
     }
 
-    List<String> path = [...parentPath, route.name];
-    final routerItem = GazelleRouterItem(
-      context: context,
-      name: route.name,
-      get: route.get,
-      post: route.post,
-      put: route.put,
-      patch: route.patch,
-      delete: route.delete,
-      preRequestHooks: route.preRequestHooks != null
-          ? route.preRequestHooks!(context)
-          : const [],
-      postResponseHooks: route.postResponseHooks != null
-          ? route.postResponseHooks!(context)
-          : const [],
-    );
+    final path = [...parentPath, route.name];
+    final routerItem = route.toRouterItem(context);
 
     _routes.insert(path, routerItem);
 

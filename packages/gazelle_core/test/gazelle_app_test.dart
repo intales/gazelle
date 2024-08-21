@@ -56,6 +56,18 @@ void main() {
       expect(app.isListening, isFalse);
     });
 
+    test('Should start a GazelleApp and export routes structure', () async {
+      // Arrange
+      final app = GazelleApp(routes: [
+        GazelleRoute(name: "users"),
+      ]);
+
+      // Act
+      await app.start(args: ["--export-routes"]);
+
+      // Assert
+    });
+
     test('Should register a plugin', () async {
       // Arrange
       final plugin = _TestPlugin();
@@ -90,7 +102,9 @@ void main() {
       final app = GazelleApp(routes: [
         GazelleRoute(
           name: "test",
-          get: (context, request, response) async => throw Exception("error"),
+          get: GazelleRouteHandler(
+            (context, request, response) async => throw Exception("error"),
+          ),
         ),
       ]);
 
@@ -116,9 +130,11 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: (context, request, response) async => GazelleResponse(
-              statusCode: GazelleHttpStatusCode.success.ok_200,
-              body: "OK",
+            get: GazelleRouteHandler(
+              (context, request, response) async => GazelleResponse(
+                statusCode: GazelleHttpStatusCode.success.ok_200,
+                body: "OK",
+              ),
             ),
           )
         ],
@@ -146,9 +162,11 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: (context, request, response) async => GazelleResponse(
-              statusCode: GazelleHttpStatusCode.success.ok_200,
-              body: "OK",
+            get: GazelleRouteHandler(
+              (context, request, response) async => GazelleResponse(
+                statusCode: GazelleHttpStatusCode.success.ok_200,
+                body: "OK",
+              ),
             ),
             preRequestHooks: (context) => [
               GazellePreRequestHook(
@@ -170,9 +188,11 @@ void main() {
             children: [
               GazelleRoute(
                 name: "test_2",
-                get: (context, request, response) async => GazelleResponse(
-                  statusCode: GazelleHttpStatusCode.success.ok_200,
-                  body: "OK",
+                get: GazelleRouteHandler(
+                  (context, request, response) async => GazelleResponse(
+                    statusCode: GazelleHttpStatusCode.success.ok_200,
+                    body: "OK",
+                  ),
                 ),
                 postResponseHooks: (context) => [
                   GazellePostResponseHook(
@@ -206,29 +226,21 @@ void main() {
 
     test('Should insert a route and get a response for each method', () async {
       // Arrange
+      final handler = GazelleRouteHandler(
+        (context, request, response) async => GazelleResponse(
+          statusCode: GazelleHttpStatusCode.success.ok_200,
+          body: "OK",
+        ),
+      );
+
       final routes = [
         GazelleRoute(
           name: "test",
-          get: (context, request, response) async => GazelleResponse(
-            statusCode: GazelleHttpStatusCode.success.ok_200,
-            body: "OK",
-          ),
-          post: (context, request, response) async => GazelleResponse(
-            statusCode: GazelleHttpStatusCode.success.ok_200,
-            body: "OK",
-          ),
-          put: (context, request, response) async => GazelleResponse(
-            statusCode: GazelleHttpStatusCode.success.ok_200,
-            body: "OK",
-          ),
-          patch: (context, request, response) async => GazelleResponse(
-            statusCode: GazelleHttpStatusCode.success.ok_200,
-            body: "OK",
-          ),
-          delete: (context, request, response) async => GazelleResponse(
-            statusCode: GazelleHttpStatusCode.success.ok_200,
-            body: "OK",
-          ),
+          get: handler,
+          post: handler,
+          put: handler,
+          patch: handler,
+          delete: handler,
         ),
       ];
       final app = GazelleApp(routes: routes);
@@ -290,12 +302,14 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: (context, request, response) async {
-              return GazelleResponse(
-                statusCode: GazelleHttpStatusCode.success.ok_200,
-                body: "Hello, World!",
-              );
-            },
+            get: GazelleRouteHandler(
+              (context, request, response) async {
+                return GazelleResponse(
+                  statusCode: GazelleHttpStatusCode.success.ok_200,
+                  body: "Hello, World!",
+                );
+              },
+            ),
           )
         ],
       );
@@ -324,13 +338,15 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: (context, request, response) async {
-              return GazelleResponse(
-                statusCode: GazelleHttpStatusCode.success.ok_200,
-                body: "Hello, World!",
-              );
-            },
-          )
+            get: GazelleRouteHandler(
+              (context, request, response) async {
+                return GazelleResponse(
+                  statusCode: GazelleHttpStatusCode.success.ok_200,
+                  body: "Hello, World!",
+                );
+              },
+            ),
+          ),
         ],
       );
       await app.start();

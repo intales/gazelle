@@ -4,9 +4,11 @@ import 'package:gazelle_core/gazelle_core.dart';
 final app = GazelleApp(address: "0.0.0.0", port: 3000, routes: [
   GazelleRoute(
     name: "",
-    get: (context, request, response) async => GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, World!",
+    get: GazelleRouteHandler(
+      (context, request, response) async => GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: "Hello, World!",
+      ),
     ),
   ),
 ]);

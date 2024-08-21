@@ -66,5 +66,8 @@ Future<ProjectConfiguration> loadProjectConfiguration({String? path}) async {
 
   final yaml = loadYaml(await pubspec.readAsString()) as YamlMap;
 
-  return ProjectConfiguration.fromYaml(yaml);
+  return ProjectConfiguration.fromYaml(
+    yaml: yaml,
+    path: pubspec.parent.absolute.path,
+  );
 }

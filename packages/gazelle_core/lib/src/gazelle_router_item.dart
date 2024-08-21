@@ -33,15 +33,14 @@ class GazelleRouterItem {
   /// The handler for the HEAD method.
   GazelleRouteHandler? get head {
     if (get == null) return null;
-    return (context, request, response) async {
+    return GazelleRouteHandler((context, request, response) async {
       final getResponse = await get!(context, request, response);
       return GazelleResponse(
         statusCode: getResponse.statusCode,
-        body: getResponse.body,
         headers: getResponse.headers,
         metadata: getResponse.metadata,
       );
-    };
+    });
   }
 
   /// The handler for the OPTIONS method.
@@ -98,7 +97,7 @@ class GazelleRouterItem {
         GazelleHttpMethod.put => put,
         GazelleHttpMethod.delete => delete,
         GazelleHttpMethod.head => head,
-        GazelleHttpMethod.options => options,
+        GazelleHttpMethod.options => GazelleRouteHandler(options),
       };
 
   /// Creates a copy of this GazelleRoute with the specified attributes overridden.

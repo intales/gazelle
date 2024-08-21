@@ -47,9 +47,11 @@ void main() {
             children: [
               GazelleRoute(
                 name: "test",
-                get: (context, request, response) => GazelleResponse(
-                  statusCode: GazelleHttpStatusCode.success.ok_200,
-                  body: _Test(test: "Hello, World!"),
+                get: GazelleRouteHandler(
+                  (context, request, response) => GazelleResponse(
+                    statusCode: GazelleHttpStatusCode.success.ok_200,
+                    body: _Test(test: "Hello, World!"),
+                  ),
                 ),
               ),
             ],

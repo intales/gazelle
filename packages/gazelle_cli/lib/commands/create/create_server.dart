@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:dart_style/dart_style.dart';
 
+import '../../commons/consts.dart';
+import '../../commons/functions/get_latest_package_version.dart';
 import '../../commons/functions/version.dart';
 import 'create_route.dart';
 
@@ -53,12 +55,11 @@ Future<void> runApp(List<String> args) async {
     ],
   );
 
-  await app.start();
-  print("Gazelle listening at \${app.serverAddress}");
+  await app.start(args: args);
 }
 """;
 
-String _getPubspecTemplate(String projectName) => """
+String _getPubspecTemplate(String projectName, String gazelleCoreVersion) => """
 name: $projectName 
 description: A new Gazelle project.
 version: 0.1.0
@@ -68,7 +69,7 @@ environment:
   sdk: ^$dartSdkVersion
 
 dependencies:
-  gazelle_core: ^0.4.0
+  gazelle_core: ^$gazelleCoreVersion
   models:
     path: ../models
 
@@ -106,9 +107,11 @@ Future<String> createServer({
 
   await Directory(path).create(recursive: true);
 
-  await File("$path/pubspec.yaml")
-      .create(recursive: true)
-      .then((file) => file.writeAsString(_getPubspecTemplate(projectName)));
+  final gazelleCoreVersion =
+      await getLatestPackageVersion(gazelleCorePackageName);
+
+  await File("$path/pubspec.yaml").create(recursive: true).then((file) =>
+      file.writeAsString(_getPubspecTemplate(projectName, gazelleCoreVersion)));
 
   await File("$path/.gitignore")
       .create(recursive: true)

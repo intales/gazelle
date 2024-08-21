@@ -22,10 +22,13 @@ void main() {
       // Act
       router.addRoutes([
         GazelleRoute(
-            name: "test",
-            get: (context, request, response) async => GazelleResponse(
-                  statusCode: GazelleHttpStatusCode.success.ok_200,
-                )),
+          name: "test",
+          get: GazelleRouteHandler(
+            (context, request, response) async => GazelleResponse(
+              statusCode: GazelleHttpStatusCode.success.ok_200,
+            ),
+          ),
+        ),
       ], GazelleContext.create());
 
       await http.get(
@@ -51,6 +54,75 @@ void main() {
       } catch (e) {
         expect(e, isA<RouterWhitespaceExcpetion>());
       }
+    });
+
+    test('Should export the router structure to a map', () {
+      // Arrange
+      final handler = GazelleRouteHandler(
+        (_, __, ___) => GazelleResponse(
+          body: "Test",
+        ),
+      );
+      final context = GazelleContext.create();
+      final router = GazelleRouter();
+      const expected = {
+        "name": "",
+        "methods": {},
+        "children": {
+          "users": {
+            "name": "users",
+            "methods": {},
+            "children": {
+              "userId": {
+                "name": ":userId",
+                "methods": {},
+                "children": {
+                  "posts": {
+                    "name": "posts",
+                    "methods": {
+                      "get": {
+                        "returnType": "String",
+                      }
+                    },
+                    "children": {},
+                  },
+                }
+              }
+            }
+          },
+          "posts": {
+            "name": "posts",
+            "methods": {},
+            "children": {},
+          },
+        }
+      };
+      final routes = [
+        GazelleRoute(
+          name: "users",
+          children: [
+            GazelleRoute.parameter(
+              name: "userId",
+              children: [
+                GazelleRoute(
+                  name: "posts",
+                  get: handler,
+                ),
+              ],
+            ),
+          ],
+        ),
+        GazelleRoute(
+          name: "posts",
+        ),
+      ];
+      router.addRoutes(routes, context);
+
+      // Act
+      final result = router.routesStructure;
+
+      // Assert
+      expect(result, expected);
     });
   });
 }
