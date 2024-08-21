@@ -11,6 +11,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_cli` - `v0.6.0+1`](#gazelle_cli---v0601)
+
+---
+
+#### `gazelle_cli` - `v0.6.0+1`
+
+ - **FIX**(gazelle_cli): Client generation.
+
+
+## 2024-08-21
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - [`gazelle_cli` - `v0.6.0`](#gazelle_cli---v060)
  - [`gazelle_client` - `v0.2.0`](#gazelle_client---v020)
  - [`gazelle_core` - `v0.5.0`](#gazelle_core---v050)

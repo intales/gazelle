@@ -1,3 +1,7 @@
+## 0.6.0+1
+
+ - **FIX**(gazelle_cli): Client generation.
+
 ## 0.6.0
 
 > Note: This release has breaking changes.
