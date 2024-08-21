@@ -41,7 +41,7 @@ Future<void> generateClient({
   code.writeln();
 
   code.writeln("extension GazelleApiClientExtension on GazelleApiClient {");
-  _generateRouteProperties(routeStructure, code);
+  _generateRouteProperties(routeStructure, code, extension: true);
   code.writeln("}");
   code.writeln();
 
@@ -77,54 +77,63 @@ void _generateRouteProperties(
   StringBuffer code, {
   bool extension = false,
 }) {
-  if (node['children'] != null) {
-    for (var entry in node['children'].entries) {
-      final className = _snakeToPascalCase(entry.key);
-      final propertyName =
-          className.replaceRange(0, 1, className[0].toLowerCase());
+  if (node['children'] == null) return;
+  for (final entry in node['children'].entries) {
+    final className = _snakeToPascalCase(entry.key);
+    final propertyName =
+        className.replaceRange(0, 1, className[0].toLowerCase());
 
-      if (entry.value['name'].startsWith(':')) {
-        code.writeln(
-            "$className $propertyName(String value) => $className(${extension ? "this" : ""}(value));");
-      } else {
-        code.writeln(
-            "$className get $propertyName => $className(${extension ? "this" : ""}('${entry.key}'));");
-      }
+    if (entry.value['name'].startsWith(':')) {
+      code.writeln(
+          "$className $propertyName(String value) => $className(${extension ? "this" : "_client"}(value));");
+    } else {
+      code.writeln(
+          "$className get $propertyName => $className(${extension ? "this" : "_client"}('${entry.key}'));");
     }
   }
 }
 
 void _generateRouteClasses(
   Map<String, dynamic> node,
-  StringBuffer code,
-) {
+  StringBuffer code, {
+  String? parentName,
+}) {
   if (node['children'] == null) return;
-  for (var entry in node['children'].entries) {
-    final className = _snakeToPascalCase(entry.key);
+  for (final entry in node['children'].entries) {
+    final className = "${parentName ?? ""}${_snakeToPascalCase(entry.key)}";
 
     code.writeln("class $className {");
     code.writeln("final GazelleRouteClient _client;");
     code.writeln("$className(this._client);");
 
     if (entry.value['methods'] != null) {
-      final returnType = entry.value['returnType'];
-      if (entry.value['methods']['get'] == true) {
+      if (entry.value['methods']['get'] != null) {
+        final returnType =
+            entry.value['methods']['get']['returnType'] ?? "dynamic";
         code.writeln(
             "Future<$returnType> get({Map<String, dynamic>? queryParams}) => _client.get<$returnType>(queryParams: queryParams);");
       }
-      if (entry.value['methods']['post'] == true) {
+      if (entry.value['methods']['post'] != null) {
+        final returnType =
+            entry.value['methods']['post']['returnType'] ?? "dynamic";
         code.writeln(
             "Future<$returnType> post($returnType body) => _client.post<$returnType>(body: body);");
       }
-      if (entry.value['methods']['put'] == true) {
+      if (entry.value['methods']['put'] != null) {
+        final returnType =
+            entry.value['methods']['put']['returnType'] ?? "dynamic";
         code.writeln(
             "Future<$returnType> put($returnType body) => _client.put<$returnType>(body: body);");
       }
-      if (entry.value['methods']['patch'] == true) {
+      if (entry.value['methods']['patch'] != null) {
+        final returnType =
+            entry.value['methods']['patch']['returnType'] ?? "dynamic";
         code.writeln(
             "Future<$returnType> patch($returnType body) => _client.patch<$returnType>(body: body);");
       }
       if (entry.value['methods']['delete'] == true) {
+        final returnType =
+            entry.value['methods']['delete']['returnType'] ?? "dynamic";
         code.writeln(
             "Future<$returnType> delete($returnType body) => _client.delete<$returnType>(body: body);");
       }
@@ -140,13 +149,12 @@ void _generateRouteClasses(
     _generateRouteClasses(
       entry.value,
       code,
+      parentName: className,
     );
   }
 }
 
-String _snakeToPascalCase(String input) {
-  return input.split('_').map((word) {
-    if (word.isEmpty) return '';
-    return word[0].toUpperCase() + word.substring(1).toLowerCase();
-  }).join('');
-}
+String _snakeToPascalCase(String input) => input.split('_').map((word) {
+      if (word.isEmpty) return '';
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join('');
