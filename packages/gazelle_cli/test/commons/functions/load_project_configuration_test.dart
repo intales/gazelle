@@ -24,7 +24,11 @@ void main() {
       final result =
           await loadProjectConfiguration(path: "$project/server/lib");
 
+      // Assert
       expect(result.name, "test_project");
+
+      // Tear down
+      directory.deleteSync(recursive: true);
     });
   });
 }

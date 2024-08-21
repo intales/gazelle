@@ -8,23 +8,23 @@ void main() async {
     routes: [
       GazelleRoute(
         name: "login",
-        post: (context, request, response) async {
+        post: GazelleRouteHandler((context, request, response) async {
           // Use the request to get data sent from the client.
           return GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             // Sign a token and send it back to the client.
             body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
           );
-        },
+        }),
       ),
       GazelleRoute(
         name: "hello_world",
-        get: (context, request, response) async {
+        get: GazelleRouteHandler((context, request, response) async {
           return GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: "Hello, World!",
           );
-        },
+        }),
         // Add the authentication hook provided by the plugin to guard your routes.
         preRequestHooks: (context) => [
           context.getPlugin<GazelleJwtPlugin>().authenticationHook,

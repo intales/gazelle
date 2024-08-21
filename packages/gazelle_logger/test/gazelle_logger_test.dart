@@ -19,12 +19,12 @@ void main() {
 
       final route = GazelleRoute(
         name: "",
-        get: (context, request, resonse) async {
+        get: GazelleRouteHandler((context, request, resonse) async {
           return GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: plugin.toString(),
           );
-        },
+        }),
         preRequestHooks: (context) => [
           context.getPlugin<GazelleLoggerPlugin>().logRequestHook,
         ],

@@ -7,12 +7,12 @@ void main() async {
     routes: [
       GazelleRoute(
         name: "",
-        get: (context, request, response) async {
+        get: GazelleRouteHandler((context, request, response) async {
           return GazelleResponse(
             statusCode: GazelleHttpStatusCode.success.ok_200,
             body: "Hello, Gazelle!",
           );
-        },
+        }),
         // Add CORS hook from the regsitered plugin.
         preRequestHooks: (context) => [
           context.getPlugin<GazelleCorsPlugin>().corsHook,

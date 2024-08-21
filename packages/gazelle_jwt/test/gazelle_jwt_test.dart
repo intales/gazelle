@@ -131,34 +131,34 @@ void main() {
         routes: [
           GazelleRoute(
             name: "login",
-            post: (context, request, response) async {
+            post: GazelleRouteHandler((context, request, response) async {
               return GazelleResponse(
                 statusCode: GazelleHttpStatusCode.success.ok_200,
                 body:
                     context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
               );
-            },
+            }),
           ),
           GazelleRoute(
             name: "test",
-            get: (context, request, response) async {
+            get: GazelleRouteHandler((context, request, response) async {
               return GazelleResponse(
                 statusCode: GazelleHttpStatusCode.success.ok_200,
                 body: "Hello, World!",
               );
-            },
+            }),
             preRequestHooks: (context) => [
               context.getPlugin<GazelleJwtPlugin>().authenticationHook,
             ],
             children: [
               GazelleRoute(
                 name: "test_2",
-                get: (context, request, response) async {
+                get: GazelleRouteHandler((context, request, response) async {
                   return GazelleResponse(
                     statusCode: GazelleHttpStatusCode.success.ok_200,
                     body: "Hello, World!",
                   );
-                },
+                }),
               ),
             ],
           ),
