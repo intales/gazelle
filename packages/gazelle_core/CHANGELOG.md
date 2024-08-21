@@ -1,3 +1,9 @@
+## 0.5.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**(gazelle_core): Client generation ([#49](https://github.com/intales/gazelle/issues/49)).
+
 ## 0.4.0+1
 
  - **REFACTOR**(gazelle_core): serialization.

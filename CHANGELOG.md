@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-08-21
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`gazelle_cli` - `v0.6.0`](#gazelle_cli---v060)
+ - [`gazelle_client` - `v0.2.0`](#gazelle_client---v020)
+ - [`gazelle_core` - `v0.5.0`](#gazelle_core---v050)
+ - [`gazelle_cors` - `v0.4.0`](#gazelle_cors---v040)
+ - [`gazelle_jwt` - `v0.4.0`](#gazelle_jwt---v040)
+ - [`gazelle_logger` - `v0.4.0`](#gazelle_logger---v040)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `gazelle_cli` - `v0.6.0`
+
+ - **BREAKING** **FEAT**(gazelle_core): Client generation ([#49](https://github.com/intales/gazelle/issues/49)).
+
+#### `gazelle_client` - `v0.2.0`
+
+ - **BREAKING** **FEAT**(gazelle_core): Client generation ([#49](https://github.com/intales/gazelle/issues/49)).
+
+#### `gazelle_core` - `v0.5.0`
+
+ - **BREAKING** **FEAT**(gazelle_core): Client generation ([#49](https://github.com/intales/gazelle/issues/49)).
+
+#### `gazelle_cors` - `v0.4.0`
+
+ - **BREAKING** **FEAT**(gazelle_core): Client generation ([#49](https://github.com/intales/gazelle/issues/49)).
+
+#### `gazelle_jwt` - `v0.4.0`
+
+ - **BREAKING** **FEAT**(gazelle_core): Client generation ([#49](https://github.com/intales/gazelle/issues/49)).
+
+#### `gazelle_logger` - `v0.4.0`
+
+ - **BREAKING** **FEAT**(gazelle_core): Client generation ([#49](https://github.com/intales/gazelle/issues/49)).
+
+
 ## 2024-07-18
 
 ### Changes
