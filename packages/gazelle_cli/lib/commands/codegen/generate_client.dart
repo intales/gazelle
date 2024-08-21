@@ -21,8 +21,8 @@ environment:
   sdk: ^$dartSdkVersion
 
 dependencies:
-  gazelle_serialization: ^$gazelleSerializationPackageName
-  gazelle_client: ^$gazelleClientPackageName
+  gazelle_serialization: ^$gazelleSerializationVersion
+  gazelle_client: ^$gazelleClientVersion
   models:
     path: ../models
 
