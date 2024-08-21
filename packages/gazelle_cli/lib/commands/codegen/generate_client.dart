@@ -3,9 +3,15 @@ import 'dart:io';
 
 import 'package:dart_style/dart_style.dart';
 
+import '../../commons/consts.dart';
+import '../../commons/functions/get_latest_package_version.dart';
 import '../../commons/functions/version.dart';
 
-String get _pubspecTemplate => """
+String _getPubspecTemplate({
+  required String gazelleClientVersion,
+  required String gazelleSerializationVersion,
+}) =>
+    """
 name: client 
 description: Client for Gazelle project.
 version: 0.1.0
@@ -15,8 +21,8 @@ environment:
   sdk: ^$dartSdkVersion
 
 dependencies:
-  gazelle_serialization: ^0.1.1
-  gazelle_client: ^0.1.1
+  gazelle_serialization: ^$gazelleSerializationPackageName
+  gazelle_client: ^$gazelleClientPackageName
   models:
     path: ../models
 
@@ -55,9 +61,17 @@ Future<String> _createClientPackage({
   required String path,
   required String clientExtensions,
 }) async {
+  final latestVersions = await Future.wait([
+    getLatestPackageVersion(gazelleSerializationPackageName),
+    getLatestPackageVersion(gazelleClientPackageName),
+  ]);
+
   await File("$path/pubspec.yaml")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_pubspecTemplate));
+      .then((file) => file.writeAsString(_getPubspecTemplate(
+            gazelleClientVersion: latestVersions[1],
+            gazelleSerializationVersion: latestVersions[0],
+          )));
 
   await File("$path/lib/client.dart")
       .create(recursive: true)

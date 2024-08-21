@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import '../../commons/consts.dart';
+import '../../commons/functions/get_latest_package_version.dart';
 import '../../commons/functions/version.dart';
 
-String get _pubspecTemplate => """
+String _getPubspecTemplate(String gazelleSerializationVersion) => """
 name: models 
 description: Models for Gazelle project.
 version: 0.1.0
@@ -12,7 +14,7 @@ environment:
   sdk: ^$dartSdkVersion
 
 dependencies:
-  gazelle_serialization: ^0.1.1
+  gazelle_serialization: ^$gazelleSerializationVersion
 
 dev_dependencies:
   lints: ">=2.1.0 <4.0.0"
@@ -23,9 +25,11 @@ dev_dependencies:
 Future<String> createModels({
   required String path,
 }) async {
-  await File("$path/pubspec.yaml")
-      .create(recursive: true)
-      .then((file) => file.writeAsString(_pubspecTemplate));
+  final gazelleSerializationVersion =
+      await getLatestPackageVersion(gazelleSerializationPackageName);
+
+  await File("$path/pubspec.yaml").create(recursive: true).then((file) =>
+      file.writeAsString(_getPubspecTemplate(gazelleSerializationVersion)));
 
   await Directory("$path/lib/entities").create(recursive: true);
   await File("$path/lib/models.dart").create(recursive: true);
