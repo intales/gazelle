@@ -51,6 +51,22 @@ class _TestHandler extends GazelleRouteHandler<_Test> {
   }
 }
 
+class _TestStringHandler extends GazelleRouteHandler<String> {
+  const _TestStringHandler();
+
+  @override
+  FutureOr<GazelleResponse<String>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) {
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: "Hello, World!",
+    );
+  }
+}
+
 void main() {
   group('GazelleApiClient tests', () {
     test('Should send a get request for a single item', () async {
@@ -67,6 +83,10 @@ void main() {
                 name: "test",
                 get: const _TestHandler(),
               ),
+              GazelleRoute(
+                name: "test_string",
+                get: const _TestStringHandler(),
+              ),
             ],
           ),
         ],
@@ -81,9 +101,11 @@ void main() {
 
       // Act
       final result = await client("test")("test").get<_Test>();
+      final resultString = await client("test")("test_string").get<String>();
 
       // Assert
       expect(result.test, "Hello, World!");
+      expect(resultString, "Hello, World!");
 
       // Tear down
       client.close();
