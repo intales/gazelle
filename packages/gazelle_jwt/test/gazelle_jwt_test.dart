@@ -1,8 +1,42 @@
+import 'dart:async';
+
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_jwt/gazelle_jwt.dart';
 import 'package:gazelle_jwt/src/gazelle_jwt_consts.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
+
+class _TestLoginHandler extends GazelleRouteHandler<String> {
+  const _TestLoginHandler();
+
+  @override
+  FutureOr<GazelleResponse<String>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) {
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+    );
+  }
+}
+
+class _TestHelloWorldHandler extends GazelleRouteHandler<String> {
+  const _TestHelloWorldHandler();
+
+  @override
+  FutureOr<GazelleResponse<String>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) {
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: "Hello, World!",
+    );
+  }
+}
 
 void main() {
   group('GazelleJwtPlugin tests', () {
@@ -131,34 +165,18 @@ void main() {
         routes: [
           GazelleRoute(
             name: "login",
-            post: GazelleRouteHandler((context, request, response) async {
-              return GazelleResponse(
-                statusCode: GazelleHttpStatusCode.success.ok_200,
-                body:
-                    context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-              );
-            }),
+            post: const _TestLoginHandler(),
           ),
           GazelleRoute(
             name: "test",
-            get: GazelleRouteHandler((context, request, response) async {
-              return GazelleResponse(
-                statusCode: GazelleHttpStatusCode.success.ok_200,
-                body: "Hello, World!",
-              );
-            }),
+            get: const _TestHelloWorldHandler(),
             preRequestHooks: (context) => [
               context.getPlugin<GazelleJwtPlugin>().authenticationHook,
             ],
             children: [
               GazelleRoute(
                 name: "test_2",
-                get: GazelleRouteHandler((context, request, response) async {
-                  return GazelleResponse(
-                    statusCode: GazelleHttpStatusCode.success.ok_200,
-                    body: "Hello, World!",
-                  );
-                }),
+                get: const _TestHelloWorldHandler(),
               ),
             ],
           ),
