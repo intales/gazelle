@@ -33,8 +33,8 @@ Future<String> createProject({
       .create(recursive: true)
       .then((file) => file.writeAsString(_getGazelleYaml(projectName)));
 
-  await createModels(path: "$basePath/models");
-  await createServer(path: "$basePath/server");
+  await createModels(path: "$basePath/models", projectName: projectName);
+  await createServer(path: "$basePath/server", projectName: projectName);
 
   return basePath;
 }

@@ -5,6 +5,7 @@ import 'package:dart_style/dart_style.dart';
 
 import '../../commons/consts.dart';
 import '../../commons/functions/get_latest_package_version.dart';
+import '../../commons/functions/snake_to_pascal_case.dart';
 import '../../commons/functions/version.dart';
 
 String _getPubspecTemplate({
@@ -168,7 +169,4 @@ void _generateRouteClasses(
   }
 }
 
-String _snakeToPascalCase(String input) => input.split('_').map((word) {
-      if (word.isEmpty) return '';
-      return word[0].toUpperCase() + word.substring(1).toLowerCase();
-    }).join('');
+String _snakeToPascalCase(String input) => snakeToPascalCase(input);
