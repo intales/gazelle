@@ -23,7 +23,7 @@ void main() {
       );
 
       // Assert
-      expect(result.handlerName, "helloWorldGet");
+      expect(result.handlerName, "HelloWorldGetHandler");
       expect(File(result.handlerFilePath).existsSync(), isTrue);
 
       // Clean up
@@ -44,15 +44,20 @@ void main() {
         return DartFormatter().format("""
 import 'package:gazelle_core/gazelle_core.dart';
 
-GazelleResponse $handlerName(
-  GazelleContext context,
-  GazelleRequest request,
-  GazelleResponse response,
-) {
-  return GazelleResponse(
-    statusCode: GazelleHttpStatusCode.success.ok_200,
-    body: "Hello, World!",
-  );
+class $handlerName extends GazelleRouteHandler {
+  const $handlerName();
+
+  @override
+  Future<GazelleResponse> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) async {
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: "Hello, World!",
+    );
+  }
 }
   """
             .trim());
@@ -67,7 +72,7 @@ GazelleResponse $handlerName(
           "DELETE" => "Delete",
           _ => throw "Unexpected error",
         };
-        final expectedHandlerName = "helloWorld$handlerName";
+        final expectedHandlerName = "HelloWorld${handlerName}Handler";
 
         final handlerContent = getHandlerContent(expectedHandlerName);
 

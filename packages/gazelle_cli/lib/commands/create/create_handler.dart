@@ -28,10 +28,6 @@ Future<CreateHandlerResult> createHandler({
   String handlerName = "";
   for (var i = 0; i < routeNameParts.length; i++) {
     final part = routeNameParts[i];
-    if (i == 0) {
-      handlerName += part.toLowerCase();
-      continue;
-    }
     handlerName += "${part[0].toUpperCase()}${part.substring(1)}";
   }
 
@@ -44,18 +40,25 @@ Future<CreateHandlerResult> createHandler({
     _ => throw "Unexpected error",
   };
 
+  handlerName += "Handler";
+
   final handler = """
 import 'package:gazelle_core/gazelle_core.dart';
 
-GazelleResponse $handlerName(
-  GazelleContext context,
-  GazelleRequest request,
-  GazelleResponse response,
-) {
-  return GazelleResponse(
-    statusCode: GazelleHttpStatusCode.success.ok_200,
-    body: "Hello, World!",
-  );
+class $handlerName extends GazelleRouteHandler {
+  const $handlerName();
+
+  @override
+  Future<GazelleResponse> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) async {
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: "Hello, World!",
+    );
+  }
 }
   """
       .trim();

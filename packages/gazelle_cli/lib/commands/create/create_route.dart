@@ -54,7 +54,7 @@ import '$handlerImportDirectivePath';
 
 const $codeRouteName = GazelleRoute(
   name: "$routeName",
-  get: GazelleRouteHandler(${handler.handlerName}),
+  get: ${handler.handlerName}(),
 );
   """
       .trim();
