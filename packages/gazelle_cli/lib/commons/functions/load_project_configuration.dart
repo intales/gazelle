@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
 
 import '../entities/project_configuration.dart';
@@ -39,7 +40,8 @@ class LoadProjectConfigurationGazelleNotFoundError {
 ///
 /// Throws [LoadProjectConfigurationPubspecNotFoundError] if `pubspec.yaml` is not found.
 Future<ProjectConfiguration> loadProjectConfiguration({String? path}) async {
-  Directory directory = Directory(path ?? Directory.current.path);
+  final startDirectory = Directory(path ?? Directory.current.path);
+  Directory directory = startDirectory;
   final markerFile = "gazelle.yaml";
 
   late final String pubspecPath;
@@ -52,13 +54,14 @@ Future<ProjectConfiguration> loadProjectConfiguration({String? path}) async {
 
     final parent = directory.parent;
     if (parent.path == directory.path) {
-      throw LoadProjectConfigurationPubspecNotFoundError();
+      pubspecPath = join(startDirectory.path, "backend", markerFile);
+      break;
     }
 
     directory = parent;
   }
 
-  final pubspec = File(pubspecPath);
+  File pubspec = File(pubspecPath);
 
   if (!await pubspec.exists()) {
     throw const LoadProjectConfigurationPubspecNotFoundError();

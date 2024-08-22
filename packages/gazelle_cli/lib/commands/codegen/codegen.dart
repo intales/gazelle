@@ -121,8 +121,8 @@ class _CodegenClientCommand extends Command {
     } on AnalyzeEntitiesException catch (e) {
       spinner.fail(e.message);
       exit(2);
-    } on Exception catch (e, stack) {
-      spinner.fail("$e\n${stack.toString()}");
+    } on Exception catch (e) {
+      spinner.fail(e.toString());
       exit(2);
     }
   }
