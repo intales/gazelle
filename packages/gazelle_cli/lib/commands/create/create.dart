@@ -34,7 +34,13 @@ class _CreateProjectCommand extends Command {
   String get description => "Creates a new Gazelle project.";
 
   /// Creates a [_CreateProjectCommand].
-  _CreateProjectCommand();
+  _CreateProjectCommand() {
+    argParser.addFlag(
+      "full-stack",
+      abbr: "f",
+      help: "Create a full-stack project with Gazelle and Flutter.",
+    );
+  }
 
   @override
   void run() async {
@@ -47,6 +53,7 @@ class _CreateProjectCommand extends Command {
     stdout.writeln();
 
     projectName = projectName.replaceAll(RegExp(r'\s+'), "_").toLowerCase();
+    final fullstack = argResults?.flag("full-stack") != null ? true : false;
 
     final spinner = CliSpin(
       text: "Creating $projectName project...",
@@ -54,16 +61,15 @@ class _CreateProjectCommand extends Command {
     ).start();
 
     try {
-      final result = await createProject(
+      await createProject(
         projectName: projectName,
         path: Directory.current.path,
+        fullstack: fullstack,
       );
 
       spinner.success(
-        "$projectName project created 🚀\n💡To navigate to your project run \"cd ${result.split("/").last}\"\n💡Then, use \"gazelle run\" to execute it!",
+        "$projectName project created 🚀\n💡To navigate to your project run \"cd $projectName\"\n💡Then, use \"gazelle run\" to execute it!",
       );
-
-      Directory.current = result;
     } on CreateProjectError catch (e) {
       spinner.fail(e.message);
       exit(2);
