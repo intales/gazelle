@@ -26,8 +26,8 @@ String _getEmptyModelProvider(String projectName) => """
 import 'package:gazelle_serialization/gazelle_serialization.dart';
 
 class ${projectName}ModelProvider extends GazelleModelProvider {
-  @overrides
-  Map<Type, ModelType> get modelTypes => {};
+  @override
+  Map<Type, GazelleModelType> get modelTypes => {};
 }
 """;
 

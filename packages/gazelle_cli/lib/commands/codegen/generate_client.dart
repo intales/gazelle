@@ -36,6 +36,7 @@ dev_dependencies:
 Future<void> generateClient({
   required String structure,
   required String path,
+  required String projectName,
 }) async {
   final routeStructure = jsonDecode(structure);
   final code = StringBuffer();
@@ -53,6 +54,20 @@ Future<void> generateClient({
   code.writeln();
 
   _generateRouteClasses(routeStructure, code);
+  code.writeln();
+
+  code.writeln("class Gazelle {");
+  code.writeln("static GazelleClient? _client;");
+  code.writeln("""void init({String? baseUrl}) => _client = GazelleClient.init(
+        baseUrl: baseUrl ?? "http://localhost:3000",
+        modelProvider: ${_snakeToPascalCase(projectName)}ModelProvider(),
+      );""");
+  code.writeln("""GazelleClient get client =>
+      _client == null ? throw "Gazelle not configured!" : _client!;""");
+  code.writeln("}");
+  code.writeln();
+
+  code.writeln("final gazelle = Gazelle();");
 
   final clientExtensions = DartFormatter().format(code.toString());
   await _createClientPackage(path: path, clientExtensions: clientExtensions);
@@ -100,10 +115,10 @@ void _generateRouteProperties(
 
     if (entry.value['name'].startsWith(':')) {
       code.writeln(
-          "$className $propertyName(String value) => $className(${extension ? "this" : "_client"}(value));");
+          "${className}Route $propertyName(String value) => ${className}Route(${extension ? "this" : "_client"}(value));");
     } else {
       code.writeln(
-          "$className get $propertyName => $className(${extension ? "this" : "_client"}('${entry.key}'));");
+          "${className}Route get $propertyName => ${className}Route(${extension ? "this" : "_client"}('${entry.key}'));");
     }
   }
 }
@@ -115,7 +130,8 @@ void _generateRouteClasses(
 }) {
   if (node['children'] == null) return;
   for (final entry in node['children'].entries) {
-    final className = "${parentName ?? ""}${_snakeToPascalCase(entry.key)}";
+    final className =
+        "${parentName ?? ""}${_snakeToPascalCase(entry.key)}Route";
 
     code.writeln("class $className {");
     code.writeln("final GazelleRouteClient _client;");

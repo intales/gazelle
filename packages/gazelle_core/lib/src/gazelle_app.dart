@@ -28,6 +28,9 @@ class GazelleApp {
   /// The default address for the server.
   static const _localhost = "0.0.0.0";
 
+  /// The defdault port for the server.
+  static const _defaultPort = 3000;
+
   /// Error message for resource not found.
   static const _error404 = "Resource not found.";
 
@@ -85,7 +88,7 @@ class GazelleApp {
   })  : _context = GazelleContext.create(),
         _routes = routes,
         _plugins = plugins ?? const [],
-        _port = port ?? 0,
+        _port = port ?? _defaultPort,
         _modelProvider = modelProvider;
 
   /// The current server address that Gazelle is listening to.
