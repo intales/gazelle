@@ -8,24 +8,16 @@ import 'gazelle_router.dart';
 import 'gazelle_router_item.dart';
 
 /// Represents a handler for a Gazelle route.
-class GazelleRouteHandler<T> with GazelleGenericTypeParameter<T> {
-  /// The request handler.
-  final FutureOr<GazelleResponse<T>> Function(
-    GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) handler;
-
+abstract class GazelleRouteHandler<T> with GazelleGenericTypeParameter<T> {
   /// Builds a [GazelleRouteHandler].
-  const GazelleRouteHandler(this.handler);
+  const GazelleRouteHandler();
 
   /// Runs the [handler].
   FutureOr<GazelleResponse<T>> call(
     GazelleContext context,
     GazelleRequest request,
     GazelleResponse response,
-  ) =>
-      handler(context, request, response);
+  );
 }
 
 /// Represents a callback to build a list of pre-request hooks.
