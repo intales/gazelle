@@ -20,6 +20,43 @@ name: $projectName
 version: 0.1.0
 """;
 
+String _getFlutterMain(String projectName) => """
+import 'package:flutter/material.dart';
+import 'package:client/client.dart';
+
+void main() {
+  gazelle.init();
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('$projectName'),
+        ),
+        body: Center(
+          child: FutureBuilder(
+            future: gazelle.client.api.helloGazelle.get(),
+            builder: (_, snapshot) => switch (snapshot) {
+              AsyncSnapshot(:final data?) => Text(data),
+              AsyncSnapshot(:final error?) =>
+                Text('\${error.runtimeType}: \$error'),
+              _ => const CircularProgressIndicator(),
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+""";
+
 /// Creates a new Gazelle project.
 ///
 /// Throws a [CreateProjectError] if project already exists.
@@ -53,6 +90,22 @@ Future<String> createProject({
   await createServer(path: "$basePath/server", projectName: backendProjectName);
 
   if (fullstack) {
+    final serverPath = "$projectName/backend/server/bin/server.dart";
+
+    final result = await Process.run(
+      'dart',
+      ['run', serverPath, '--export-routes'],
+      runInShell: true,
+    );
+
+    final output = result.stdout as String;
+
+    await generateClient(
+      structure: output,
+      path: "$projectName/backend/client",
+      projectName: "backend",
+    );
+
     await _replaceStringInFile(
       filePath: join(projectName, "pubspec.yaml"),
       oldString: """dependencies:
@@ -66,6 +119,9 @@ Future<String> createProject({
   client:
     path: backend/client""",
     );
+
+    await File("$projectName/lib/main.dart")
+        .writeAsString(_getFlutterMain(projectName));
 
     await Process.run(
       "flutter",

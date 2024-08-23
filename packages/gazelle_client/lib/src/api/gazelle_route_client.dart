@@ -180,7 +180,7 @@ class GazelleRouteClient {
     late final dynamic jsonObject;
     try {
       jsonObject = jsonDecode(json);
-    } catch (_) {
+    } on FormatException {
       jsonObject = json;
     }
     return deserialize<T>(
