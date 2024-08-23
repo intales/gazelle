@@ -36,7 +36,7 @@ class _CreateProjectCommand extends Command {
   /// Creates a [_CreateProjectCommand].
   _CreateProjectCommand() {
     argParser.addFlag(
-      "full-stack",
+      "flutter",
       abbr: "f",
       help: "Create a full-stack project with Gazelle and Flutter.",
     );
@@ -53,7 +53,7 @@ class _CreateProjectCommand extends Command {
     stdout.writeln();
 
     projectName = projectName.replaceAll(RegExp(r'\s+'), "_").toLowerCase();
-    final fullstack = argResults?.flag("full-stack") != null ? true : false;
+    final fullstack = argResults?.flag("flutter") != null ? true : false;
 
     final spinner = CliSpin(
       text: "Creating $projectName project...",
