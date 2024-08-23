@@ -110,6 +110,7 @@ class _CodegenClientCommand extends Command {
       await generateClient(
         structure: output,
         path: join(projectConfiguration.path, "client"),
+        projectName: projectConfiguration.name,
       );
 
       spinner.success(

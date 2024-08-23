@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:cli_spin/cli_spin.dart';
+import 'package:path/path.dart';
 
 import '../../commons/entities/project_configuration.dart';
 import '../../commons/functions/load_project_configuration.dart';
@@ -20,17 +21,6 @@ class RunCommand extends Command {
 
   /// Creates a [RunCommand].
   RunCommand() {
-    argParser.addOption(
-      "path",
-      abbr: "p",
-      help: "The path where the project is located.",
-    );
-    argParser.addOption(
-      "timeout",
-      abbr: "t",
-      help: "The time in milliseconds to wait for a restart request.",
-      defaultsTo: "$defaultTimeout",
-    );
     argParser.addFlag(
       "verbose",
       abbr: 'v',
@@ -42,17 +32,11 @@ class RunCommand extends Command {
 
   @override
   void run() async {
-    final pathOption = argResults?.option("path") ??
-        argResults?.rest.firstOrNull ??
-        Directory.current.path;
-    final timeoutOption =
-        int.tryParse((argResults?.option("timeout")).toString()) ??
-            defaultTimeout;
     final verbose = argResults?.flag("verbose") ?? false;
 
     late final ProjectConfiguration config;
     try {
-      config = await loadProjectConfiguration(path: pathOption);
+      config = await loadProjectConfiguration();
     } on LoadProjectConfigurationPubspecNotFoundError catch (e) {
       print(e.errorMessage);
       exit(e.errorCode);
@@ -68,7 +52,7 @@ class RunCommand extends Command {
     ).start();
 
     try {
-      await runProject(pathOption, timeoutOption, verbose);
+      await runProject(join(config.path, "server"), defaultTimeout, verbose);
       spinner.success();
       print(
           "Press 'r' to hot-reload the project.\nPress 'R' to hot-restart.\nCtrl+c to exit.\n");

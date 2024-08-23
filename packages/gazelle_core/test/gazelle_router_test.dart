@@ -1,8 +1,25 @@
+import 'dart:async';
+
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
 import '../test_resources/create_test_http_server.dart';
+
+class _TestHandler extends GazelleRouteHandler<String> {
+  const _TestHandler();
+
+  @override
+  FutureOr<GazelleResponse<String>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) {
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+    );
+  }
+}
 
 void main() {
   group('GazelleRouter tests', () {
@@ -23,11 +40,7 @@ void main() {
       router.addRoutes([
         GazelleRoute(
           name: "test",
-          get: GazelleRouteHandler(
-            (context, request, response) async => GazelleResponse(
-              statusCode: GazelleHttpStatusCode.success.ok_200,
-            ),
-          ),
+          get: const _TestHandler(),
         ),
       ], GazelleContext.create());
 
@@ -58,11 +71,6 @@ void main() {
 
     test('Should export the router structure to a map', () {
       // Arrange
-      final handler = GazelleRouteHandler(
-        (_, __, ___) => GazelleResponse(
-          body: "Test",
-        ),
-      );
       final context = GazelleContext.create();
       final router = GazelleRouter();
       const expected = {
@@ -106,7 +114,7 @@ void main() {
               children: [
                 GazelleRoute(
                   name: "posts",
-                  get: handler,
+                  get: const _TestHandler(),
                 ),
               ],
             ),

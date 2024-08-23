@@ -1,7 +1,25 @@
+import 'dart:async';
+
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_cors/src/gazelle_cors_plugin.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
+
+class _TestHandler extends GazelleRouteHandler<String> {
+  const _TestHandler();
+
+  @override
+  FutureOr<GazelleResponse<String>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) {
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: "Hello, Gazelle!",
+    );
+  }
+}
 
 void main() {
   group('GazelleCorsPlugin tests', () {
@@ -11,12 +29,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "",
-            get: GazelleRouteHandler((context, request, response) async {
-              return GazelleResponse(
-                statusCode: GazelleHttpStatusCode.success.ok_200,
-                body: "Hello, Gazelle!",
-              );
-            }),
+            get: const _TestHandler(),
             preRequestHooks: (context) => [
               context.getPlugin<GazelleCorsPlugin>().corsHook,
             ],

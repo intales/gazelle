@@ -176,10 +176,18 @@ class GazelleRouteClient {
         modelProvider: _gazelleModelProvider,
       ));
 
-  T _deserialize<T>(String json) => deserialize<T>(
-        jsonObject: jsonDecode(json),
-        modelProvider: _gazelleModelProvider,
-      );
+  T _deserialize<T>(String json) {
+    late final dynamic jsonObject;
+    try {
+      jsonObject = jsonDecode(json);
+    } on FormatException {
+      jsonObject = json;
+    }
+    return deserialize<T>(
+      jsonObject: jsonObject,
+      modelProvider: _gazelleModelProvider,
+    );
+  }
 
   List<T> _deserializeList<T>(String json) => deserializeList<T>(
         list: jsonDecode(json),

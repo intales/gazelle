@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:gazelle_client/src/api/gazelle_api_client.dart';
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:test/test.dart';
@@ -33,6 +35,38 @@ class _TestModelProvider extends GazelleModelProvider {
       };
 }
 
+class _TestHandler extends GazelleRouteHandler<_Test> {
+  const _TestHandler();
+
+  @override
+  FutureOr<GazelleResponse<_Test>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) {
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: _Test(test: "Hello, World!"),
+    );
+  }
+}
+
+class _TestStringHandler extends GazelleRouteHandler<String> {
+  const _TestStringHandler();
+
+  @override
+  FutureOr<GazelleResponse<String>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) {
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: "Hello, World!",
+    );
+  }
+}
+
 void main() {
   group('GazelleApiClient tests', () {
     test('Should send a get request for a single item', () async {
@@ -47,12 +81,11 @@ void main() {
             children: [
               GazelleRoute(
                 name: "test",
-                get: GazelleRouteHandler(
-                  (context, request, response) => GazelleResponse(
-                    statusCode: GazelleHttpStatusCode.success.ok_200,
-                    body: _Test(test: "Hello, World!"),
-                  ),
-                ),
+                get: const _TestHandler(),
+              ),
+              GazelleRoute(
+                name: "test_string",
+                get: const _TestStringHandler(),
               ),
             ],
           ),
@@ -68,9 +101,11 @@ void main() {
 
       // Act
       final result = await client("test")("test").get<_Test>();
+      final resultString = await client("test")("test_string").get<String>();
 
       // Assert
       expect(result.test, "Hello, World!");
+      expect(resultString, "Hello, World!");
 
       // Tear down
       client.close();

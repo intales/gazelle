@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:gazelle_core/gazelle_core.dart';
@@ -17,6 +18,39 @@ class SSLTestOverrides extends HttpOverrides {
     return super.createHttpClient(context)
       ..badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
+  }
+}
+
+class _TestStringHandler extends GazelleRouteHandler<String> {
+  final String _string;
+
+  const _TestStringHandler(this._string);
+
+  @override
+  FutureOr<GazelleResponse<String>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) {
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: _string,
+    );
+  }
+}
+
+class _TestExceptionHandler extends GazelleRouteHandler<String> {
+  final String _string;
+
+  const _TestExceptionHandler(this._string);
+
+  @override
+  FutureOr<GazelleResponse<String>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) {
+    throw Exception(_string);
   }
 }
 
@@ -102,9 +136,7 @@ void main() {
       final app = GazelleApp(routes: [
         GazelleRoute(
           name: "test",
-          get: GazelleRouteHandler(
-            (context, request, response) async => throw Exception("error"),
-          ),
+          get: const _TestExceptionHandler("error"),
         ),
       ]);
 
@@ -130,13 +162,8 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: GazelleRouteHandler(
-              (context, request, response) async => GazelleResponse(
-                statusCode: GazelleHttpStatusCode.success.ok_200,
-                body: "OK",
-              ),
-            ),
-          )
+            get: const _TestStringHandler("OK"),
+          ),
         ],
       );
 
@@ -162,12 +189,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: GazelleRouteHandler(
-              (context, request, response) async => GazelleResponse(
-                statusCode: GazelleHttpStatusCode.success.ok_200,
-                body: "OK",
-              ),
-            ),
+            get: const _TestStringHandler("OK"),
             preRequestHooks: (context) => [
               GazellePreRequestHook(
                 (context, request, response) async {
@@ -188,12 +210,7 @@ void main() {
             children: [
               GazelleRoute(
                 name: "test_2",
-                get: GazelleRouteHandler(
-                  (context, request, response) async => GazelleResponse(
-                    statusCode: GazelleHttpStatusCode.success.ok_200,
-                    body: "OK",
-                  ),
-                ),
+                get: const _TestStringHandler("OK"),
                 postResponseHooks: (context) => [
                   GazellePostResponseHook(
                     (context, request, response) async {
@@ -226,12 +243,7 @@ void main() {
 
     test('Should insert a route and get a response for each method', () async {
       // Arrange
-      final handler = GazelleRouteHandler(
-        (context, request, response) async => GazelleResponse(
-          statusCode: GazelleHttpStatusCode.success.ok_200,
-          body: "OK",
-        ),
-      );
+      final handler = const _TestStringHandler("OK");
 
       final routes = [
         GazelleRoute(
@@ -302,14 +314,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: GazelleRouteHandler(
-              (context, request, response) async {
-                return GazelleResponse(
-                  statusCode: GazelleHttpStatusCode.success.ok_200,
-                  body: "Hello, World!",
-                );
-              },
-            ),
+            get: const _TestStringHandler("Hello, World!"),
           )
         ],
       );
@@ -338,14 +343,7 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: GazelleRouteHandler(
-              (context, request, response) async {
-                return GazelleResponse(
-                  statusCode: GazelleHttpStatusCode.success.ok_200,
-                  body: "Hello, World!",
-                );
-              },
-            ),
+            get: const _TestStringHandler("OK"),
           ),
         ],
       );
