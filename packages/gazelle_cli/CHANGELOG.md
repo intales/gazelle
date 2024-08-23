@@ -1,3 +1,9 @@
+## 0.7.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: Developer Experience ([#50](https://github.com/intales/gazelle/issues/50)).
+
 ## 0.6.0+1
 
  - **FIX**(gazelle_cli): Client generation.

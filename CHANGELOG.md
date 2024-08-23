@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-08-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`gazelle_cli` - `v0.7.0`](#gazelle_cli---v070)
+ - [`gazelle_client` - `v0.3.0`](#gazelle_client---v030)
+ - [`gazelle_core` - `v0.6.0`](#gazelle_core---v060)
+ - [`gazelle_cors` - `v0.5.0`](#gazelle_cors---v050)
+ - [`gazelle_jwt` - `v0.5.0`](#gazelle_jwt---v050)
+ - [`gazelle_logger` - `v0.5.0`](#gazelle_logger---v050)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `gazelle_cli` - `v0.7.0`
+
+ - **BREAKING** **FEAT**: Developer Experience ([#50](https://github.com/intales/gazelle/issues/50)).
+
+#### `gazelle_client` - `v0.3.0`
+
+ - **BREAKING** **FEAT**: Developer Experience ([#50](https://github.com/intales/gazelle/issues/50)).
+
+#### `gazelle_core` - `v0.6.0`
+
+ - **BREAKING** **FEAT**: Developer Experience ([#50](https://github.com/intales/gazelle/issues/50)).
+
+#### `gazelle_cors` - `v0.5.0`
+
+ - **BREAKING** **FEAT**: Developer Experience ([#50](https://github.com/intales/gazelle/issues/50)).
+
+#### `gazelle_jwt` - `v0.5.0`
+
+ - **BREAKING** **FEAT**: Developer Experience ([#50](https://github.com/intales/gazelle/issues/50)).
+
+#### `gazelle_logger` - `v0.5.0`
+
+ - **BREAKING** **FEAT**: Developer Experience ([#50](https://github.com/intales/gazelle/issues/50)).
+
+
 ## 2024-08-21
 
 ### Changes

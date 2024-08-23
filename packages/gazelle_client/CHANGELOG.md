@@ -1,3 +1,9 @@
+## 0.3.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: Developer Experience ([#50](https://github.com/intales/gazelle/issues/50)).
+
 ## 0.2.0
 
 > Note: This release has breaking changes.
