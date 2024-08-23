@@ -56,6 +56,7 @@ Future<void> runApp(List<String> args) async {
     routes: [
       $routeName,
     ],
+    port: 3000,
     modelProvider: ${snakeToPascalCase(projectName)}ModelProvider(),
   );
 

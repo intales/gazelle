@@ -44,18 +44,18 @@ void main() {
         return DartFormatter().format("""
 import 'package:gazelle_core/gazelle_core.dart';
 
-class $handlerName extends GazelleRouteHandler {
+class $handlerName extends GazelleRouteHandler<String> {
   const $handlerName();
 
   @override
-  Future<GazelleResponse> call(
+  Future<GazelleResponse<String>> call(
     GazelleContext context,
     GazelleRequest request,
     GazelleResponse response,
   ) async {
     return GazelleResponse(
       statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, World!",
+      body: "Hello, Gazelle!",
     );
   }
 }
