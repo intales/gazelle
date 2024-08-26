@@ -1,0 +1,78 @@
+# Custom entities
+
+Returning a simple string is fun and all, but at some point we will need to
+define custom entities for our application. Gazelle offers a simple way
+to define them and handles serialization out of the box via code generation.
+That's right, you don't need to create `fromJson` and `toJson` methods or use
+libraries like `json_serializable`.
+
+## Define an entity
+
+Let's say that we want to create an entity that defines a user inside our
+system, the `User` entity will just have a couple of properties for the sake
+of simplicity of this tutorial.
+
+Open up your `backend/models/lib/entities` directory and create a new file
+called `user.dart`.
+<Image src="/assets/custom_entities_1.png" alt="user.dart file" />
+
+Open your newly created file and copy-paste the following code:
+```dart
+class User {
+  final String id;
+  final String name;
+  final String username;
+
+  const User({
+    required this.id,
+    required this.name,
+    required this.username,
+  });
+}
+```
+
+Now, run
+```shell
+gazelle codegen models
+```
+inside your terminal, you should see the following output:
+```console
+✅ Models generated 🚀
+```
+
+This means that Gazelle successfully created serialization logic for the `User`
+entity. If you look inside the `models` directory, you should see a file
+named `user_model_type.dart`.
+This file holds the necessary logic to transform the `User` entity from and to
+json, if you open the file you should see exactly this:
+```dart
+import 'package:gazelle_serialization/gazelle_serialization.dart';
+
+import '../entities/user.dart';
+
+class UserModelType extends GazelleModelType<User> {
+  @override
+  User fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json["id"] as String,
+      name: json["name"] as String,
+      username: json["username"] as String,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson(User value) {
+    return {
+      "id": value.id,
+      "name": value.name,
+      "username": value.username,
+    };
+  }
+}
+```
+
+<b>DO NOT TOUCH</b> this file, it should be handled <b>ONLY</b> by the CLI.
+
+## Next steps
+
+The next step will cover how to create a new route and how to define an handler.
