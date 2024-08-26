@@ -17,3 +17,5 @@ sidebar:
   - "/getting_started/running_your_project"
 - - Project structure
   - "/getting_started/project_structure"
+- - Custom entities
+  - "/getting_started/custom_entities"
