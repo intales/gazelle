@@ -15,3 +15,5 @@ sidebar:
   - "/getting_started/getting_started"
 - - Running your project
   - "/getting_started/running_your_project"
+- - Project structure
+  - "/getting_started/project_structure"
