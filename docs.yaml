@@ -13,3 +13,5 @@ anchors:
 sidebar:
 - - Getting Started 
   - "/getting_started/getting_started"
+- - Running your project
+  - "/getting_started/running_your_project"
