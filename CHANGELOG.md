@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-08-27
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_cli` - `v0.7.0+1`](#gazelle_cli---v0701)
+
+---
+
+#### `gazelle_cli` - `v0.7.0+1`
+
+ - **FIX**(gazelle_cli): Fixed list method generation ([#54](https://github.com/intales/gazelle/issues/54)).
+
+
 ## 2024-08-23
 
 ### Changes

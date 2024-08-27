@@ -1,3 +1,7 @@
+## 0.7.0+1
+
+ - **FIX**(gazelle_cli): Fixed list method generation ([#54](https://github.com/intales/gazelle/issues/54)).
+
 ## 0.7.0
 
 > Note: This release has breaking changes.
