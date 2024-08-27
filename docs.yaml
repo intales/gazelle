@@ -11,13 +11,14 @@ anchors:
     link: "https://twitter.com/Gazelle_dart"
     icon: "twitter"
 sidebar:
-- - Getting Started 
-  - "/getting_started/getting_started"
-- - Running your project
-  - "/getting_started/running_your_project"
-- - Project structure
-  - "/getting_started/project_structure"
-- - Custom entities
-  - "/getting_started/custom_entities"
-- - Creating routes
-  - "/getting_started/creating_routes"
+- - Introduction
+  - - - Getting Started 
+      - "/getting_started/getting_started"
+    - - Running your project
+      - "/getting_started/running_your_project"
+    - - Project structure
+      - "/getting_started/project_structure"
+    - - Custom entities
+      - "/getting_started/custom_entities"
+    - - Creating routes
+      - "/getting_started/creating_routes"
