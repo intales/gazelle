@@ -1,0 +1,88 @@
+# Creating routes
+
+We have just created a new custom entity to define a user inside our system.
+Now, we want to create a route to handle it.
+
+## Create a new route
+
+Creating a new route is fairly easy, the CLI will do that for us.
+Open your terminal and type:
+```shell
+gazelle create route
+```
+The CLI will ask for a route name, let's type in <i>users</i>.
+```console
+✨ What would you like to name your new route? 🚀
+users
+
+💡 users route created 🚀
+```
+
+If we open up the `backend/server/lib/routes` directory, we should see our
+newly created <i>users</i> route with a simple <i>get</i> handler identical
+to the <i>hello_gazelle</i> route.
+
+## Updating the handler
+
+Now we want to update our handler to return a list of users to the client.
+Let's do that by replacing the default code to something like this:
+```dart
+import 'package:gazelle_core/gazelle_core.dart';
+import 'package:models/models.dart';
+
+class UsersGetHandler extends GazelleRouteHandler<List<User>> {
+  const UsersGetHandler();
+
+  @override
+  Future<GazelleResponse<List<User>>> call(
+    GazelleContext context,
+    GazelleRequest request,
+    GazelleResponse response,
+  ) async {
+    final users = [
+      User(id: "1", name: "Richard Hendricks", username: "r.hendricks"),
+      User(id: "2", name: "Elrick Bachman", username: "e.bachman"),
+      User(id: "3", name: "Nelson Bighetti", username: "bighead"),
+    ];
+
+    return GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: users,
+    );
+  }
+}
+```
+
+As you can see, we have changed the body type of the response from `String` to
+`List<User>`, and updated the `call` method body to fetch some users and return
+them to the client.
+
+## Adding the route to the server
+
+To add a route to the root of your server, open your `server.dart` file and
+add `usersRoute` to the `routes` parameter of your Gazelle application:
+```dart
+Future<void> runApp(List<String> args) async {
+  final app = GazelleApp(
+    routes: [
+      helloGazelleRoute,
+      usersRoute,
+    ],
+    port: 3000,
+    modelProvider: BackendModelProvider(),
+  );
+
+  await app.start(args: args);
+}
+```
+Routes can also be nested, to do that, just add a route to the children
+parameter of another route, but for the sake of this guide, we're going to
+keep it simple.
+
+## Update the client
+
+We now need to update our client with the new API, so let's type
+```shell
+gazelle codegen client
+```
+inside our terminal.
