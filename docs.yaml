@@ -1,5 +1,6 @@
 name: Gazelle 
-description: A lightweight Dart web framework for scalable and developer-friendly server-side projects.
+description: Flutter full-stack in seconds.
+theme: #e88409
 anchors:
   - title: "Homepage"
     link: "https://gazelle-dart.dev/"
