@@ -86,3 +86,78 @@ We now need to update our client with the new API, so let's type
 gazelle codegen client
 ```
 inside our terminal.
+The CLI should say that the client has been generated successfully.
+```console
+✅ Client generated 🚀
+Import the client in your Dart frontend application!
+```
+
+## Update the Flutter app
+
+Now, we only need to update our UI to show our users in a list view.
+Copy-paste the following code in your `main.dart` file:
+```dart
+import 'package:flutter/material.dart';
+import 'package:client/client.dart';
+
+void main() {
+  gazelle.init();
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('my_awesome_app'),
+        ),
+        body: Center(
+          child: FutureBuilder(
+            future: gazelle.client.api.users.get(),
+            builder: (_, snapshot) => switch (snapshot) {
+              AsyncSnapshot(:final data?) => UsersList(users: data),
+              AsyncSnapshot(:final error?) =>
+                Text('${error.runtimeType}: $error'),
+              _ => const CircularProgressIndicator(),
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class UsersList extends StatelessWidget {
+  const UsersList({
+    required this.users,
+    super.key,
+  });
+
+  final List<User> users;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: users.length,
+      itemBuilder: (context, index) {
+        final user = users[index];
+        return ListTile(
+          title: Text(user.name),
+          subtitle: Text(user.username),
+          leading: Text(user.id),
+        );
+      },
+    );
+  }
+}
+```
+Start your app again like we did in [this part of the tutorial](/getting_started/running_your_project).
+And that's it! You have just created a new API and used it into your Flutter
+application.
+The result should look something like this
+<Image src="/assets/creating_routes_1.png" alt="Flutter application displaying a list of users" />
