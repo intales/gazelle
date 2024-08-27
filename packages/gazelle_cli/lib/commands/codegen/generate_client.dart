@@ -139,10 +139,17 @@ void _generateRouteClasses(
 
     if (entry.value['methods'] != null) {
       if (entry.value['methods']['get'] != null) {
-        final returnType =
+        String returnType =
             entry.value['methods']['get']['returnType'] ?? "dynamic";
-        code.writeln(
-            "Future<$returnType> get({Map<String, dynamic>? queryParams}) => _client.get<$returnType>(queryParams: queryParams);");
+
+        if (returnType.startsWith("List")) {
+          returnType = _extractGenericType(returnType);
+          code.writeln(
+              "Future<List<$returnType>> get({Map<String, dynamic>? queryParams}) => _client.list<$returnType>(queryParams: queryParams);");
+        } else {
+          code.writeln(
+              "Future<$returnType> get({Map<String, dynamic>? queryParams}) => _client.get<$returnType>(queryParams: queryParams);");
+        }
       }
       if (entry.value['methods']['post'] != null) {
         final returnType =
@@ -186,3 +193,14 @@ void _generateRouteClasses(
 }
 
 String _snakeToPascalCase(String input) => snakeToPascalCase(input);
+
+String _extractGenericType(String typeString) {
+  final startIndex = typeString.indexOf('<');
+  final endIndex = typeString.indexOf('>');
+
+  if (startIndex == -1 || endIndex == -1 || startIndex > endIndex) {
+    throw ArgumentError('Invalid generic type format.');
+  }
+
+  return typeString.substring(startIndex + 1, endIndex);
+}
