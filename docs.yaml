@@ -19,3 +19,5 @@ sidebar:
   - "/getting_started/project_structure"
 - - Custom entities
   - "/getting_started/custom_entities"
+- - Creating routes
+  - "/getting_started/creating_routes"
