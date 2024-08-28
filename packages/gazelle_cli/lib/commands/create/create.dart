@@ -95,7 +95,9 @@ class _CreateRouteCommand extends Command {
   void run() async {
     CliSpin spinner = CliSpin();
     try {
-      await loadProjectConfiguration();
+      final configuration = await loadProjectConfiguration();
+      Directory.current = configuration.path;
+
       stdout.writeln("✨ What would you like to name your new route? 🚀");
       String? routeName = stdin.readLineSync();
       while (routeName == null || routeName == "") {
@@ -112,7 +114,7 @@ class _CreateRouteCommand extends Command {
       ).start();
 
       final directory = Directory.current;
-      final path = "${directory.path}/lib";
+      final path = "${directory.path}/server/lib";
 
       await createRoute(
         routeName: routeName,
@@ -147,7 +149,8 @@ class _CreatHandlerCommand extends Command {
   void run() async {
     CliSpin spinner = CliSpin();
     try {
-      await loadProjectConfiguration();
+      final configuration = await loadProjectConfiguration();
+      Directory.current = configuration.path;
 
       final handlerName = getInput(
         "What is the route for this handler?",
