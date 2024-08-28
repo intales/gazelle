@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:cli_spin/cli_spin.dart';
+import 'package:path/path.dart';
 
 import '../../commons/functions/get_input.dart';
+import '../../commons/functions/get_input_selection.dart';
 import '../../commons/functions/load_project_configuration.dart';
+import '../../commons/functions/snake_to_pascal_case.dart';
 import 'create_handler.dart';
 import 'create_project.dart';
 import 'create_route.dart';
@@ -152,43 +155,27 @@ class _CreatHandlerCommand extends Command {
       final configuration = await loadProjectConfiguration();
       Directory.current = configuration.path;
 
-      final handlerName = getInput(
-        "What is the route for this handler?",
-        onEmpty: "Please provide a name for your route to proceed!",
-        onValidated: (input) =>
-            input.replaceAll(RegExp(r'\s+'), "_").toLowerCase(),
+      final serverPath = join(Directory.current.path, "server");
+
+      final routesPath = join(serverPath, "lib", "routes");
+      final availableRoutes = await Directory(routesPath).list().toList().then(
+          (routes) => routes.map((route) => route.absolute.path).toList());
+
+      final path = getInputSelection(
+        options: availableRoutes,
+        getOptionText: (option) => snakeToPascalCase(option.split("/").last),
       );
 
-      const httpMethods = ["GET", "POST", "PUT", "PATCH", "DELETE"];
+      String handlerName = snakeToPascalCase(path.split("/").last);
 
-      final httpMethod = getInput(
-        "What HTTP method does your handler respond to?",
-        onEmpty: "Please provide an HTTP method to proceed!",
-        validator: (input) => httpMethods
-                .contains(input.replaceAll(RegExp(r'\s+'), "").toUpperCase())
-            ? null
-            : "Please provide a valid HTTP method from the following: $httpMethods",
-        defaultValue: "GET",
-        onValidated: (input) =>
-            input.replaceAll(RegExp(r'\s+'), "").toUpperCase(),
+      final httpMehtods = ["Get", "Post", "Put", "Patch", "Delete"];
+
+      final httpMethod = getInputSelection(
+        options: httpMehtods,
+        getOptionText: (option) => option,
       );
 
-      final path = getInput(
-        "Where would you like to create the handler?",
-        defaultValue: "lib/routes/${handlerName}_route/handlers",
-        onEmpty: "Please provide a valid path to proceed:",
-        validator: (input) {
-          final handlerFile = File(
-              "$input/${handlerName.toLowerCase()}_${httpMethod.toLowerCase()}_handler.dart");
-          return handlerFile.existsSync()
-              ? "A handler with the same name already exists at the provided path."
-              : null;
-        },
-        onValidated: (input) =>
-            (Directory(input)..createSync(recursive: true)).path,
-      );
-
-      stdout.writeln();
+      handlerName += httpMethod;
 
       spinner = CliSpin(
         text: "Creating $handlerName handler...",
