@@ -41,6 +41,7 @@ class _CodegenModelsCommand extends Command {
     CliSpin spinner = CliSpin();
     try {
       final projectConfiguration = await loadProjectConfiguration();
+      Directory.current = projectConfiguration.path;
 
       spinner = CliSpin(
         text: "Generating models...",
