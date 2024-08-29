@@ -15,10 +15,10 @@ T getInputSelection<T>({
     console.writeLine(prompt);
     for (var i = 0; i < options.length; i++) {
       if (i == currentSelection) {
-        console.setForegroundColor(ConsoleColor.brightYellow);
-        console.write('> ');
+        console.setForegroundColor(ConsoleColor.yellow);
+        console.write('--> ');
       } else {
-        console.write('  ');
+        console.write('    ');
       }
       console.writeLine(getOptionText(options[i]));
       console.resetColorAttributes();

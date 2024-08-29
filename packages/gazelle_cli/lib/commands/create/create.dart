@@ -2,12 +2,11 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:cli_spin/cli_spin.dart';
-import 'package:path/path.dart';
 
-import '../../commons/functions/get_input.dart';
+import '../../commons/functions/get_available_methods.dart';
 import '../../commons/functions/get_input_selection.dart';
+import '../../commons/functions/get_project_routes.dart';
 import '../../commons/functions/load_project_configuration.dart';
-import '../../commons/functions/snake_to_pascal_case.dart';
 import 'create_handler.dart';
 import 'create_project.dart';
 import 'create_route.dart';
@@ -24,7 +23,7 @@ class CreateCommand extends Command {
   CreateCommand() {
     addSubcommand(_CreateProjectCommand());
     addSubcommand(_CreateRouteCommand());
-    addSubcommand(_CreatHandlerCommand());
+    addSubcommand(_CreateHandlerCommand());
   }
 }
 
@@ -76,8 +75,8 @@ class _CreateProjectCommand extends Command {
     } on CreateProjectError catch (e) {
       spinner.fail(e.message);
       exit(2);
-    } on Exception catch (e) {
-      spinner.fail(e.toString());
+    } on Exception catch (e, stack) {
+      spinner.fail(stack.toString());
       exit(2);
     }
   }
@@ -116,12 +115,9 @@ class _CreateRouteCommand extends Command {
         spinner: CliSpinners.dots,
       ).start();
 
-      final directory = Directory.current;
-      final path = "${directory.path}/server/lib";
-
       await createRoute(
         routeName: routeName,
-        path: path,
+        projectConfiguration: configuration,
       );
 
       spinner.success(
@@ -138,15 +134,15 @@ class _CreateRouteCommand extends Command {
 }
 
 /// CLI command to create a new Gazelle handler.
-class _CreatHandlerCommand extends Command {
+class _CreateHandlerCommand extends Command {
   @override
   String get name => "handler";
 
   @override
   String get description => "Creates a new Gazelle handler.";
 
-  /// Creates a [_CreatHandlerCommand].
-  _CreatHandlerCommand();
+  /// Creates a [_CreateHandlerCommand].
+  _CreateHandlerCommand();
 
   @override
   void run() async {
@@ -155,40 +151,33 @@ class _CreatHandlerCommand extends Command {
       final configuration = await loadProjectConfiguration();
       Directory.current = configuration.path;
 
-      final serverPath = join(Directory.current.path, "server");
+      final availableRoutes = await getProjectRoutes(configuration);
 
-      final routesPath = join(serverPath, "lib", "routes");
-      final availableRoutes = await Directory(routesPath).list().toList().then(
-          (routes) => routes.map((route) => route.absolute.path).toList());
-
-      final path = getInputSelection(
+      final route = getInputSelection(
         options: availableRoutes,
-        getOptionText: (option) => snakeToPascalCase(option.split("/").last),
+        getOptionText: (option) => option.name,
+        prompt: "Pick a route:",
       );
 
-      String handlerName = snakeToPascalCase(path.split("/").last);
-
-      final httpMehtods = ["Get", "Post", "Put", "Patch", "Delete"];
+      final availableMethods = getAvailableMethods(route);
 
       final httpMethod = getInputSelection(
-        options: httpMehtods,
-        getOptionText: (option) => option,
+        options: availableMethods,
+        getOptionText: (option) => option.name,
+        prompt: "Pick a method:",
       );
 
-      handlerName += httpMethod;
-
       spinner = CliSpin(
-        text: "Creating $handlerName handler...",
+        text: "Creating ${route.name}_${httpMethod}_handler...",
         spinner: CliSpinners.dots,
       ).start();
 
-      await createHandler(
-        routeName: handlerName,
+      final result = await createHandler(
+        route: route,
         httpMethod: httpMethod,
-        path: path,
       );
 
-      spinner.success("$handlerName handler created 🚀");
+      spinner.success("${result.handlerName} created 🚀");
     } on LoadProjectConfigurationGazelleNotFoundError catch (e) {
       spinner.fail(e.errorMessage);
       exit(e.errorCode);

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 
+import '../../commons/entities/project_configuration.dart';
 import '../codegen/generate_client.dart';
 import 'create_models.dart';
 import 'create_server.dart';
@@ -86,8 +87,14 @@ Future<String> createProject({
       .create(recursive: true)
       .then((file) => file.writeAsString(_getGazelleYaml(backendProjectName)));
 
+  final projectConfiguration = ProjectConfiguration(
+    name: backendProjectName,
+    version: "0.1.0",
+    path: basePath,
+  );
+
   await createModels(path: "$basePath/models", projectName: backendProjectName);
-  await createServer(path: "$basePath/server", projectName: backendProjectName);
+  await createServer(projectConfiguration: projectConfiguration);
 
   if (fullstack) {
     final serverPath = "$projectName/backend/server/bin/server.dart";
