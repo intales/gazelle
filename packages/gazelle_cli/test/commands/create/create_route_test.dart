@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:gazelle_cli/commands/create/create_route.dart';
+import 'package:gazelle_cli/commons/entities/project_configuration.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -14,10 +15,16 @@ void main() {
       }
       tmpDir = await Directory(tmpDirPath).create(recursive: true);
 
+      final projectConfiguration = ProjectConfiguration(
+        name: "test",
+        version: "0.1.0",
+        path: tmpDirPath,
+      );
+
       // Act
       final result = await createRoute(
         routeName: "hello_world",
-        path: tmpDirPath,
+        projectConfiguration: projectConfiguration,
       );
 
       // Assert

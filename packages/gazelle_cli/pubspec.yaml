@@ -17,6 +17,7 @@ dependencies:
   args: ^2.5.0
   cli_spin: ^1.0.1
   code_builder: ^4.10.0
+  dart_console: ^4.1.0
   dart_style: ^2.3.6
   http: ^1.2.2
   path: ^1.9.0

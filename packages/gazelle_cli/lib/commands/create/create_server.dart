@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dart_style/dart_style.dart';
 
 import '../../commons/consts.dart';
+import '../../commons/entities/project_configuration.dart';
 import '../../commons/functions/get_latest_package_version.dart';
 import '../../commons/functions/snake_to_pascal_case.dart';
 import '../../commons/functions/version.dart';
@@ -93,23 +94,22 @@ Future<void> main(List<String> args) async {
 
 /// Creates the server for a Gazelle project
 Future<String> createServer({
-  required String path,
-  required String projectName,
+  required final ProjectConfiguration projectConfiguration,
 }) async {
-  const serverProjectName = "server";
+  final path = "${projectConfiguration.path}/server";
   final libPath = "$path/lib";
   final binPath = "$path/bin";
 
   final helloGazelleRoute = await createRoute(
     routeName: "hello_gazelle",
-    path: libPath,
+    projectConfiguration: projectConfiguration,
   );
 
   final main = _getMainFile(
     routeImportPath:
         helloGazelleRoute.routeFilePath.replaceAll(libPath, "").substring(1),
     routeName: helloGazelleRoute.routeName,
-    projectName: projectName,
+    projectName: projectConfiguration.name,
   );
 
   await Directory(path).create(recursive: true);
@@ -118,20 +118,19 @@ Future<String> createServer({
       await getLatestPackageVersion(gazelleCorePackageName);
 
   await File("$path/pubspec.yaml").create(recursive: true).then((file) =>
-      file.writeAsString(
-          _getPubspecTemplate(serverProjectName, gazelleCoreVersion)));
+      file.writeAsString(_getPubspecTemplate("server", gazelleCoreVersion)));
 
   await File("$path/.gitignore")
       .create(recursive: true)
       .then((file) => file.writeAsString(_gitignore));
 
-  await File("$libPath/$serverProjectName.dart")
+  await File("$libPath/server.dart")
       .create(recursive: true)
       .then((file) => file.writeAsString(DartFormatter().format(main)));
 
-  await File("$binPath/$serverProjectName.dart")
+  await File("$binPath/server.dart")
       .create(recursive: true)
-      .then((file) => file.writeAsString(_getEntryPoint(serverProjectName)));
+      .then((file) => file.writeAsString(_getEntryPoint("server")));
 
   await Process.run(
     "dart",
