@@ -2,43 +2,27 @@ import 'dart:io';
 
 import 'package:dart_style/dart_style.dart';
 import 'package:gazelle_cli/commands/create/create_handler.dart';
+import 'package:gazelle_cli/commons/entities/http_method.dart';
+import 'package:gazelle_cli/commons/entities/project_route.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('CreateHandler tests', () {
-    test('Should create a handler file', () async {
+    test('Should create a handler files for every http method', () async {
       // Arrange
-      final tmpDirPath = "tmp/create_handler_test";
+      final tmpDirPath = "tmp/create_handler_tests";
+
       Directory tmpDir = Directory(tmpDirPath);
       if (await tmpDir.exists()) {
         await tmpDir.delete(recursive: true);
       }
       tmpDir = await Directory(tmpDirPath).create(recursive: true);
 
-      // Act
-      final result = await createHandler(
-        routeName: "hello_world",
-        httpMethod: "GET",
-        path: tmpDirPath,
+      final route = ProjectRoute(
+        path: "$tmpDirPath/hello_world",
+        name: "HelloWorld",
+        methods: [],
       );
-
-      // Assert
-      expect(result.handlerName, "HelloWorldGetHandler");
-      expect(File(result.handlerFilePath).existsSync(), isTrue);
-
-      // Clean up
-      await tmpDir.delete(recursive: true);
-    });
-    test('Should create handler files with the correct content', () async {
-      // Arrange
-      final tmpDirPath = "tmp/create_handler_exhaustive_tests";
-      final routeName = "hello_world";
-
-      Directory tmpDir = Directory(tmpDirPath);
-      if (await tmpDir.exists()) {
-        await tmpDir.delete(recursive: true);
-      }
-      tmpDir = await Directory(tmpDirPath).create(recursive: true);
 
       String getHandlerContent(String handlerName) {
         return DartFormatter().format("""
@@ -63,24 +47,15 @@ class $handlerName extends GazelleRouteHandler<String> {
             .trim());
       }
 
-      for (final httpMethod in ["GET", "POST", "PUT", "PATCH", "DELETE"]) {
-        String handlerName = switch (httpMethod) {
-          "GET" => "Get",
-          "POST" => "Post",
-          "PUT" => "Put",
-          "PATCH" => "Patch",
-          "DELETE" => "Delete",
-          _ => throw "Unexpected error",
-        };
-        final expectedHandlerName = "HelloWorld${handlerName}Handler";
+      for (final httpMethod in HttpMethod.values) {
+        final expectedHandlerName = "HelloWorld${httpMethod.pascalCase}";
 
         final handlerContent = getHandlerContent(expectedHandlerName);
 
         // Act
         final result = await createHandler(
-          routeName: routeName,
+          route: route,
           httpMethod: httpMethod,
-          path: tmpDirPath,
         );
 
         // Assert

@@ -1,3 +1,11 @@
+## 0.7.0+3
+
+ - **FIX**(gazelle_cli): create commands ([#56](https://github.com/intales/gazelle/issues/56)).
+
+## 0.7.0+2
+
+ - **FIX**(gazelle_cli): Codegen fix ([#55](https://github.com/intales/gazelle/issues/55)).
+
 ## 0.7.0+1
 
  - **FIX**(gazelle_cli): Fixed list method generation ([#54](https://github.com/intales/gazelle/issues/54)).

@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:cli_spin/cli_spin.dart';
 
-import '../../commons/functions/get_input.dart';
+import '../../commons/functions/get_available_methods.dart';
+import '../../commons/functions/get_input_selection.dart';
+import '../../commons/functions/get_project_routes.dart';
 import '../../commons/functions/load_project_configuration.dart';
 import 'create_handler.dart';
 import 'create_project.dart';
@@ -21,7 +23,7 @@ class CreateCommand extends Command {
   CreateCommand() {
     addSubcommand(_CreateProjectCommand());
     addSubcommand(_CreateRouteCommand());
-    addSubcommand(_CreatHandlerCommand());
+    addSubcommand(_CreateHandlerCommand());
   }
 }
 
@@ -73,8 +75,8 @@ class _CreateProjectCommand extends Command {
     } on CreateProjectError catch (e) {
       spinner.fail(e.message);
       exit(2);
-    } on Exception catch (e) {
-      spinner.fail(e.toString());
+    } on Exception catch (e, stack) {
+      spinner.fail(stack.toString());
       exit(2);
     }
   }
@@ -95,7 +97,9 @@ class _CreateRouteCommand extends Command {
   void run() async {
     CliSpin spinner = CliSpin();
     try {
-      await loadProjectConfiguration();
+      final configuration = await loadProjectConfiguration();
+      Directory.current = configuration.path;
+
       stdout.writeln("✨ What would you like to name your new route? 🚀");
       String? routeName = stdin.readLineSync();
       while (routeName == null || routeName == "") {
@@ -111,12 +115,9 @@ class _CreateRouteCommand extends Command {
         spinner: CliSpinners.dots,
       ).start();
 
-      final directory = Directory.current;
-      final path = "${directory.path}/lib";
-
       await createRoute(
         routeName: routeName,
-        path: path,
+        projectConfiguration: configuration,
       );
 
       spinner.success(
@@ -133,72 +134,50 @@ class _CreateRouteCommand extends Command {
 }
 
 /// CLI command to create a new Gazelle handler.
-class _CreatHandlerCommand extends Command {
+class _CreateHandlerCommand extends Command {
   @override
   String get name => "handler";
 
   @override
   String get description => "Creates a new Gazelle handler.";
 
-  /// Creates a [_CreatHandlerCommand].
-  _CreatHandlerCommand();
+  /// Creates a [_CreateHandlerCommand].
+  _CreateHandlerCommand();
 
   @override
   void run() async {
     CliSpin spinner = CliSpin();
     try {
-      await loadProjectConfiguration();
+      final configuration = await loadProjectConfiguration();
+      Directory.current = configuration.path;
 
-      final handlerName = getInput(
-        "What is the route for this handler?",
-        onEmpty: "Please provide a name for your route to proceed!",
-        onValidated: (input) =>
-            input.replaceAll(RegExp(r'\s+'), "_").toLowerCase(),
+      final availableRoutes = await getProjectRoutes(configuration);
+
+      final route = getInputSelection(
+        options: availableRoutes,
+        getOptionText: (option) => option.name,
+        prompt: "Pick a route:",
       );
 
-      const httpMethods = ["GET", "POST", "PUT", "PATCH", "DELETE"];
+      final availableMethods = getAvailableMethods(route);
 
-      final httpMethod = getInput(
-        "What HTTP method does your handler respond to?",
-        onEmpty: "Please provide an HTTP method to proceed!",
-        validator: (input) => httpMethods
-                .contains(input.replaceAll(RegExp(r'\s+'), "").toUpperCase())
-            ? null
-            : "Please provide a valid HTTP method from the following: $httpMethods",
-        defaultValue: "GET",
-        onValidated: (input) =>
-            input.replaceAll(RegExp(r'\s+'), "").toUpperCase(),
+      final httpMethod = getInputSelection(
+        options: availableMethods,
+        getOptionText: (option) => option.name,
+        prompt: "Pick a method:",
       );
-
-      final path = getInput(
-        "Where would you like to create the handler?",
-        defaultValue: "lib/routes/${handlerName}_route/handlers",
-        onEmpty: "Please provide a valid path to proceed:",
-        validator: (input) {
-          final handlerFile = File(
-              "$input/${handlerName.toLowerCase()}_${httpMethod.toLowerCase()}_handler.dart");
-          return handlerFile.existsSync()
-              ? "A handler with the same name already exists at the provided path."
-              : null;
-        },
-        onValidated: (input) =>
-            (Directory(input)..createSync(recursive: true)).path,
-      );
-
-      stdout.writeln();
 
       spinner = CliSpin(
-        text: "Creating $handlerName handler...",
+        text: "Creating ${route.name}_${httpMethod}_handler...",
         spinner: CliSpinners.dots,
       ).start();
 
-      await createHandler(
-        routeName: handlerName,
+      final result = await createHandler(
+        route: route,
         httpMethod: httpMethod,
-        path: path,
       );
 
-      spinner.success("$handlerName handler created 🚀");
+      spinner.success("${result.handlerName} created 🚀");
     } on LoadProjectConfigurationGazelleNotFoundError catch (e) {
       spinner.fail(e.errorMessage);
       exit(e.errorCode);

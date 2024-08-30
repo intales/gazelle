@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-08-29
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_cli` - `v0.7.0+3`](#gazelle_cli---v0703)
+
+---
+
+#### `gazelle_cli` - `v0.7.0+3`
+
+ - **FIX**(gazelle_cli): create commands ([#56](https://github.com/intales/gazelle/issues/56)).
+
+
+## 2024-08-28
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_cli` - `v0.7.0+2`](#gazelle_cli---v0702)
+
+---
+
+#### `gazelle_cli` - `v0.7.0+2`
+
+ - **FIX**(gazelle_cli): Codegen fix ([#55](https://github.com/intales/gazelle/issues/55)).
+
+
 ## 2024-08-27
 
 ### Changes
