@@ -77,22 +77,22 @@ class GazelleRouter {
       }
       if (node.value!.post != null) {
         methods['post'] = {
-          'returnType': node.value!.get!.genericTypeParameter.toString(),
+          'returnType': node.value!.post!.genericTypeParameter.toString(),
         };
       }
       if (node.value!.put != null) {
         methods['put'] = {
-          'returnType': node.value!.get!.genericTypeParameter.toString(),
+          'returnType': node.value!.put!.genericTypeParameter.toString(),
         };
       }
       if (node.value!.patch != null) {
         methods['patch'] = {
-          'returnType': node.value!.get!.genericTypeParameter.toString(),
+          'returnType': node.value!.patch!.genericTypeParameter.toString(),
         };
       }
       if (node.value!.delete != null) {
         methods['delete'] = {
-          'returnType': node.value!.get!.genericTypeParameter.toString(),
+          'returnType': node.value!.delete!.genericTypeParameter.toString(),
         };
       }
     }
