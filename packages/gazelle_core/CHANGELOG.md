@@ -1,3 +1,7 @@
+## 0.6.0+1
+
+ - **FIX**(gazelle_core): export routes ([#57](https://github.com/intales/gazelle/issues/57)).
+
 ## 0.6.0
 
 > Note: This release has breaking changes.
