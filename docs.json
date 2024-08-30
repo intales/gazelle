@@ -1,0 +1,51 @@
+{
+	"name": "Gazelle",
+	"description": "Flutter full-stack in seconds.",
+	"theme": {
+		"primary": "#FF0000"
+	},
+	"anchors": [
+		{
+			"title": "Homepage",
+			"href": "https://gazelle-dart.dev/",
+			"icon": "house"
+		},
+		{
+			"title": "Discord",
+			"href": "https://discord.gg/sFhspZFVUj",
+			"icon": "discord"
+		},
+		{
+			"title": "X/Twitter",
+			"href": "https://twitter.com/Gazelle_dart",
+			"icon": "twitter"
+		}
+	],
+	"sidebar": [
+		{
+			"group": "Introduction",
+			"pages": [
+				{
+					"title": "Getting started",
+					"href": "/getting_started/getting_started"
+				},
+				{
+					"title": "Running your project",
+					"href": "/getting_started/running_your_project"
+				},
+				{
+					"title": "Project structure",
+					"href": "/getting_started/project_structure"
+				},
+				{
+					"title": "Custom entities",
+					"href": "/getting_started/custom_entities"
+				},
+				{
+					"title": "Creating routes",
+					"href": "/getting_started/creating_routes"
+				}
+			]
+		}	
+	]
+}
