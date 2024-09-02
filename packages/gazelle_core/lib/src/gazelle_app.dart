@@ -134,9 +134,7 @@ class GazelleApp {
     _server.listen((httpRequest) async {
       try {
         await _handleHttpRequest(httpRequest);
-      } catch (e, stack) {
-        print(e);
-        print(stack);
+      } catch (_) {
         return _send500Error(httpRequest.response);
       }
     });

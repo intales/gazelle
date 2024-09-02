@@ -6,19 +6,17 @@ import 'package:test/test.dart';
 
 import '../test_resources/create_test_http_server.dart';
 
-class _TestHandler extends GazelleRouteHandler<String> {
+class _TestHandler extends GazelleGetHandler<String> {
   const _TestHandler();
 
   @override
-  FutureOr<GazelleResponse<String>> call(
+  FutureOr<String> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-    );
-  }
+    Null body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      "Hello, Gazelle!";
 }
 
 void main() {

@@ -77,20 +77,35 @@ abstract class GazelleHandler<RequestType, ResponseType> {
 
 /// Represents a GET method handler for a Gazelle route.
 abstract class GazelleGetHandler<ResponseType>
-    extends GazelleHandler<Null, ResponseType> {}
+    extends GazelleHandler<Null, ResponseType> {
+  /// Builds a [GazelleGetHandler].
+  const GazelleGetHandler();
+}
 
 /// Represents a POST method handler for a Gazelle route.
 abstract class GazellePostHandler<RequestType, ResponseType>
-    extends GazelleHandler<RequestType, ResponseType> {}
+    extends GazelleHandler<RequestType, ResponseType> {
+  /// Builds a [GazellePostHandler].
+  const GazellePostHandler();
+}
 
 /// Represents a PUT method handler for a Gazelle route.
 abstract class GazellePutHandler<RequestType, ResponseType>
-    extends GazelleHandler<RequestType, ResponseType> {}
+    extends GazelleHandler<RequestType, ResponseType> {
+  /// Builds a [GazellePutHandler].
+  const GazellePutHandler();
+}
 
 /// Represents a PATCH method handler for a Gazelle route.
 abstract class GazellePatchHandler<RequestType, ResponseType>
-    extends GazelleHandler<RequestType, ResponseType> {}
+    extends GazelleHandler<RequestType, ResponseType> {
+  /// Builds a [GazellePatchHandler].
+  const GazellePatchHandler();
+}
 
 /// Represents a DELETE method handler for a Gazelle route.
 abstract class GazelleDeleteHandler<RequestType, ResponseType>
-    extends GazelleHandler<RequestType, ResponseType> {}
+    extends GazelleHandler<RequestType, ResponseType> {
+  /// Builds a [GazelleDeleteHandler].
+  const GazelleDeleteHandler();
+}
