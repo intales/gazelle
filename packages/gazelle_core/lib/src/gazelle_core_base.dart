@@ -2,6 +2,7 @@ export 'package:gazelle_serialization/gazelle_serialization.dart';
 
 export 'gazelle_app.dart';
 export 'gazelle_context.dart';
+export 'gazelle_handler.dart';
 export 'gazelle_hooks.dart';
 export 'gazelle_http_header.dart';
 export 'gazelle_http_method.dart';

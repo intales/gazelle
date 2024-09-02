@@ -134,7 +134,9 @@ class GazelleApp {
     _server.listen((httpRequest) async {
       try {
         await _handleHttpRequest(httpRequest);
-      } catch (_) {
+      } catch (e, stack) {
+        print(e);
+        print(stack);
         return _send500Error(httpRequest.response);
       }
     });
@@ -214,7 +216,7 @@ class GazelleApp {
       }
     }
 
-    final handlerResponse = await handler(context, request, response);
+    final handlerResponse = await handler.internal(context, request, response);
     response = GazelleResponse(
       metadata: {...response.metadata, ...handlerResponse.metadata},
       headers: [...response.headers, ...handlerResponse.headers],

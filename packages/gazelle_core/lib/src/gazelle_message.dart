@@ -32,7 +32,7 @@ abstract class GazelleMessage {
 ///
 /// Encapsulates information about the HTTP request including the URI, method,
 /// path parameters, headers, and body.
-class GazelleRequest<T> extends GazelleMessage {
+class GazelleRequest extends GazelleMessage {
   /// The URI of the request.
   final Uri uri;
 
@@ -43,7 +43,7 @@ class GazelleRequest<T> extends GazelleMessage {
   final Map<String, String> pathParameters;
 
   /// The body of the request.
-  final Future<T>? body;
+  final Future<String>? body;
 
   /// Constructs a GazelleRequest instance.
   ///

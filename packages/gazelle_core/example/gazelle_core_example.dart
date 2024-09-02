@@ -2,20 +2,17 @@ import 'dart:async';
 
 import 'package:gazelle_core/gazelle_core.dart';
 
-class HelloGazelleGetHandler extends GazelleRouteHandler<String> {
-  const HelloGazelleGetHandler();
+class HelloGazelleGetHandler extends GazelleGetHandler<String> {
+  HelloGazelleGetHandler();
 
   @override
-  FutureOr<GazelleResponse<String>> call(
+  FutureOr<String> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, Gazelle!",
-    );
-  }
+    Null body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      "Hello, Gazelle!";
 }
 
 Future<void> main() async {
@@ -24,7 +21,7 @@ Future<void> main() async {
       routes: [
         GazelleRoute(
           name: "hello_gazelle",
-          get: const HelloGazelleGetHandler(),
+          get: HelloGazelleGetHandler(),
         ),
       ],
     );

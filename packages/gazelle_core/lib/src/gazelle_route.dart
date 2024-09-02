@@ -1,24 +1,8 @@
-import 'dart:async';
-
 import 'gazelle_context.dart';
-import 'gazelle_generic_type_parameter.dart';
+import 'gazelle_handler.dart';
 import 'gazelle_hooks.dart';
-import 'gazelle_message.dart';
 import 'gazelle_router.dart';
 import 'gazelle_router_item.dart';
-
-/// Represents a handler for a Gazelle route.
-abstract class GazelleRouteHandler<T> with GazelleGenericTypeParameter<T> {
-  /// Builds a [GazelleRouteHandler].
-  const GazelleRouteHandler();
-
-  /// Runs the [handler].
-  FutureOr<GazelleResponse<T>> call(
-    GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  );
-}
 
 /// Represents a callback to build a list of pre-request hooks.
 typedef GazellePreRequestHooksBuilder = List<GazellePreRequestHook> Function(
@@ -37,19 +21,19 @@ class GazelleRoute {
   final String name;
 
   /// The handler for the GET method.
-  final GazelleRouteHandler? get;
+  final GazelleGetHandler? get;
 
   /// The handler for the POST method.
-  final GazelleRouteHandler? post;
+  final GazellePostHandler? post;
 
   /// The handler for the PUT method.
-  final GazelleRouteHandler? put;
+  final GazellePutHandler? put;
 
   /// The handler for the PATCH method.
-  final GazelleRouteHandler? patch;
+  final GazellePatchHandler? patch;
 
   /// The handler for the DELETE method.
-  final GazelleRouteHandler? delete;
+  final GazelleDeleteHandler? delete;
 
   /// The pre-request hooks associated with the route.
   final GazellePreRequestHooksBuilder? preRequestHooks;
