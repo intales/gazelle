@@ -8,26 +8,28 @@ class GazelleLoginJwtExampleHandler extends GazellePostHandler<String, String> {
   const GazelleLoginJwtExampleHandler();
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    String? body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<String> request,
   ) =>
-      context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"});
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+      );
 }
 
 class GazelleHelloWorldJwtExampleHandler extends GazelleGetHandler<String> {
   const GazelleHelloWorldJwtExampleHandler();
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    Null body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<Null> request,
   ) =>
-      "Hello, World!";
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: "Hello, World!",
+      );
 }
 
 void main() async {

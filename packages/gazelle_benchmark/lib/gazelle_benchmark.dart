@@ -8,13 +8,14 @@ class GazelleBenchmarkHandler extends GazelleGetHandler<String> {
   const GazelleBenchmarkHandler();
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    Null body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<Null> request,
   ) =>
-      "Hello, World!";
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: "Hello, World!",
+      );
 }
 
 /// Gazelle benchmark sever.

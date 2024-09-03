@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'package:gazelle_serialization/gazelle_serialization.dart';
 
 import 'gazelle_context.dart';
-import 'gazelle_http_header.dart';
-import 'gazelle_http_status_code.dart';
 import 'gazelle_message.dart';
 
 /// Represents a handler for a Gazelle route.
@@ -20,11 +18,9 @@ abstract class GazelleHandler<RequestType, ResponseType> {
   Type get responseType => ResponseType;
 
   /// Runs the handler.
-  FutureOr<ResponseType> call(
+  FutureOr<GazelleResponse<ResponseType>> call(
     GazelleContext context,
-    RequestType? body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<RequestType> request,
   );
 
   /// Internal method to run the handler.
@@ -33,24 +29,27 @@ abstract class GazelleHandler<RequestType, ResponseType> {
   FutureOr<GazelleResponse<ResponseType>> internal(
     GazelleContext context,
     GazelleRequest request,
-    GazelleResponse response,
   ) async {
     if (request.body == null) {
-      final responseBody = await call(
+      final response = await call(
         context,
-        null,
-        request.headers,
-        request.pathParameters,
+        GazelleRequest(
+          uri: request.uri,
+          method: request.method,
+          pathParameters: request.pathParameters,
+          headers: request.headers,
+          metadata: request.metadata,
+          body: null,
+          bodyStream: request.bodyStream,
+        ),
       );
 
-      return GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: responseBody,
-      );
+      return response;
     }
 
-    final requestBody = await request.body!.then((body) {
-      if (RequestType == Null) return null;
+    final typedBody = await utf8.decodeStream(request.bodyStream).then((body) {
+      if (body.trim().isEmpty) return null;
+
       late final dynamic jsonObject;
       try {
         jsonObject = jsonDecode(body);
@@ -64,17 +63,22 @@ abstract class GazelleHandler<RequestType, ResponseType> {
       );
     });
 
-    final responseBody = await call(
-      context,
-      requestBody,
-      request.headers,
-      request.pathParameters,
+    final typedRequest = GazelleRequest<RequestType>(
+      uri: request.uri,
+      method: request.method,
+      pathParameters: request.pathParameters,
+      metadata: request.metadata,
+      headers: request.headers,
+      body: typedBody,
+      bodyStream: request.bodyStream,
     );
 
-    return GazelleResponse<ResponseType>(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: responseBody,
+    final response = await call(
+      context,
+      typedRequest,
     );
+
+    return response;
   }
 }
 

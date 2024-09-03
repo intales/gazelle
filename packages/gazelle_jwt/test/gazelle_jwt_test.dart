@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_jwt/gazelle_jwt.dart';
@@ -10,26 +11,28 @@ class _TestLoginHandler extends GazellePostHandler<String, String> {
   const _TestLoginHandler();
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    String? body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<String> request,
   ) =>
-      context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"});
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+      );
 }
 
 class _TestHelloWorldHandler extends GazelleGetHandler<String> {
   const _TestHelloWorldHandler();
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    Null body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<Null> request,
   ) =>
-      "Hello, World!";
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: "Hello, World!",
+      );
 }
 
 void main() {
@@ -61,6 +64,7 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
+          bodyStream: Stream.value(Uint8List(0)),
           headers: [
             GazelleHttpHeader.authorization.addValue("Bearer $token"),
           ]);
@@ -86,6 +90,7 @@ void main() {
         uri: Uri.parse("http://localhost/test"),
         method: GazelleHttpMethod.get,
         pathParameters: {},
+        bodyStream: Stream.value(Uint8List(0)),
       );
       GazelleResponse response = GazelleResponse(
         statusCode: GazelleHttpStatusCode.success.noContent_204,
@@ -111,6 +116,7 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
+          bodyStream: Stream.value(Uint8List(0)),
           headers: [
             GazelleHttpHeader.authorization.addValue(" $token"),
           ]);
@@ -138,6 +144,7 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
+          bodyStream: Stream.value(Uint8List(0)),
           headers: [
             GazelleHttpHeader.authorization.addValue("Bearer $token aaaa"),
           ]);

@@ -18,13 +18,14 @@ class _TestHandler extends GazelleGetHandler<String> {
   const _TestHandler(this._string);
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    Null body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<Null> request,
   ) =>
-      _string;
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: _string,
+      );
 }
 
 void main() {

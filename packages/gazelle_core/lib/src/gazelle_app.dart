@@ -198,6 +198,7 @@ class GazelleApp {
       request = GazelleRequest(
         uri: hookRequest.uri,
         body: hookRequest.body,
+        bodyStream: hookRequest.bodyStream,
         method: hookRequest.method,
         headers: [...request.headers, ...hookRequest.headers],
         metadata: {...request.metadata, ...hookRequest.metadata},
@@ -214,7 +215,7 @@ class GazelleApp {
       }
     }
 
-    final handlerResponse = await handler.internal(context, request, response);
+    final handlerResponse = await handler.internal(context, request);
     response = GazelleResponse(
       metadata: {...response.metadata, ...handlerResponse.metadata},
       headers: [...response.headers, ...handlerResponse.headers],
@@ -228,6 +229,7 @@ class GazelleApp {
       request = GazelleRequest(
         uri: hookRequest.uri,
         body: hookRequest.body,
+        bodyStream: hookRequest.bodyStream,
         method: hookRequest.method,
         headers: [...request.headers, ...hookRequest.headers],
         metadata: {...request.metadata, ...hookRequest.metadata},

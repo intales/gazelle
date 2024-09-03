@@ -39,26 +39,30 @@ class _TestHandler extends GazelleGetHandler<_Test> {
   const _TestHandler();
 
   @override
-  FutureOr<_Test> call(
+  FutureOr<GazelleResponse<_Test>> call(
     GazelleContext context,
-    Null body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<Null> request,
   ) =>
-      _Test(test: "Hello, World!");
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: _Test(
+          test: "Hello, World!",
+        ),
+      );
 }
 
 class _TestStringHandler extends GazelleGetHandler<String> {
   const _TestStringHandler();
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    Null body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<Null> request,
   ) =>
-      "Hello, World!";
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: "Hello, World!",
+      );
 }
 
 void main() {

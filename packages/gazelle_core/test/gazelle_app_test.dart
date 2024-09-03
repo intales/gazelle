@@ -27,13 +27,14 @@ class _TestStringGetHandler extends GazelleGetHandler<String> {
   const _TestStringGetHandler(this._string);
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    Null body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<Null> request,
   ) =>
-      _string;
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: _string,
+      );
 }
 
 class _TestStringPostHandler extends GazellePostHandler<String, String> {
@@ -42,13 +43,14 @@ class _TestStringPostHandler extends GazellePostHandler<String, String> {
   const _TestStringPostHandler(this._string);
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    String? body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<String> request,
   ) =>
-      _string;
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: _string,
+      );
 }
 
 class _TestStringPutHandler extends GazellePutHandler<String, String> {
@@ -57,13 +59,14 @@ class _TestStringPutHandler extends GazellePutHandler<String, String> {
   const _TestStringPutHandler(this._string);
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    String? body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<String> request,
   ) =>
-      _string;
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: _string,
+      );
 }
 
 class _TestStringPatchHandler extends GazellePatchHandler<String, String> {
@@ -72,13 +75,14 @@ class _TestStringPatchHandler extends GazellePatchHandler<String, String> {
   const _TestStringPatchHandler(this._string);
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    String? body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<String> request,
   ) =>
-      _string;
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: _string,
+      );
 }
 
 class _TestStringDeleteHandler extends GazelleDeleteHandler<String, String> {
@@ -87,13 +91,14 @@ class _TestStringDeleteHandler extends GazelleDeleteHandler<String, String> {
   const _TestStringDeleteHandler(this._string);
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    String? body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<String> request,
   ) =>
-      _string;
+      GazelleResponse(
+        statusCode: GazelleHttpStatusCode.success.ok_200,
+        body: _string,
+      );
 }
 
 class _TestExceptionHandler extends GazelleGetHandler<String> {
@@ -102,11 +107,9 @@ class _TestExceptionHandler extends GazelleGetHandler<String> {
   const _TestExceptionHandler(this._string);
 
   @override
-  FutureOr<String> call(
+  FutureOr<GazelleResponse<String>> call(
     GazelleContext context,
-    Null body,
-    List<GazelleHttpHeader> headers,
-    Map<String, String> pathParameters,
+    GazelleRequest<Null> request,
   ) =>
       throw Exception(_string);
 }
