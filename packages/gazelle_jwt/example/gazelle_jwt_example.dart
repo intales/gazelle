@@ -4,38 +4,30 @@ import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_jwt/gazelle_jwt.dart';
 import 'package:http/http.dart' as http;
 
-class GazelleLoginJwtExampleHandler extends GazelleRouteHandler<String> {
+class GazelleLoginJwtExampleHandler extends GazellePostHandler<String, String> {
   const GazelleLoginJwtExampleHandler();
 
   @override
-  FutureOr<GazelleResponse<String>> call(
+  FutureOr<String> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    // Use the request to get data sent from the client.
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      // Sign a token and send it back to the client.
-      body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-    );
-  }
+    String? body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"});
 }
 
-class GazelleHelloWorldJwtExampleHandler extends GazelleRouteHandler<String> {
+class GazelleHelloWorldJwtExampleHandler extends GazelleGetHandler<String> {
   const GazelleHelloWorldJwtExampleHandler();
 
   @override
-  FutureOr<GazelleResponse<String>> call(
+  FutureOr<String> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, World!",
-    );
-  }
+    Null body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      "Hello, World!";
 }
 
 void main() async {

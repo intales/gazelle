@@ -332,6 +332,8 @@ void main() {
           case GazelleHttpMethod.delete:
             sendRequest = () => http.delete(uri);
             break;
+          case GazelleHttpMethod.options:
+            continue;
           default:
             fail("Unexpected method.");
         }

@@ -10,6 +10,7 @@ void main() {
         "POST",
         "PUT",
         "PATCH",
+        "OPTIONS",
         "DELETE",
       ];
 
@@ -38,6 +39,7 @@ void main() {
         "POST",
         "PUT",
         "PATCH",
+        "OPTIONS",
         "DELETE",
       ];
 

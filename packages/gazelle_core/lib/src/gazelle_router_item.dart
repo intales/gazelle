@@ -53,6 +53,7 @@ class GazelleRouterItem {
         GazelleHttpMethod.patch => patch as GazelleHandler?,
         GazelleHttpMethod.put => put as GazelleHandler?,
         GazelleHttpMethod.delete => delete as GazelleHandler?,
+        _ => null,
       };
 
   /// Creates a copy of this GazelleRoute with the specified attributes overridden.

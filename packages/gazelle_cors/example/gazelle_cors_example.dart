@@ -3,20 +3,17 @@ import 'dart:async';
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_cors/gazelle_cors.dart';
 
-class GazelleCorsExampleHandler extends GazelleRouteHandler<String> {
+class GazelleCorsExampleHandler extends GazelleGetHandler<String> {
   const GazelleCorsExampleHandler();
 
   @override
-  FutureOr<GazelleResponse<String>> call(
+  FutureOr<String> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, Gazelle!",
-    );
-  }
+    Null body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      "Hello, Gazelle!";
 }
 
 void main() async {

@@ -12,22 +12,19 @@ class TestLogOutput extends LogOutput {
   void output(OutputEvent event) => outputValue += event.lines.join("\n");
 }
 
-class _TestHandler extends GazelleRouteHandler<String> {
+class _TestHandler extends GazelleGetHandler<String> {
   final String _string;
 
   const _TestHandler(this._string);
 
   @override
-  FutureOr<GazelleResponse<String>> call(
+  FutureOr<String> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: _string,
-    );
-  }
+    Null body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      _string;
 }
 
 void main() {

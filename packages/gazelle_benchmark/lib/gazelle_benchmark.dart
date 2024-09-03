@@ -3,21 +3,18 @@ import 'dart:async';
 import 'package:gazelle_core/gazelle_core.dart';
 
 /// Gazelle benchmark handler.
-class GazelleBenchmarkHandler extends GazelleRouteHandler<String> {
+class GazelleBenchmarkHandler extends GazelleGetHandler<String> {
   /// Builds a [GazelleBenchmarkHandler].
   const GazelleBenchmarkHandler();
 
   @override
-  FutureOr<GazelleResponse<String>> call(
+  FutureOr<String> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, World!",
-    );
-  }
+    Null body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      "Hello, World!";
 }
 
 /// Gazelle benchmark sever.

@@ -35,36 +35,30 @@ class _TestModelProvider extends GazelleModelProvider {
       };
 }
 
-class _TestHandler extends GazelleRouteHandler<_Test> {
+class _TestHandler extends GazelleGetHandler<_Test> {
   const _TestHandler();
 
   @override
-  FutureOr<GazelleResponse<_Test>> call(
+  FutureOr<_Test> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: _Test(test: "Hello, World!"),
-    );
-  }
+    Null body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      _Test(test: "Hello, World!");
 }
 
-class _TestStringHandler extends GazelleRouteHandler<String> {
+class _TestStringHandler extends GazelleGetHandler<String> {
   const _TestStringHandler();
 
   @override
-  FutureOr<GazelleResponse<String>> call(
+  FutureOr<String> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, World!",
-    );
-  }
+    Null body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      "Hello, World!";
 }
 
 void main() {

@@ -6,36 +6,30 @@ import 'package:gazelle_jwt/src/gazelle_jwt_consts.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
-class _TestLoginHandler extends GazelleRouteHandler<String> {
+class _TestLoginHandler extends GazellePostHandler<String, String> {
   const _TestLoginHandler();
 
   @override
-  FutureOr<GazelleResponse<String>> call(
+  FutureOr<String> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-    );
-  }
+    String? body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"});
 }
 
-class _TestHelloWorldHandler extends GazelleRouteHandler<String> {
+class _TestHelloWorldHandler extends GazelleGetHandler<String> {
   const _TestHelloWorldHandler();
 
   @override
-  FutureOr<GazelleResponse<String>> call(
+  FutureOr<String> call(
     GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, World!",
-    );
-  }
+    Null body,
+    List<GazelleHttpHeader> headers,
+    Map<String, String> pathParameters,
+  ) =>
+      "Hello, World!";
 }
 
 void main() {
