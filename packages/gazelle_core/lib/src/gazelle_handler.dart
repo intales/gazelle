@@ -13,11 +13,11 @@ abstract class GazelleHandler<RequestType, ResponseType> {
   /// Builds a [GazelleHandler].
   const GazelleHandler();
 
-  /// Returns the handler's [ResponseType].
-  Type get responseType => ResponseType;
-
   /// Returns the handler's [RequestType].
   Type get requestType => RequestType;
+
+  /// Returns the handler's [ResponseType].
+  Type get responseType => ResponseType;
 
   /// Runs the handler.
   FutureOr<ResponseType> call(
@@ -58,7 +58,10 @@ abstract class GazelleHandler<RequestType, ResponseType> {
         jsonObject = body;
       }
 
-      return deserialize<RequestType>(jsonObject: jsonObject);
+      return deserialize<RequestType>(
+        jsonObject: jsonObject,
+        modelProvider: context.modelProvider,
+      );
     });
 
     final responseBody = await call(

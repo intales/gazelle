@@ -48,12 +48,11 @@ class GazelleRouterItem {
 
   /// Retrieves the correct handler.
   GazelleHandler? getHandler(GazelleHttpMethod method) => switch (method) {
-        GazelleHttpMethod.get => get as GazelleHandler,
-        GazelleHttpMethod.post => post as GazelleHandler,
-        GazelleHttpMethod.patch => patch as GazelleHandler,
-        GazelleHttpMethod.put => put as GazelleHandler,
-        GazelleHttpMethod.delete => delete as GazelleHandler,
-        _ => get as GazelleHandler,
+        GazelleHttpMethod.get => get as GazelleHandler?,
+        GazelleHttpMethod.post => post as GazelleHandler?,
+        GazelleHttpMethod.patch => patch as GazelleHandler?,
+        GazelleHttpMethod.put => put as GazelleHandler?,
+        GazelleHttpMethod.delete => delete as GazelleHandler?,
       };
 
   /// Creates a copy of this GazelleRoute with the specified attributes overridden.

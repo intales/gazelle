@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:gazelle_serialization/gazelle_serialization.dart';
+
 import 'gazelle_plugin.dart';
 import 'gazelle_route.dart';
 import 'gazelle_router.dart';
@@ -18,6 +20,9 @@ class GazelleContext {
   /// Parent context.
   final GazelleContext? _context;
 
+  /// The model provider.
+  final GazelleModelProvider? modelProvider;
+
   /// Creates a new instance of [GazelleContext].
   ///
   /// The [router] parameter specifies the router to use for route registration and searching.
@@ -26,6 +31,7 @@ class GazelleContext {
   const GazelleContext({
     required GazelleRouter router,
     required Map<Type, GazellePlugin> plugins,
+    this.modelProvider,
     GazelleContext? context,
   })  : _router = router,
         _context = context,
@@ -34,8 +40,12 @@ class GazelleContext {
   /// Creates a new instance of [GazelleContext] with an empty router and plugin map.
   ///
   /// This static method is a convenience constructor for creating a new [GazelleContext] instance.
-  static GazelleContext create() => GazelleContext(
+  static GazelleContext create({
+    GazelleModelProvider? modelProvider,
+  }) =>
+      GazelleContext(
         router: GazelleRouter(),
+        modelProvider: modelProvider,
         plugins: {},
       );
 
