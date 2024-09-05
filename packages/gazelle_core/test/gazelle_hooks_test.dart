@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:test/test.dart';
 
@@ -10,6 +12,7 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
+          bodyStream: Stream.value(Uint8List(0)),
         );
         hook(request) => GazelleResponse(
               statusCode: GazelleHttpStatusCode.error.unauthorized_401,
@@ -28,6 +31,7 @@ void main() {
           uri: Uri.parse("http://localhost/test"),
           method: GazelleHttpMethod.get,
           pathParameters: {},
+          bodyStream: Stream.value(Uint8List(0)),
         );
         hook(request) => request;
 

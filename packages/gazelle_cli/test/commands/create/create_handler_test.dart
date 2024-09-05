@@ -4,6 +4,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:gazelle_cli/commands/create/create_handler.dart';
 import 'package:gazelle_cli/commons/entities/http_method.dart';
 import 'package:gazelle_cli/commons/entities/project_route.dart';
+import 'package:gazelle_cli/commons/functions/uncapitalize_string.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -28,20 +29,14 @@ void main() {
         return DartFormatter().format("""
 import 'package:gazelle_core/gazelle_core.dart';
 
-class $handlerName extends GazelleRouteHandler<String> {
-  const $handlerName();
-
-  @override
-  Future<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) async {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, Gazelle!",
-    );
-  }
+Future<GazelleResponse<String>> ${uncapitalizeString(handlerName)}(
+  GazelleContext context,
+  GazelleRequest request,
+) async {
+  return GazelleResponse(
+    statusCode: GazelleHttpStatusCode.success.ok_200,
+    body: "Hello, Gazelle!",
+  );
 }
   """
             .trim());
