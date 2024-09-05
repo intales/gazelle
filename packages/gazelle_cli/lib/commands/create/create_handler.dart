@@ -4,6 +4,7 @@ import 'package:dart_style/dart_style.dart';
 
 import '../../commons/entities/http_method.dart';
 import '../../commons/entities/project_route.dart';
+import '../../commons/functions/uncapitalize_string.dart';
 
 /// Represents the result of [createHandler] function.
 class CreateHandlerResult {
@@ -29,20 +30,14 @@ Future<CreateHandlerResult> createHandler({
   final handler = """
 import 'package:gazelle_core/gazelle_core.dart';
 
-class $handlerName extends GazelleRouteHandler<String> {
-  const $handlerName();
-
-  @override
-  Future<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) async {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, Gazelle!",
-    );
-  }
+Future<GazelleResponse<String>> ${uncapitalizeString(handlerName)}(
+  GazelleContext context,
+  GazelleRequest request,
+) async {
+  return GazelleResponse(
+    statusCode: GazelleHttpStatusCode.success.ok_200,
+    body: "Hello, Gazelle!",
+  );
 }
   """
       .trim();
