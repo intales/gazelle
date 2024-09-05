@@ -1,24 +1,8 @@
-import 'dart:async';
-
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
 import '../test_resources/create_test_http_server.dart';
-
-class _TestHandler extends GazelleGetHandler<String> {
-  const _TestHandler();
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<Null> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: "Hello, Gazelle!",
-      );
-}
 
 void main() {
   group('GazelleRouter tests', () {
@@ -39,8 +23,10 @@ void main() {
       router.addRoutes([
         GazelleRoute(
           name: "test",
-          get: const _TestHandler(),
-        ),
+        ).get((context, request) => GazelleResponse(
+              statusCode: GazelleHttpStatusCode.success.ok_200,
+              body: "Hello, Gzelle!",
+            )),
       ], GazelleContext.create());
 
       await http.get(
@@ -113,8 +99,10 @@ void main() {
               children: [
                 GazelleRoute(
                   name: "posts",
-                  get: const _TestHandler(),
-                ),
+                ).get((context, request) => GazelleResponse(
+                      statusCode: GazelleHttpStatusCode.success.ok_200,
+                      body: "Hello, Gazelle!",
+                    )),
               ],
             ),
           ],

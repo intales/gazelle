@@ -6,47 +6,31 @@ import 'package:gazelle_serialization/gazelle_serialization.dart';
 import 'gazelle_context.dart';
 import 'gazelle_message.dart';
 
-/// Represents a handler for a Gazelle route.
-abstract class GazelleHandler<RequestType, ResponseType> {
-  /// Builds a [GazelleHandler].
-  const GazelleHandler();
+/// Defines a handler function.
+typedef GazelleHandlerFunction<RequestType, ResponseType>
+    = FutureOr<GazelleResponse<ResponseType>> Function(
+  GazelleContext context,
+  GazelleRequest<RequestType> request,
+);
 
-  /// Returns the handler's [RequestType].
+/// A class that runs the given handler function with typed requests and responses.
+class GazelleHandler<RequestType, ResponseType> {
+  final GazelleHandlerFunction<RequestType, ResponseType> _handlerFunction;
+
+  /// Builds a [GazelleHandler].
+  const GazelleHandler(this._handlerFunction);
+
+  /// Returns the [RequestType].
   Type get requestType => RequestType;
 
-  /// Returns the handler's [ResponseType].
+  /// Returns the [ResponseType].
   Type get responseType => ResponseType;
 
-  /// Runs the handler.
+  /// Runs the handler function.
   FutureOr<GazelleResponse<ResponseType>> call(
-    GazelleContext context,
-    GazelleRequest<RequestType> request,
-  );
-
-  /// Internal method to run the handler.
-  ///
-  /// Used by `GazelleApp`.
-  FutureOr<GazelleResponse<ResponseType>> internal(
     GazelleContext context,
     GazelleRequest request,
   ) async {
-    if (request.body == null) {
-      final response = await call(
-        context,
-        GazelleRequest(
-          uri: request.uri,
-          method: request.method,
-          pathParameters: request.pathParameters,
-          headers: request.headers,
-          metadata: request.metadata,
-          body: null,
-          bodyStream: request.bodyStream,
-        ),
-      );
-
-      return response;
-    }
-
     final typedBody = await utf8.decodeStream(request.bodyStream).then((body) {
       if (body.trim().isEmpty) return null;
 
@@ -73,46 +57,11 @@ abstract class GazelleHandler<RequestType, ResponseType> {
       bodyStream: request.bodyStream,
     );
 
-    final response = await call(
+    final response = await _handlerFunction(
       context,
       typedRequest,
     );
 
     return response;
   }
-}
-
-/// Represents a GET method handler for a Gazelle route.
-abstract class GazelleGetHandler<ResponseType>
-    extends GazelleHandler<Null, ResponseType> {
-  /// Builds a [GazelleGetHandler].
-  const GazelleGetHandler();
-}
-
-/// Represents a POST method handler for a Gazelle route.
-abstract class GazellePostHandler<RequestType, ResponseType>
-    extends GazelleHandler<RequestType, ResponseType> {
-  /// Builds a [GazellePostHandler].
-  const GazellePostHandler();
-}
-
-/// Represents a PUT method handler for a Gazelle route.
-abstract class GazellePutHandler<RequestType, ResponseType>
-    extends GazelleHandler<RequestType, ResponseType> {
-  /// Builds a [GazellePutHandler].
-  const GazellePutHandler();
-}
-
-/// Represents a PATCH method handler for a Gazelle route.
-abstract class GazellePatchHandler<RequestType, ResponseType>
-    extends GazelleHandler<RequestType, ResponseType> {
-  /// Builds a [GazellePatchHandler].
-  const GazellePatchHandler();
-}
-
-/// Represents a DELETE method handler for a Gazelle route.
-abstract class GazelleDeleteHandler<RequestType, ResponseType>
-    extends GazelleHandler<RequestType, ResponseType> {
-  /// Builds a [GazelleDeleteHandler].
-  const GazelleDeleteHandler();
 }

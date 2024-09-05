@@ -21,99 +21,6 @@ class SSLTestOverrides extends HttpOverrides {
   }
 }
 
-class _TestStringGetHandler extends GazelleGetHandler<String> {
-  final String _string;
-
-  const _TestStringGetHandler(this._string);
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<Null> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: _string,
-      );
-}
-
-class _TestStringPostHandler extends GazellePostHandler<String, String> {
-  final String _string;
-
-  const _TestStringPostHandler(this._string);
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<String> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: _string,
-      );
-}
-
-class _TestStringPutHandler extends GazellePutHandler<String, String> {
-  final String _string;
-
-  const _TestStringPutHandler(this._string);
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<String> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: _string,
-      );
-}
-
-class _TestStringPatchHandler extends GazellePatchHandler<String, String> {
-  final String _string;
-
-  const _TestStringPatchHandler(this._string);
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<String> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: _string,
-      );
-}
-
-class _TestStringDeleteHandler extends GazelleDeleteHandler<String, String> {
-  final String _string;
-
-  const _TestStringDeleteHandler(this._string);
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<String> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: _string,
-      );
-}
-
-class _TestExceptionHandler extends GazelleGetHandler<String> {
-  final String _string;
-
-  const _TestExceptionHandler(this._string);
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<Null> request,
-  ) =>
-      throw Exception(_string);
-}
-
 void main() {
   group('GazelleApp tests', () {
     test('Should start and stop a GazelleApp', () async {
@@ -196,8 +103,7 @@ void main() {
       final app = GazelleApp(routes: [
         GazelleRoute(
           name: "test",
-          get: const _TestExceptionHandler("error"),
-        ),
+        ).get((context, request) => throw Exception("error")),
       ]);
 
       // Act
@@ -222,8 +128,10 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: const _TestStringGetHandler("OK"),
-          ),
+          ).get((context, request) => GazelleResponse(
+                statusCode: GazelleHttpStatusCode.success.ok_200,
+                body: "OK",
+              )),
         ],
       );
 
@@ -249,7 +157,6 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: const _TestStringGetHandler("OK"),
             preRequestHooks: (context) => [
               GazellePreRequestHook(
                 (context, request, response) async {
@@ -270,7 +177,6 @@ void main() {
             children: [
               GazelleRoute(
                 name: "test_2",
-                get: const _TestStringGetHandler("OK"),
                 postResponseHooks: (context) => [
                   GazellePostResponseHook(
                     (context, request, response) async {
@@ -279,9 +185,15 @@ void main() {
                     },
                   ),
                 ],
-              ),
+              ).get((context, request) => GazelleResponse(
+                    statusCode: GazelleHttpStatusCode.success.ok_200,
+                    body: "OK",
+                  )),
             ],
-          )
+          ).get((context, request) => GazelleResponse(
+                statusCode: GazelleHttpStatusCode.success.ok_200,
+                body: "OK",
+              )),
         ],
       );
 
@@ -303,15 +215,24 @@ void main() {
 
     test('Should insert a route and get a response for each method', () async {
       // Arrange
+      GazelleResponse<String> handler(
+        GazelleContext context,
+        GazelleRequest request,
+      ) =>
+          GazelleResponse(
+            statusCode: GazelleHttpStatusCode.success.ok_200,
+            body: "OK",
+          );
+
       final routes = [
         GazelleRoute(
           name: "test",
-          get: _TestStringGetHandler("OK"),
-          post: _TestStringPostHandler("OK"),
-          put: _TestStringPutHandler("OK"),
-          patch: _TestStringPatchHandler("OK"),
-          delete: _TestStringDeleteHandler("OK"),
-        ),
+        )
+            .get(handler)
+            .post(handler)
+            .put(handler)
+            .patch(handler)
+            .delete(handler),
       ];
       final app = GazelleApp(routes: routes);
       await app.start();

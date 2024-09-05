@@ -1,36 +1,6 @@
-import 'dart:async';
-
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_jwt/gazelle_jwt.dart';
 import 'package:http/http.dart' as http;
-
-class GazelleLoginJwtExampleHandler extends GazellePostHandler<String, String> {
-  const GazelleLoginJwtExampleHandler();
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<String> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-      );
-}
-
-class GazelleHelloWorldJwtExampleHandler extends GazelleGetHandler<String> {
-  const GazelleHelloWorldJwtExampleHandler();
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<Null> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: "Hello, World!",
-      );
-}
 
 void main() async {
   // Initialize your Gazelle app.
@@ -38,16 +8,20 @@ void main() async {
     routes: [
       GazelleRoute(
         name: "login",
-        post: const GazelleLoginJwtExampleHandler(),
-      ),
+      ).post((context, request) => GazelleResponse(
+            statusCode: GazelleHttpStatusCode.success.ok_200,
+            body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+          )),
       GazelleRoute(
         name: "hello_world",
-        get: const GazelleHelloWorldJwtExampleHandler(),
         // Add the authentication hook provided by the plugin to guard your routes.
         preRequestHooks: (context) => [
           context.getPlugin<GazelleJwtPlugin>().authenticationHook,
         ],
-      ),
+      ).get((context, request) => GazelleResponse(
+            statusCode: GazelleHttpStatusCode.success.ok_200,
+            body: "Hello, World!",
+          )),
     ],
     plugins: [GazelleJwtPlugin(SecretKey("supersecret"))],
   );

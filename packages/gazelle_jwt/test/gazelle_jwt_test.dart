@@ -7,34 +7,6 @@ import 'package:gazelle_jwt/src/gazelle_jwt_consts.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
-class _TestLoginHandler extends GazellePostHandler<String, String> {
-  const _TestLoginHandler();
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<String> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
-      );
-}
-
-class _TestHelloWorldHandler extends GazelleGetHandler<String> {
-  const _TestHelloWorldHandler();
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<Null> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: "Hello, World!",
-      );
-}
-
 void main() {
   group('GazelleJwtPlugin tests', () {
     test('Should sign and verify a JWT', () async {
@@ -166,21 +138,29 @@ void main() {
         routes: [
           GazelleRoute(
             name: "login",
-            post: const _TestLoginHandler(),
+          ).post(
+            (context, request) => GazelleResponse(
+              statusCode: GazelleHttpStatusCode.success.ok_200,
+              body: context.getPlugin<GazelleJwtPlugin>().sign({"test": "123"}),
+            ),
           ),
           GazelleRoute(
             name: "test",
-            get: const _TestHelloWorldHandler(),
             preRequestHooks: (context) => [
               context.getPlugin<GazelleJwtPlugin>().authenticationHook,
             ],
             children: [
               GazelleRoute(
                 name: "test_2",
-                get: const _TestHelloWorldHandler(),
-              ),
+              ).get((context, request) => GazelleResponse(
+                    statusCode: GazelleHttpStatusCode.success.ok_200,
+                    body: "Hello, World!",
+                  )),
             ],
-          ),
+          ).get((context, request) => GazelleResponse(
+                statusCode: GazelleHttpStatusCode.success.ok_200,
+                body: "Hello, World!",
+              )),
         ],
         plugins: [
           GazelleJwtPlugin(SecretKey("supersecret")),

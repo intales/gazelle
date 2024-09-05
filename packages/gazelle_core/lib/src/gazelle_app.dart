@@ -82,7 +82,7 @@ class GazelleApp {
     int? port,
     this.sslCertificate,
     GazelleModelProvider? modelProvider,
-  })  : _context = GazelleContext.create(),
+  })  : _context = GazelleContext.create(modelProvider: modelProvider),
         _routes = routes,
         _plugins = plugins ?? const [],
         _port = port ?? 0,
@@ -134,7 +134,9 @@ class GazelleApp {
     _server.listen((httpRequest) async {
       try {
         await _handleHttpRequest(httpRequest);
-      } catch (_) {
+      } catch (e, stack) {
+        print(e);
+        print(stack);
         return _send500Error(httpRequest.response);
       }
     });
@@ -215,7 +217,7 @@ class GazelleApp {
       }
     }
 
-    final handlerResponse = await handler.internal(context, request);
+    final handlerResponse = await handler(context, request);
     response = GazelleResponse(
       metadata: {...response.metadata, ...handlerResponse.metadata},
       headers: [...response.headers, ...handlerResponse.headers],

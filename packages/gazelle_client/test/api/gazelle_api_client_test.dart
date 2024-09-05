@@ -35,35 +35,23 @@ class _TestModelProvider extends GazelleModelProvider {
       };
 }
 
-class _TestHandler extends GazelleGetHandler<_Test> {
-  const _TestHandler();
+GazelleResponse<_Test> testHandler(
+  GazelleContext context,
+  GazelleRequest request,
+) =>
+    GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: _Test(test: "Hello, World!"),
+    );
 
-  @override
-  FutureOr<GazelleResponse<_Test>> call(
-    GazelleContext context,
-    GazelleRequest<Null> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: _Test(
-          test: "Hello, World!",
-        ),
-      );
-}
-
-class _TestStringHandler extends GazelleGetHandler<String> {
-  const _TestStringHandler();
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest<Null> request,
-  ) =>
-      GazelleResponse(
-        statusCode: GazelleHttpStatusCode.success.ok_200,
-        body: "Hello, World!",
-      );
-}
+GazelleResponse<String> stringHandler(
+  GazelleContext context,
+  GazelleRequest request,
+) =>
+    GazelleResponse(
+      statusCode: GazelleHttpStatusCode.success.ok_200,
+      body: "Hello, World!",
+    );
 
 void main() {
   group('GazelleApiClient tests', () {
@@ -79,12 +67,10 @@ void main() {
             children: [
               GazelleRoute(
                 name: "test",
-                get: const _TestHandler(),
-              ),
+              ).get(testHandler),
               GazelleRoute(
                 name: "test_string",
-                get: const _TestStringHandler(),
-              ),
+              ).get(stringHandler),
             ],
           ),
         ],

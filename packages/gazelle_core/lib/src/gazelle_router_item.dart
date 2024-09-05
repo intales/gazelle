@@ -13,19 +13,19 @@ class GazelleRouterItem {
   final String name;
 
   /// The handler for the GET method.
-  final GazelleGetHandler? get;
+  final GazelleHandler? get;
 
   /// The handler for the POST method.
-  final GazellePostHandler? post;
+  final GazelleHandler? post;
 
   /// The handler for the PUT method.
-  final GazellePutHandler? put;
+  final GazelleHandler? put;
 
   /// The handler for the PATCH method.
-  final GazellePatchHandler? patch;
+  final GazelleHandler? patch;
 
   /// The handler for the DELETE method.
-  final GazelleDeleteHandler? delete;
+  final GazelleHandler? delete;
 
   /// The pre-request hooks associated with the route.
   final List<GazellePreRequestHook> preRequestHooks;
@@ -48,22 +48,22 @@ class GazelleRouterItem {
 
   /// Retrieves the correct handler.
   GazelleHandler? getHandler(GazelleHttpMethod method) => switch (method) {
-        GazelleHttpMethod.get => get as GazelleHandler?,
-        GazelleHttpMethod.post => post as GazelleHandler?,
-        GazelleHttpMethod.patch => patch as GazelleHandler?,
-        GazelleHttpMethod.put => put as GazelleHandler?,
-        GazelleHttpMethod.delete => delete as GazelleHandler?,
+        GazelleHttpMethod.get => get,
+        GazelleHttpMethod.post => post,
+        GazelleHttpMethod.patch => patch,
+        GazelleHttpMethod.put => put,
+        GazelleHttpMethod.delete => delete,
         _ => null,
       };
 
   /// Creates a copy of this GazelleRoute with the specified attributes overridden.
   GazelleRouterItem copyWith({
     String? name,
-    GazelleGetHandler? get,
-    GazellePostHandler? post,
-    GazellePutHandler? put,
-    GazellePatchHandler? patch,
-    GazelleDeleteHandler? delete,
+    GazelleHandler? get,
+    GazelleHandler? post,
+    GazelleHandler? put,
+    GazelleHandler? patch,
+    GazelleHandler? delete,
     List<GazellePreRequestHook>? preRequestHooks,
     List<GazellePostResponseHook>? postResponseHooks,
     GazelleContext? context,
