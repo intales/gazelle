@@ -53,10 +53,9 @@ Future<CreateRouteResult> createRoute({
 import 'package:gazelle_core/gazelle_core.dart';
 import '$handlerImportDirectivePath';
 
-const $codeRouteName = GazelleRoute(
+final $codeRouteName = GazelleRoute(
   name: "$routeName",
-  get: ${handler.handlerName}(),
-);
+).get(${uncapitalizeString(handler.handlerName)});
   """
       .trim();
 
