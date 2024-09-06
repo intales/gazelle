@@ -1,6 +1,6 @@
 name: gazelle_core
 description: A lightweight Dart web framework for scalable and developer-friendly server-side projects.
-version: 0.6.0
+version: 0.7.0+1
 repository: https://github.com/intales/gazelle/tree/main/packages/gazelle_core
 
 false_secrets:

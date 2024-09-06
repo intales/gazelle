@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_logger/gazelle_logger.dart';
 import 'package:http/http.dart' as http;
@@ -12,24 +10,6 @@ class TestLogOutput extends LogOutput {
   void output(OutputEvent event) => outputValue += event.lines.join("\n");
 }
 
-class _TestHandler extends GazelleRouteHandler<String> {
-  final String _string;
-
-  const _TestHandler(this._string);
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: _string,
-    );
-  }
-}
-
 void main() {
   group('GazelleLoggerPlugin tests', () {
     test('Should log incoming request', () async {
@@ -39,14 +19,16 @@ void main() {
 
       final route = GazelleRoute(
         name: "",
-        get: _TestHandler(plugin.toString()),
         preRequestHooks: (context) => [
           context.getPlugin<GazelleLoggerPlugin>().logRequestHook,
         ],
         postResponseHooks: (context) => [
           context.getPlugin<GazelleLoggerPlugin>().logResponseHook,
         ],
-      );
+      ).get((context, request) => GazelleResponse(
+            statusCode: GazelleHttpStatusCode.success.ok_200,
+            body: plugin.toString(),
+          ));
 
       final app = GazelleApp(
         routes: [route],

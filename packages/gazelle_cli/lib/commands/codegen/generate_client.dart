@@ -154,26 +154,34 @@ void _generateRouteClasses(
       if (entry.value['methods']['post'] != null) {
         final returnType =
             entry.value['methods']['post']['returnType'] ?? "dynamic";
+        final requestType =
+            entry.value['methods']['post']['requestType'] ?? "dynamic";
         code.writeln(
-            "Future<$returnType> post($returnType body) => _client.post<$returnType>(body: body);");
+            "Future<$returnType> post($requestType body) => _client.post<$requestType, $returnType>(body: body);");
       }
       if (entry.value['methods']['put'] != null) {
         final returnType =
             entry.value['methods']['put']['returnType'] ?? "dynamic";
+        final requestType =
+            entry.value['methods']['put']['requestType'] ?? "dynamic";
         code.writeln(
-            "Future<$returnType> put($returnType body) => _client.put<$returnType>(body: body);");
+            "Future<$returnType> put($requestType body) => _client.put<$requestType, $returnType>(body: body);");
       }
       if (entry.value['methods']['patch'] != null) {
         final returnType =
             entry.value['methods']['patch']['returnType'] ?? "dynamic";
+        final requestType =
+            entry.value['methods']['patch']['requestType'] ?? "dynamic";
         code.writeln(
-            "Future<$returnType> patch($returnType body) => _client.patch<$returnType>(body: body);");
+            "Future<$returnType> patch($requestType body) => _client.patch<$requestType, $returnType>(body: body);");
       }
       if (entry.value['methods']['delete'] == true) {
         final returnType =
             entry.value['methods']['delete']['returnType'] ?? "dynamic";
+        final requestType =
+            entry.value['methods']['delete']['requestType'] ?? "dynamic";
         code.writeln(
-            "Future<$returnType> delete($returnType body) => _client.delete<$returnType>(body: body);");
+            "Future<$returnType> delete($requestType body) => _client.delete<$requestType, $returnType>(body: body);");
       }
     }
 

@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:dart_style/dart_style.dart';
 
+import '../../commons/entities/http_method.dart';
+import '../../commons/entities/project_route.dart';
+import '../../commons/functions/uncapitalize_string.dart';
+
 /// Represents the result of [createHandler] function.
 class CreateHandlerResult {
   /// Where the handler has been created.
@@ -19,52 +23,27 @@ class CreateHandlerResult {
 
 /// Creates an handler for a Gazelle project.
 Future<CreateHandlerResult> createHandler({
-  required String routeName,
-  required String httpMethod,
-  required String path,
+  required final ProjectRoute route,
+  required final HttpMethod httpMethod,
 }) async {
-  final routeNameParts = routeName.split("_");
-
-  String handlerName = "";
-  for (var i = 0; i < routeNameParts.length; i++) {
-    final part = routeNameParts[i];
-    handlerName += "${part[0].toUpperCase()}${part.substring(1)}";
-  }
-
-  handlerName += switch (httpMethod) {
-    "GET" => "Get",
-    "POST" => "Post",
-    "PUT" => "Put",
-    "PATCH" => "Patch",
-    "DELETE" => "Delete",
-    _ => throw "Unexpected error",
-  };
-
-  handlerName += "Handler";
-
+  final handlerName = "${route.name}${httpMethod.pascalCase}";
   final handler = """
 import 'package:gazelle_core/gazelle_core.dart';
 
-class $handlerName extends GazelleRouteHandler<String> {
-  const $handlerName();
-
-  @override
-  Future<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) async {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: "Hello, Gazelle!",
-    );
-  }
+Future<GazelleResponse<String>> ${uncapitalizeString(handlerName)}(
+  GazelleContext context,
+  GazelleRequest request,
+) async {
+  return GazelleResponse(
+    statusCode: GazelleHttpStatusCode.success.ok_200,
+    body: "Hello, Gazelle!",
+  );
 }
   """
       .trim();
 
   final handlerFileName =
-      "$path/${routeName.toLowerCase()}_${httpMethod.toLowerCase()}_handler.dart";
+      "${route.path}/${route.path.split("/").last}_${httpMethod.name.toLowerCase()}.dart";
   final handlerFilePath = await File(handlerFileName)
       .create(recursive: true)
       .then((file) => file.writeAsString(DartFormatter().format(handler)))

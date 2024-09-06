@@ -1,6 +1,6 @@
 name: gazelle_cli
 description: A CLI tool to manage applications built with Gazelle framework.
-version: 0.7.0+1
+version: 0.8.0+1
 repository: https://github.com/intales/gazelle/tree/main/packages/gazelle_cli
 
 environment:
@@ -17,6 +17,7 @@ dependencies:
   args: ^2.5.0
   cli_spin: ^1.0.1
   code_builder: ^4.10.0
+  dart_console: ^4.1.0
   dart_style: ^2.3.6
   http: ^1.2.2
   path: ^1.9.0

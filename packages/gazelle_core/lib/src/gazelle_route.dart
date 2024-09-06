@@ -1,24 +1,8 @@
-import 'dart:async';
-
 import 'gazelle_context.dart';
-import 'gazelle_generic_type_parameter.dart';
+import 'gazelle_handler.dart';
 import 'gazelle_hooks.dart';
-import 'gazelle_message.dart';
 import 'gazelle_router.dart';
 import 'gazelle_router_item.dart';
-
-/// Represents a handler for a Gazelle route.
-abstract class GazelleRouteHandler<T> with GazelleGenericTypeParameter<T> {
-  /// Builds a [GazelleRouteHandler].
-  const GazelleRouteHandler();
-
-  /// Runs the [handler].
-  FutureOr<GazelleResponse<T>> call(
-    GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  );
-}
 
 /// Represents a callback to build a list of pre-request hooks.
 typedef GazellePreRequestHooksBuilder = List<GazellePreRequestHook> Function(
@@ -37,19 +21,19 @@ class GazelleRoute {
   final String name;
 
   /// The handler for the GET method.
-  final GazelleRouteHandler? get;
+  final GazelleHandler? _get;
 
   /// The handler for the POST method.
-  final GazelleRouteHandler? post;
+  final GazelleHandler? _post;
 
   /// The handler for the PUT method.
-  final GazelleRouteHandler? put;
+  final GazelleHandler? _put;
 
   /// The handler for the PATCH method.
-  final GazelleRouteHandler? patch;
+  final GazelleHandler? _patch;
 
   /// The handler for the DELETE method.
-  final GazelleRouteHandler? delete;
+  final GazelleHandler? _delete;
 
   /// The pre-request hooks associated with the route.
   final GazellePreRequestHooksBuilder? preRequestHooks;
@@ -63,39 +47,134 @@ class GazelleRoute {
   /// Constructs a [GazelleRoute] instance.
   const GazelleRoute({
     required this.name,
-    this.get,
-    this.post,
-    this.put,
-    this.patch,
-    this.delete,
     this.preRequestHooks,
     this.postResponseHooks,
     this.children = const [],
-  });
+  })  : _delete = null,
+        _patch = null,
+        _put = null,
+        _post = null,
+        _get = null;
+
+  const GazelleRoute._({
+    required this.name,
+    GazelleHandler? get,
+    GazelleHandler? post,
+    GazelleHandler? put,
+    GazelleHandler? patch,
+    GazelleHandler? delete,
+    this.preRequestHooks,
+    this.postResponseHooks,
+    this.children = const [],
+  })  : _get = get,
+        _post = post,
+        _put = put,
+        _patch = patch,
+        _delete = delete;
+
+  /// Adds a GET [handler] to this route.
+  GazelleRoute get<ResponseType>(
+    GazelleHandlerFunction<dynamic, ResponseType> handler,
+  ) =>
+      GazelleRoute._(
+        name: name,
+        get: GazelleHandler<dynamic, ResponseType>(handler),
+        post: _post,
+        put: _put,
+        patch: _patch,
+        delete: _delete,
+        preRequestHooks: preRequestHooks,
+        postResponseHooks: postResponseHooks,
+        children: children,
+      );
+
+  /// Adds a POST [handler] to this route.
+  GazelleRoute post<RequestType, ResponseType>(
+    GazelleHandlerFunction<RequestType, ResponseType> handler,
+  ) =>
+      GazelleRoute._(
+        name: name,
+        get: _get,
+        post: GazelleHandler<RequestType, ResponseType>(handler),
+        put: _put,
+        patch: _patch,
+        delete: _delete,
+        preRequestHooks: preRequestHooks,
+        postResponseHooks: postResponseHooks,
+        children: children,
+      );
+
+  /// Adds a PUT [handler] to this route.
+  GazelleRoute put<RequestType, ResponseType>(
+    GazelleHandlerFunction<RequestType, ResponseType> handler,
+  ) =>
+      GazelleRoute._(
+        name: name,
+        get: _get,
+        post: _post,
+        put: GazelleHandler<RequestType, ResponseType>(handler),
+        patch: _patch,
+        delete: _delete,
+        preRequestHooks: preRequestHooks,
+        postResponseHooks: postResponseHooks,
+        children: children,
+      );
+
+  /// Adds a PATCH [handler] to this route.
+  GazelleRoute patch<RequestType, ResponseType>(
+    GazelleHandlerFunction<RequestType, ResponseType> handler,
+  ) =>
+      GazelleRoute._(
+        name: name,
+        get: _get,
+        post: _post,
+        put: _put,
+        patch: GazelleHandler<RequestType, ResponseType>(handler),
+        delete: _delete,
+        preRequestHooks: preRequestHooks,
+        postResponseHooks: postResponseHooks,
+        children: children,
+      );
+
+  /// Adds a DELETE [handler] to this route.
+  GazelleRoute delete<RequestType, ResponseType>(
+    GazelleHandlerFunction<RequestType, ResponseType> handler,
+  ) =>
+      GazelleRoute._(
+        name: name,
+        get: _get,
+        post: _post,
+        put: _put,
+        patch: _patch,
+        delete: GazelleHandler<RequestType, ResponseType>(handler),
+        preRequestHooks: preRequestHooks,
+        postResponseHooks: postResponseHooks,
+        children: children,
+      );
 
   /// Constructs a parametric [GazelleRoute] instance.
   const GazelleRoute.parameter({
     required String name,
-    this.get,
-    this.post,
-    this.put,
-    this.patch,
-    this.delete,
     this.preRequestHooks,
     this.postResponseHooks,
     this.children = const [],
-  }) : name = "${GazelleRouter.wildcard}$name";
+  })  : _delete = null,
+        _patch = null,
+        _put = null,
+        _post = null,
+        _get = null,
+        name = "${GazelleRouter.wildcard}$name";
 
   /// Converts this route to a router item.
   GazelleRouterItem toRouterItem(GazelleContext context) {
     return GazelleRouterItem(
       context: context,
       name: name,
-      get: get,
-      post: post,
-      put: put,
-      patch: patch,
-      delete: delete,
+      get: _get,
+      post: _post,
+      put: _put,
+      patch: _patch,
+      delete: _delete,
       preRequestHooks:
           preRequestHooks != null ? preRequestHooks!(context) : const [],
       postResponseHooks:
