@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:gazelle_jwt/gazelle_jwt.dart';
 import 'package:gazelle_jwt/src/gazelle_jwt_consts.dart';
@@ -17,6 +19,7 @@ void main() {
         metadata: {
           jwtKeyword: jwt,
         },
+        bodyStream: Stream.value(Uint8List(0)),
       );
 
       // Act

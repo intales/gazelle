@@ -1,3 +1,9 @@
+## 0.8.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: typed request body ([#58](https://github.com/intales/gazelle/issues/58)).
+
 ## 0.7.0+3
 
  - **FIX**(gazelle_cli): create commands ([#56](https://github.com/intales/gazelle/issues/56)).

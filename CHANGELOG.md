@@ -3,6 +3,84 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-09-06
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`gazelle_cli` - `v0.8.0`](#gazelle_cli---v080)
+ - [`gazelle_client` - `v0.4.0`](#gazelle_client---v040)
+ - [`gazelle_core` - `v0.7.0`](#gazelle_core---v070)
+ - [`gazelle_cors` - `v0.6.0`](#gazelle_cors---v060)
+ - [`gazelle_jwt` - `v0.6.0`](#gazelle_jwt---v060)
+ - [`gazelle_logger` - `v0.6.0`](#gazelle_logger---v060)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `gazelle_cli` - `v0.8.0`
+
+ - **BREAKING** **FEAT**: typed request body ([#58](https://github.com/intales/gazelle/issues/58)).
+
+#### `gazelle_client` - `v0.4.0`
+
+ - **BREAKING** **FEAT**: typed request body ([#58](https://github.com/intales/gazelle/issues/58)).
+
+#### `gazelle_core` - `v0.7.0`
+
+ - **BREAKING** **FEAT**: typed request body ([#58](https://github.com/intales/gazelle/issues/58)).
+
+#### `gazelle_cors` - `v0.6.0`
+
+ - **BREAKING** **FEAT**: typed request body ([#58](https://github.com/intales/gazelle/issues/58)).
+
+#### `gazelle_jwt` - `v0.6.0`
+
+ - **BREAKING** **FEAT**: typed request body ([#58](https://github.com/intales/gazelle/issues/58)).
+
+#### `gazelle_logger` - `v0.6.0`
+
+ - **BREAKING** **FEAT**: typed request body ([#58](https://github.com/intales/gazelle/issues/58)).
+
+
+## 2024-08-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_core` - `v0.6.0+1`](#gazelle_core---v0601)
+ - [`gazelle_logger` - `v0.5.0+1`](#gazelle_logger---v0501)
+ - [`gazelle_jwt` - `v0.5.0+1`](#gazelle_jwt---v0501)
+ - [`gazelle_cors` - `v0.5.0+1`](#gazelle_cors---v0501)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gazelle_logger` - `v0.5.0+1`
+ - `gazelle_jwt` - `v0.5.0+1`
+ - `gazelle_cors` - `v0.5.0+1`
+
+---
+
+#### `gazelle_core` - `v0.6.0+1`
+
+ - **FIX**(gazelle_core): export routes ([#57](https://github.com/intales/gazelle/issues/57)).
+
+
 ## 2024-08-29
 
 ### Changes

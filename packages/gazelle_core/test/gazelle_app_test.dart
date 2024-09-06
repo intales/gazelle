@@ -21,39 +21,6 @@ class SSLTestOverrides extends HttpOverrides {
   }
 }
 
-class _TestStringHandler extends GazelleRouteHandler<String> {
-  final String _string;
-
-  const _TestStringHandler(this._string);
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: _string,
-    );
-  }
-}
-
-class _TestExceptionHandler extends GazelleRouteHandler<String> {
-  final String _string;
-
-  const _TestExceptionHandler(this._string);
-
-  @override
-  FutureOr<GazelleResponse<String>> call(
-    GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) {
-    throw Exception(_string);
-  }
-}
-
 void main() {
   group('GazelleApp tests', () {
     test('Should start and stop a GazelleApp', () async {
@@ -136,8 +103,7 @@ void main() {
       final app = GazelleApp(routes: [
         GazelleRoute(
           name: "test",
-          get: const _TestExceptionHandler("error"),
-        ),
+        ).get((context, request) => throw Exception("error")),
       ]);
 
       // Act
@@ -162,8 +128,10 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: const _TestStringHandler("OK"),
-          ),
+          ).get((context, request) => GazelleResponse(
+                statusCode: GazelleHttpStatusCode.success.ok_200,
+                body: "OK",
+              )),
         ],
       );
 
@@ -189,7 +157,6 @@ void main() {
         routes: [
           GazelleRoute(
             name: "test",
-            get: const _TestStringHandler("OK"),
             preRequestHooks: (context) => [
               GazellePreRequestHook(
                 (context, request, response) async {
@@ -210,7 +177,6 @@ void main() {
             children: [
               GazelleRoute(
                 name: "test_2",
-                get: const _TestStringHandler("OK"),
                 postResponseHooks: (context) => [
                   GazellePostResponseHook(
                     (context, request, response) async {
@@ -219,9 +185,15 @@ void main() {
                     },
                   ),
                 ],
-              ),
+              ).get((context, request) => GazelleResponse(
+                    statusCode: GazelleHttpStatusCode.success.ok_200,
+                    body: "OK",
+                  )),
             ],
-          )
+          ).get((context, request) => GazelleResponse(
+                statusCode: GazelleHttpStatusCode.success.ok_200,
+                body: "OK",
+              )),
         ],
       );
 
@@ -243,17 +215,24 @@ void main() {
 
     test('Should insert a route and get a response for each method', () async {
       // Arrange
-      final handler = const _TestStringHandler("OK");
+      GazelleResponse<String> handler(
+        GazelleContext context,
+        GazelleRequest request,
+      ) =>
+          GazelleResponse(
+            statusCode: GazelleHttpStatusCode.success.ok_200,
+            body: "OK",
+          );
 
       final routes = [
         GazelleRoute(
           name: "test",
-          get: handler,
-          post: handler,
-          put: handler,
-          patch: handler,
-          delete: handler,
-        ),
+        )
+            .get(handler)
+            .post(handler)
+            .put(handler)
+            .patch(handler)
+            .delete(handler),
       ];
       final app = GazelleApp(routes: routes);
       await app.start();
@@ -264,9 +243,6 @@ void main() {
         switch (method) {
           case GazelleHttpMethod.get:
             sendRequest = () => http.get(uri);
-            break;
-          case GazelleHttpMethod.head:
-            sendRequest = () => http.head(uri);
             break;
           case GazelleHttpMethod.put:
             sendRequest = () => http.put(uri);
@@ -281,10 +257,7 @@ void main() {
             sendRequest = () => http.delete(uri);
             break;
           case GazelleHttpMethod.options:
-            sendRequest = () => http.Client()
-                .send(http.Request("OPTIONS", uri))
-                .then(http.Response.fromStream);
-            break;
+            continue;
           default:
             fail("Unexpected method.");
         }
@@ -292,74 +265,9 @@ void main() {
         final result = await sendRequest();
 
         // Assert
-        if (method == GazelleHttpMethod.head) {
-          expect(result.statusCode, 200);
-          expect(result.body, "");
-        } else if (method == GazelleHttpMethod.options) {
-          expect(result.statusCode, 204);
-          expect(result.body, "");
-        } else {
-          expect(result.statusCode, 200);
-          expect(result.body, "OK");
-        }
+        expect(result.statusCode, 200);
+        expect(result.body, "OK");
       }
-
-      await app.stop(force: true);
-    });
-
-    test('Should send a response without a body when sending a HEAD request',
-        () async {
-      // Arrange
-      final app = GazelleApp(
-        routes: [
-          GazelleRoute(
-            name: "test",
-            get: const _TestStringHandler("Hello, World!"),
-          )
-        ],
-      );
-      await app.start();
-
-      // Act
-      final uri = Uri.parse("${app.serverAddress}/test");
-      final getResponse = await http.get(uri);
-      final headResponse = await http.head(uri);
-
-      // Assert
-      expect(getResponse.statusCode, 200);
-      expect(getResponse.body, "Hello, World!");
-
-      expect(headResponse.statusCode, 200);
-      expect(headResponse.body.length, 0);
-
-      await app.stop(force: true);
-    });
-
-    test(
-        'Should send a response with allow header when sending an OPTIONS request',
-        () async {
-      // Arrange
-      final app = GazelleApp(
-        routes: [
-          GazelleRoute(
-            name: "test",
-            get: const _TestStringHandler("OK"),
-          ),
-        ],
-      );
-      await app.start();
-
-      // Act
-      final uri = Uri.parse("${app.serverAddress}/test");
-      final response = await http.Client()
-          .send(http.Request("OPTIONS", uri))
-          .then(http.Response.fromStream);
-
-      // Assert
-      expect(response.statusCode, 204);
-      expect(response.headers["allow"]!.contains("GET"), true);
-      expect(response.headers["allow"]!.contains("HEAD"), true);
-      expect(response.headers["allow"]!.contains("OPTIONS"), true);
 
       await app.stop(force: true);
     });

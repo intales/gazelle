@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'gazelle_http_header.dart';
 import 'gazelle_http_method.dart';
@@ -32,7 +32,7 @@ abstract class GazelleMessage {
 ///
 /// Encapsulates information about the HTTP request including the URI, method,
 /// path parameters, headers, and body.
-class GazelleRequest extends GazelleMessage {
+class GazelleRequest<T> extends GazelleMessage {
   /// The URI of the request.
   final Uri uri;
 
@@ -43,7 +43,10 @@ class GazelleRequest extends GazelleMessage {
   final Map<String, String> pathParameters;
 
   /// The body of the request.
-  final Future<String>? body;
+  final T? body;
+
+  /// The stream of the body's request.
+  final Stream<Uint8List> bodyStream;
 
   /// Constructs a GazelleRequest instance.
   ///
@@ -57,14 +60,15 @@ class GazelleRequest extends GazelleMessage {
   /// defaulting to an empty map if not provided.
   /// The optional [metadata] parameter represents additional metadata associated
   /// with the request, defaulting to an empty map if not provided.
-  const GazelleRequest({
+  GazelleRequest({
     required this.uri,
     required this.method,
     required this.pathParameters,
+    Stream<Uint8List>? bodyStream,
     this.body,
     super.headers = const [],
     super.metadata = const {},
-  });
+  }) : bodyStream = bodyStream ?? Stream.value(Uint8List(0));
 
   /// Constructs a [GazelleRequest] instance from an [HttpRequest].
   ///
@@ -76,14 +80,13 @@ class GazelleRequest extends GazelleMessage {
     final headers = <GazelleHttpHeader>[];
     request.headers.forEach((key, value) =>
         headers.add(GazelleHttpHeader.fromString(key, values: value)));
-    final body = utf8.decodeStream(request);
 
     return GazelleRequest(
       uri: request.uri,
       method: GazelleHttpMethod.fromString(request.method),
       pathParameters: pathParameters,
       headers: headers,
-      body: body,
+      bodyStream: request,
     );
   }
 }
