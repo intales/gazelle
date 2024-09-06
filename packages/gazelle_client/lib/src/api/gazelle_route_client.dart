@@ -61,8 +61,10 @@ class GazelleRouteClient {
         path: "$_path/$path",
       );
 
-  /// Sends a GET request for a single [T].
-  Future<T> get<T>({Map<String, dynamic>? queryParams}) async {
+  /// Sends a GET request for a single [ResponseType].
+  Future<ResponseType> get<ResponseType>({
+    Map<String, dynamic>? queryParams,
+  }) async {
     Uri uri = Uri.parse(_path);
 
     if (queryParams != null && queryParams.isNotEmpty) {
@@ -78,11 +80,13 @@ class GazelleRouteClient {
       method: "GET",
     );
 
-    return _deserialize<T>(response.body);
+    return _deserialize<ResponseType>(response.body);
   }
 
-  /// Sends a GET request for a list of [T]s.
-  Future<List<T>> list<T>({Map<String, dynamic>? queryParams}) async {
+  /// Sends a GET request for a list of [ResponseType]s.
+  Future<List<ResponseType>> list<ResponseType>({
+    Map<String, dynamic>? queryParams,
+  }) async {
     Uri uri = Uri.parse(_path);
 
     if (queryParams != null && queryParams.isNotEmpty) {
@@ -98,59 +102,67 @@ class GazelleRouteClient {
       method: "GET",
     );
 
-    return _deserializeList<T>(response.body);
+    return _deserializeList<ResponseType>(response.body);
   }
 
-  /// Sends a POST request for [T].
-  Future<T> post<T>({required T body}) async {
+  /// Sends a POST request for [ResponseType].
+  Future<ResponseType> post<RequestType, ResponseType>({
+    required RequestType body,
+  }) async {
     final response = await _sendRequest(
       callback: () => _httpClient.post(
         Uri.parse(_path),
-        body: _serialize<T>(body),
+        body: _serialize<RequestType>(body),
       ),
       method: "POST",
     );
 
-    return _deserialize<T>(response.body);
+    return _deserialize<ResponseType>(response.body);
   }
 
-  /// Sends a PUT request for [T].
-  Future<T> put<T>({required T body}) async {
+  /// Sends a PUT request for [ResponseType].
+  Future<ResponseType> put<RequestType, ResponseType>({
+    required RequestType body,
+  }) async {
     final response = await _sendRequest(
       callback: () => _httpClient.put(
         Uri.parse(_path),
-        body: _serialize<T>(body),
+        body: _serialize<RequestType>(body),
       ),
       method: "PUT",
     );
 
-    return _deserialize<T>(response.body);
+    return _deserialize<ResponseType>(response.body);
   }
 
-  /// Sends a PATCH request for [T].
-  Future<T> patch<T>({required T body}) async {
+  /// Sends a PATCH request for [ResponseType].
+  Future<ResponseType> patch<RequestType, ResponseType>({
+    required RequestType body,
+  }) async {
     final response = await _sendRequest(
       callback: () => _httpClient.patch(
         Uri.parse(_path),
-        body: _serialize<T>(body),
+        body: _serialize<RequestType>(body),
       ),
       method: "PATCH",
     );
 
-    return _deserialize<T>(response.body);
+    return _deserialize<ResponseType>(response.body);
   }
 
-  /// Sends a DELETE request for [T].
-  Future<T> delete<T>({required T body}) async {
+  /// Sends a DELETE request for [ResponseType].
+  Future<ResponseType> delete<RequestType, ResponseType>({
+    required RequestType body,
+  }) async {
     final response = await _sendRequest(
       callback: () => _httpClient.delete(
         Uri.parse(_path),
-        body: _serialize<T>(body),
+        body: _serialize<RequestType>(body),
       ),
       method: "DELETE",
     );
 
-    return _deserialize<T>(response.body);
+    return _deserialize<ResponseType>(response.body);
   }
 
   Future<http.Response> _sendRequest({
