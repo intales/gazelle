@@ -6,7 +6,7 @@ class DeletingProjectError {
   final String message;
 
   /// Creates a [DeletingProjectError].
-  const DeletingProjectError() : message = "Failed to delete project!";
+  const DeletingProjectError() : message = "No Gazelle project found.";
 }
 
 /// Delete a Gazelle project.
