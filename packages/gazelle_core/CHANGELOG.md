@@ -1,3 +1,9 @@
+## 0.7.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: typed request body ([#58](https://github.com/intales/gazelle/issues/58)).
+
 ## 0.6.0+1
 
  - **FIX**(gazelle_core): export routes ([#57](https://github.com/intales/gazelle/issues/57)).

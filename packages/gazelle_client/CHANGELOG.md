@@ -1,3 +1,9 @@
+## 0.4.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: typed request body ([#58](https://github.com/intales/gazelle/issues/58)).
+
 ## 0.3.0
 
 > Note: This release has breaking changes.
