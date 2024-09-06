@@ -11,6 +11,48 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`gazelle_cli` - `v0.8.0+1`](#gazelle_cli---v0801)
+ - [`gazelle_client` - `v0.4.0+1`](#gazelle_client---v0401)
+ - [`gazelle_core` - `v0.7.0+1`](#gazelle_core---v0701)
+ - [`gazelle_logger` - `v0.6.0+1`](#gazelle_logger---v0601)
+ - [`gazelle_jwt` - `v0.6.0+1`](#gazelle_jwt---v0601)
+ - [`gazelle_cors` - `v0.6.0+1`](#gazelle_cors---v0601)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `gazelle_logger` - `v0.6.0+1`
+ - `gazelle_jwt` - `v0.6.0+1`
+ - `gazelle_cors` - `v0.6.0+1`
+
+---
+
+#### `gazelle_cli` - `v0.8.0+1`
+
+ - **FIX**: Fixed client and codegen ([#59](https://github.com/intales/gazelle/issues/59)).
+
+#### `gazelle_client` - `v0.4.0+1`
+
+ - **FIX**: Fixed client and codegen ([#59](https://github.com/intales/gazelle/issues/59)).
+
+#### `gazelle_core` - `v0.7.0+1`
+
+ - **FIX**: Fixed client and codegen ([#59](https://github.com/intales/gazelle/issues/59)).
+
+
+## 2024-09-06
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - [`gazelle_cli` - `v0.8.0`](#gazelle_cli---v080)
  - [`gazelle_client` - `v0.4.0`](#gazelle_client---v040)
  - [`gazelle_core` - `v0.7.0`](#gazelle_core---v070)

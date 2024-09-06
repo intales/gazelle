@@ -1,3 +1,7 @@
+## 0.7.0+1
+
+ - **FIX**: Fixed client and codegen ([#59](https://github.com/intales/gazelle/issues/59)).
+
 ## 0.7.0
 
 > Note: This release has breaking changes.
