@@ -1,0 +1,292 @@
+# Creating nested routes
+
+Let's say that we want to add a delete user feature to our application.
+We need a way to access the user we want to delete and ask the system to
+actually delete it.
+
+## Create a parametric route
+
+To access our user we need to create a new route that has a dynamic path,
+something like `/users/:user_id`.
+Let's start by creating a new route called `user_id` with the CLI:
+```dart
+gazelle create route
+```
+Open up the newly created route and edit the code to this:
+```dart
+final userId = GazelleRoute.parameter(
+  name: "user_id",
+).get(userIdGet);
+```
+The `parameter` constructor sets the current route as a dynamic route, we can
+access the actual value of the route from the request parameter inside our
+handler.
+
+## Update our handler
+
+Now we need to update the default handler to be a `DELETE` handler.
+Rename the handler file to `user_id_delete.dart`, and update it with this code:
+```dart
+import 'package:gazelle_core/gazelle_core.dart';
+import 'package:models/models.dart';
+import 'package:server/users_collection.dart';
+
+Future<GazelleResponse<User>> userIdDelete(
+  GazelleContext context,
+  GazelleRequest request,
+) async {
+  // Get the path parameter from the request.
+  final userId = request.pathParameters["user_id"]!;
+
+  final deletedUser = usersCollection.singleWhere((user) => user.id == userId);
+
+  usersCollection.remove(deletedUser);
+
+  return GazelleResponse(
+    statusCode: GazelleHttpStatusCode.success.ok_200,
+    body: deletedUser,
+  );
+}
+```
+The last thing to do is to make this handler a DELETE handler, update the route
+code to this:
+```dart
+final userId = GazelleRoute.parameter(
+  name: "user_id",
+).delete(userIdGet);
+```
+
+## Attach the new route to the `users` route
+
+To register the `user_id` route under the `users` route, update the `users.dart`
+route with this code:
+```dart
+import 'package:gazelle_core/gazelle_core.dart';
+import 'package:server/routes/user_id/user_id.dart';
+import 'package:server/routes/users/users_post.dart';
+import 'users_get.dart';
+
+final users = GazelleRoute(
+  name: "users",
+  children: [
+    userId,
+  ],
+).get(usersGet).post(usersPost);
+```
+As you can see, we've added a child to the `children` property of the route.
+This builds the hierarchy of your routes.
+Run `gazelle codegen client` to update the frontend client!
+
+## Update the app
+
+Now update the app with the following code:
+```dart
+import 'package:flutter/material.dart';
+import 'package:client/client.dart';
+
+void main() {
+  gazelle.init();
+
+  runApp(const MaterialApp(home: MyApp()));
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<List<User>> _users;
+
+  @override
+  void initState() {
+    super.initState();
+    _users = gazelle.client.api.users.get();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('my_awesome_app'),
+      ),
+      body: Center(
+        child: FutureBuilder(
+          future: _users,
+          builder: (_, snapshot) => switch (snapshot) {
+            AsyncSnapshot(:final data?) => UsersList(
+                users: data,
+                userOnTap: (user) => Navigator.of(context)
+                    .push(
+                        MaterialPageRoute(builder: (_) => UserView(user: user)))
+                    .then((user) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("${user.username} has been deleted."),
+                    backgroundColor: Colors.green,
+                  ));
+                  setState(() {
+                    _users = gazelle.client.api.users.get();
+                  });
+                }),
+              ),
+            AsyncSnapshot(:final error?) =>
+              Text('${error.runtimeType}: $error'),
+            _ => const CircularProgressIndicator(),
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _addUser(context).then((_) => setState(() {
+              _users = gazelle.client.api.users.get();
+            })),
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class UsersList extends StatelessWidget {
+  const UsersList({
+    required this.users,
+    required this.userOnTap,
+    super.key,
+  });
+
+  final List<User> users;
+  final void Function(User user) userOnTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: users.length,
+      itemBuilder: (context, index) {
+        final user = users[index];
+        return ListTile(
+          title: Text(user.name),
+          subtitle: Text(user.username),
+          leading: Text(user.id),
+          onTap: () => userOnTap(user),
+        );
+      },
+    );
+  }
+}
+
+Future<T?> _addUser<T>(BuildContext context) => showModalBottomSheet<T>(
+      context: context,
+      builder: (_) {
+        return const AddUser();
+      },
+    );
+
+class AddUser extends StatefulWidget {
+  const AddUser({
+    super.key,
+  });
+
+  @override
+  State<AddUser> createState() => _AddUserState();
+}
+
+class _AddUserState extends State<AddUser> {
+  late final TextEditingController _nameController;
+  late final TextEditingController _usernameController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _usernameController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _usernameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8.0),
+      child: Column(
+        children: [
+          Text(
+            "Create a new user",
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 24),
+          TextField(
+            controller: _nameController,
+            decoration: const InputDecoration(hintText: "Name"),
+          ),
+          TextField(
+            controller: _usernameController,
+            decoration: const InputDecoration(hintText: "Username"),
+          ),
+          const SizedBox(height: 24),
+          FilledButton.icon(
+            onPressed: () => gazelle.client.api.users
+                .post(
+                  UserPost(
+                    name: _nameController.text.trim(),
+                    username: _usernameController.text.trim(),
+                  ),
+                )
+                .then((user) => Navigator.of(context).pop(user)),
+            label: const Text("Create"),
+            icon: const Icon(Icons.create),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class UserView extends StatelessWidget {
+  const UserView({
+    required this.user,
+    super.key,
+  });
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(user.username),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: Text(
+              user.name,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          FilledButton.icon(
+            onPressed: () => gazelle.client.api.users
+                .userId(user.id)
+                .delete()
+                .then((user) => Navigator.of(context).pop(user)),
+            label: const Text("Delete"),
+            icon: const Icon(Icons.delete),
+          )
+        ],
+      ),
+    );
+  }
+}
+```
+As you can see, we are now able to access the `/users/:user_id` route with a
+dynamic parameter.
+Try to tap on one user from the list and delete it with the button at the center
+of the page!
+The result should look something like this
+<Image src="/assets/creating_nested_routes_1.png" alt="Flutter app with deleted user" />

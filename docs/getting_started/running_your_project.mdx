@@ -1,0 +1,89 @@
+# Running your project
+
+Now that you have created a full-stack project with Gazelle, we're pretty sure
+that you want to execute it for the first time.
+
+## Open the project
+
+First things first, we need to open up the project in our favourite code editor.
+For the sake of this guide,
+we will use [Visual Studio Code](https://code.visualstudio.com).
+
+To open your project in VS Code, navigate into your project directory:
+```shell
+cd my_amazing_app
+```
+And open VS Code:
+```shell
+code .
+```
+
+## Run the server
+
+To start the Gazelle server just run
+```shell
+gazelle run
+```
+inside the VS Code terminal.
+
+This command will start your backend application and will enable server
+hot-reloading, giving you the ability to update and fix your code without
+restarting the server everytime.
+
+You should see something like this inside your terminal:
+```console
+✅ Running Project 'backend'...
+Press 'r' to hot-reload the project.
+Press 'R' to hot-restart.
+Ctrl+c to exit.
+
+The Dart VM service is listening on http://127.0.0.1:8181/RGz926BJ-bs=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:8181/RGz926BJ-bs=/devtools?uri=ws://127.0.0.1:8181/RGz926BJ-bs=/ws
+```
+
+## Run the Flutter application
+
+Now, you only need to fire up your frontend, open up an iOS Simulator or
+Android Emulator and start your Flutter app as usual - in this guide we're
+going to launch it directly from VS Code.
+
+This is what you should see:
+<Image zoom src="/assets/running_your_project_1.png" alt="A gazelle project while executing" />
+
+## Update the `hello_gazelle` route handler
+
+Let's try to change the response of the `hello_gazelle` route handler to test
+server-side hot-reloading.
+First, from the root of your project, navigate to
+`backend/server/lib/routes/hello_gazelle/hello_gazelle_get.dart`
+and open up the source file.
+
+Now, we want to update the response body from <b><i>Hello, Gazelle!</i></b> to
+something like <b><i>Hello, amazing developer!</i></b>.
+
+To do that, just edit the body parameter like this
+<Image zoom src="/assets/running_your_project_2.png" alt="Updated Gazelle response" />
+
+Save the changes to the file and Gazelle will hot-reload instantly.
+You will see hot-reloading status in your terminal:
+```console
+✅ Running Project 'backend'...
+Press 'r' to hot-reload the project.
+Press 'R' to hot-restart.
+Ctrl+c to exit.
+
+The Dart VM service is listening on http://127.0.0.1:8181/RGz926BJ-bs=/
+The Dart DevTools debugger and profiler is available at: http://127.0.0.1:8181/RGz926BJ-bs=/devtools?uri=ws://127.0.0.1:8181/RGz926BJ-bs=/ws
+Reloaded <-- Gazelle detected the update and hot-reloaded.
+```
+
+Now, just reload your Flutter app and you should see the new response at the
+center of the screen.
+<Image src="/assets/running_your_project_3.png" alt="Updated Gazelle response inside Flutter app" />
+
+Amazing! You have just learn how to run and update a basic Gazelle full-stack
+project.
+
+## Next steps
+
+In the next part, you will learn how the project is structured.
