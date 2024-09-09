@@ -6,6 +6,7 @@ import 'package:dart_style/dart_style.dart';
 import '../../commons/consts.dart';
 import '../../commons/functions/get_latest_package_version.dart';
 import '../../commons/functions/snake_to_pascal_case.dart';
+import '../../commons/functions/uncapitalize_string.dart';
 import '../../commons/functions/version.dart';
 
 String _getPubspecTemplate({
@@ -106,12 +107,12 @@ void _generateRouteProperties(
   Map<String, dynamic> node,
   StringBuffer code, {
   bool extension = false,
+  String? parentName,
 }) {
   if (node['children'] == null) return;
   for (final entry in node['children'].entries) {
-    final className = _snakeToPascalCase(entry.key);
-    final propertyName =
-        className.replaceRange(0, 1, className[0].toLowerCase());
+    final className = "${parentName ?? ""}${_snakeToPascalCase(entry.key)}";
+    final propertyName = uncapitalizeString(className);
 
     if (entry.value['name'].startsWith(':')) {
       code.writeln(
@@ -188,6 +189,7 @@ void _generateRouteClasses(
     _generateRouteProperties(
       entry.value,
       code,
+      parentName: className,
     );
 
     code.writeln("}");
