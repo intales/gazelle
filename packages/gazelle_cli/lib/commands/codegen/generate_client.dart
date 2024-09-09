@@ -112,7 +112,7 @@ void _generateRouteProperties(
   if (node['children'] == null) return;
   for (final entry in node['children'].entries) {
     final className = "${parentName ?? ""}${_snakeToPascalCase(entry.key)}";
-    final propertyName = uncapitalizeString(className);
+    final propertyName = uncapitalizeString(_snakeToPascalCase(entry.key));
 
     if (entry.value['name'].startsWith(':')) {
       code.writeln(
