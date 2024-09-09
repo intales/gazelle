@@ -24,32 +24,34 @@ to the <i>hello_gazelle</i> route.
 
 ## Updating the handler
 
+First things first, let's create a list of users to add some "persistence" to
+our backend. Create a file under the `backend/server/lib` directory called
+`users_collection.dart` with the following content:
+```dart
+import 'package:models/models.dart';
+
+List<User> usersCollection = [
+  User(id: "1", name: "Richard Hendricks", username: "r.hendricks"),
+  User(id: "2", name: "Elrich Bachman", username: "e.bachman"),
+  User(id: "3", name: "Nelson Bighetti", username: "bighead"),
+];
+```
+
 Now we want to update our handler to return a list of users to the client.
 Let's do that by replacing the default code to something like this:
 ```dart
 import 'package:gazelle_core/gazelle_core.dart';
 import 'package:models/models.dart';
+import 'package:server/users_collection.dart';
 
-class UsersGetHandler extends GazelleRouteHandler<List<User>> {
-  const UsersGetHandler();
-
-  @override
-  Future<GazelleResponse<List<User>>> call(
-    GazelleContext context,
-    GazelleRequest request,
-    GazelleResponse response,
-  ) async {
-    final users = [
-      User(id: "1", name: "Richard Hendricks", username: "r.hendricks"),
-      User(id: "2", name: "Elrich Bachman", username: "e.bachman"),
-      User(id: "3", name: "Nelson Bighetti", username: "bighead"),
-    ];
-
-    return GazelleResponse(
-      statusCode: GazelleHttpStatusCode.success.ok_200,
-      body: users,
-    );
-  }
+GazelleResponse<List<User>> usersGet(
+  GazelleContext context,
+  GazelleRequest request,
+) {
+  return GazelleResponse(
+    statusCode: GazelleHttpStatusCode.success.ok_200,
+    body: users,
+  );
 }
 ```
 
@@ -60,13 +62,13 @@ them to the client.
 ## Adding the route to the server
 
 To add a route to the root of your server, open your `server.dart` file and
-add `usersRoute` to the `routes` parameter of your Gazelle application:
+add `users` to the `routes` parameter of your Gazelle application:
 ```dart
 Future<void> runApp(List<String> args) async {
   final app = GazelleApp(
     routes: [
-      helloGazelleRoute,
-      usersRoute,
+      helloGazelle,
+      users,
     ],
     port: 3000,
     modelProvider: BackendModelProvider(),

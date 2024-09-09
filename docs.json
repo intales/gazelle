@@ -44,15 +44,14 @@
 				{
 					"title": "Creating routes",
 					"href": "/getting_started/creating_routes"
-				}
-			]
-		},
-		{
-			"group": "Advanced",
-			"pages": [
+				},
 				{
 					"title": "Creating new handlers",
-					"href": "/advanced/creating_new_handlers"
+					"href": "/getting_started/creating_new_handlers"
+				},
+				{
+					"title": "Creating nested routes",
+					"href": "/getting_started/creating_nested_routes"
 				}
 			]
 		}
