@@ -176,13 +176,11 @@ void _generateRouteClasses(
         code.writeln(
             "Future<$returnType> patch($requestType body) => _client.patch<$requestType, $returnType>(body: body);");
       }
-      if (entry.value['methods']['delete'] == true) {
+      if (entry.value['methods']['delete'] != null) {
         final returnType =
             entry.value['methods']['delete']['returnType'] ?? "dynamic";
-        final requestType =
-            entry.value['methods']['delete']['requestType'] ?? "dynamic";
         code.writeln(
-            "Future<$returnType> delete($requestType body) => _client.delete<$requestType, $returnType>(body: body);");
+            "Future<$returnType> delete() => _client.delete<$returnType>();");
       }
     }
 
