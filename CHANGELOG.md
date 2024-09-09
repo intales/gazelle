@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gazelle_cli` - `v0.8.0+3`](#gazelle_cli---v0803)
+
+---
+
+#### `gazelle_cli` - `v0.8.0+3`
+
+ - **FIX**(gazelle_cli): Codegen client.
+
+
+## 2024-09-09
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gazelle_cli` - `v0.8.0+2`](#gazelle_cli---v0802)
 
 ---

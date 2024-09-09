@@ -1,3 +1,7 @@
+## 0.8.0+3
+
+ - **FIX**(gazelle_cli): Codegen client.
+
 ## 0.8.0+2
 
  - **FIX**(gazelle_cli): Client codegen.
