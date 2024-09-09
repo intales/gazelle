@@ -1,3 +1,7 @@
+## 0.8.0+4
+
+ - **FIX**(gazelle_client): Delete method.
+
 ## 0.8.0+3
 
  - **FIX**(gazelle_cli): Codegen client.

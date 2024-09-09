@@ -15,6 +15,32 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`gazelle_cli` - `v0.8.0+4`](#gazelle_cli---v0804)
+ - [`gazelle_client` - `v0.4.0+2`](#gazelle_client---v0402)
+
+---
+
+#### `gazelle_cli` - `v0.8.0+4`
+
+ - **FIX**(gazelle_client): Delete method.
+
+#### `gazelle_client` - `v0.4.0+2`
+
+ - **FIX**(gazelle_client): Delete method.
+
+
+## 2024-09-09
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`gazelle_cli` - `v0.8.0+3`](#gazelle_cli---v0803)
 
 ---
