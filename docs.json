@@ -4,6 +4,7 @@
 	"theme": {
 		"primary": "#FF0000"
 	},
+	"favicon": "/assets/favicon.png",
 	"anchors": [
 		{
 			"title": "Homepage",
