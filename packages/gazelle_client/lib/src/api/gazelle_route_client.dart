@@ -151,13 +151,10 @@ class GazelleRouteClient {
   }
 
   /// Sends a DELETE request for [ResponseType].
-  Future<ResponseType> delete<RequestType, ResponseType>({
-    required RequestType body,
-  }) async {
+  Future<ResponseType> delete<ResponseType>() async {
     final response = await _sendRequest(
       callback: () => _httpClient.delete(
         Uri.parse(_path),
-        body: _serialize<RequestType>(body),
       ),
       method: "DELETE",
     );

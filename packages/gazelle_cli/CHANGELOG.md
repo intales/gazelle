@@ -1,3 +1,15 @@
+## 0.8.0+4
+
+ - **FIX**(gazelle_client): Delete method.
+
+## 0.8.0+3
+
+ - **FIX**(gazelle_cli): Codegen client.
+
+## 0.8.0+2
+
+ - **FIX**(gazelle_cli): Client codegen.
+
 ## 0.8.0+1
 
  - **FIX**: Fixed client and codegen ([#59](https://github.com/intales/gazelle/issues/59)).

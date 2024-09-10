@@ -6,6 +6,7 @@ import 'package:dart_style/dart_style.dart';
 import '../../commons/consts.dart';
 import '../../commons/functions/get_latest_package_version.dart';
 import '../../commons/functions/snake_to_pascal_case.dart';
+import '../../commons/functions/uncapitalize_string.dart';
 import '../../commons/functions/version.dart';
 
 String _getPubspecTemplate({
@@ -106,12 +107,12 @@ void _generateRouteProperties(
   Map<String, dynamic> node,
   StringBuffer code, {
   bool extension = false,
+  String? parentName,
 }) {
   if (node['children'] == null) return;
   for (final entry in node['children'].entries) {
-    final className = _snakeToPascalCase(entry.key);
-    final propertyName =
-        className.replaceRange(0, 1, className[0].toLowerCase());
+    final className = "${parentName ?? ""}${_snakeToPascalCase(entry.key)}";
+    final propertyName = uncapitalizeString(_snakeToPascalCase(entry.key));
 
     if (entry.value['name'].startsWith(':')) {
       code.writeln(
@@ -175,19 +176,18 @@ void _generateRouteClasses(
         code.writeln(
             "Future<$returnType> patch($requestType body) => _client.patch<$requestType, $returnType>(body: body);");
       }
-      if (entry.value['methods']['delete'] == true) {
+      if (entry.value['methods']['delete'] != null) {
         final returnType =
             entry.value['methods']['delete']['returnType'] ?? "dynamic";
-        final requestType =
-            entry.value['methods']['delete']['requestType'] ?? "dynamic";
         code.writeln(
-            "Future<$returnType> delete($requestType body) => _client.delete<$requestType, $returnType>(body: body);");
+            "Future<$returnType> delete() => _client.delete<$returnType>();");
       }
     }
 
     _generateRouteProperties(
       entry.value,
       code,
+      parentName: className,
     );
 
     code.writeln("}");
