@@ -5,22 +5,6 @@ import 'package:test/test.dart';
 import '../../commons/constants/resources.dart';
 
 
-const _postClass = """
-import 'user.dart';
-
-class Post {
-  final String id;
-  final String content;
-  final User user;
-
-  const Post({
-    required this.id,
-    required this.content,
-    required this.user,
-  });
-}
-""";
-
 void main() {
   group('Analyze tests', () {
     test('Should analyze some dart classes', () async {
@@ -33,10 +17,10 @@ void main() {
       entitiesDirectory.createSync(recursive: true);
       final userFile = File("$entitiesDirectoryPath/user.dart")
         ..createSync(recursive: true)
-        ..writeAsStringSync(TestStrings.userClass);
+        ..writeAsStringSync(TestStrings.analyzeEntitiesUserClass);
       final postFile = File("$entitiesDirectoryPath/post.dart")
         ..createSync(recursive: true)
-        ..writeAsStringSync(_postClass);
+        ..writeAsStringSync(TestStrings.analyzeEntitiesPostClass);
 
       // Act
       final result = await analyzeEntities(entitiesDirectory);

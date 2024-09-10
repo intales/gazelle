@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:gazelle_client/src/api/gazelle_api_client.dart';
 import 'package:gazelle_core/gazelle_core.dart';
