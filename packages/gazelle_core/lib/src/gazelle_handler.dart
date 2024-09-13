@@ -51,7 +51,6 @@ class GazelleHandler<RequestType, ResponseType> {
       uri: request.uri,
       method: request.method,
       pathParameters: request.pathParameters,
-      metadata: request.metadata,
       headers: request.headers,
       body: typedBody,
       bodyStream: request.bodyStream,

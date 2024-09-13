@@ -27,11 +27,10 @@ class GazelleRouterSearchResult {
   ///
   /// The [request] parameter represents the request associated with the search result.
   /// The [route] parameter represents the route associated with the search result.
-  const GazelleRouterSearchResult({
+  GazelleRouterSearchResult({
     required this.request,
     required this.route,
-    this.response = const GazelleResponse(),
-  });
+  }) : response = GazelleResponse();
 }
 
 /// A router for managing Gazelle routes.

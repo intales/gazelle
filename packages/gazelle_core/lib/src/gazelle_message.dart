@@ -5,6 +5,20 @@ import 'gazelle_http_header.dart';
 import 'gazelle_http_method.dart';
 import 'gazelle_http_status_code.dart';
 
+/// The context of a [GazelleMessage].
+class GazelleMessageContext {
+  final Map<Type, dynamic> _map;
+
+  /// Builds a [GazelleMessageContext].
+  GazelleMessageContext() : _map = {};
+
+  /// Retrieves a [T]? instance from the context.
+  T? call<T>() => _map[T] as T?;
+
+  /// Adds a [T] instance to the context.
+  void add<T>(T value) => _map[T] = value;
+}
+
 /// Represents a message exchanged between the client and the server in Gazelle.
 ///
 /// This class serves as the base class for both [GazelleRequest] and [GazelleResponse].
@@ -12,8 +26,8 @@ abstract class GazelleMessage {
   /// The headers of the message.
   final List<GazelleHttpHeader> headers;
 
-  /// Request's metadata.
-  final Map<String, dynamic> metadata;
+  /// The context of the message.
+  final GazelleMessageContext context;
 
   /// Constructs a GazelleMessage instance.
   ///
@@ -22,10 +36,9 @@ abstract class GazelleMessage {
   ///
   /// The optional parameter [metadata] represents additional metadata associated
   /// with the message, defaulting to an empty map if not provided.
-  const GazelleMessage({
+  GazelleMessage({
     this.headers = const [],
-    this.metadata = const {},
-  });
+  }) : context = GazelleMessageContext();
 }
 
 /// Represents an HTTP request in Gazelle.
@@ -67,7 +80,6 @@ class GazelleRequest<T> extends GazelleMessage {
     Stream<Uint8List>? bodyStream,
     this.body,
     super.headers = const [],
-    super.metadata = const {},
   }) : bodyStream = bodyStream ?? Stream.value(Uint8List(0));
 
   /// Constructs a [GazelleRequest] instance from an [HttpRequest].
@@ -110,11 +122,10 @@ class GazelleResponse<T> extends GazelleMessage {
   /// defaulting to an empty map if not provided.
   /// The optional [metadata] parameter represents additional metadata associated
   /// with the response, defaulting to an empty map if not provided.
-  const GazelleResponse({
+  GazelleResponse({
     this.statusCode = const GazelleHttpStatusCode.custom(200),
     this.body,
     super.headers = const [],
-    super.metadata = const {},
   });
 }
 
