@@ -48,7 +48,7 @@ void main() {
       (request, response) = await hook(context, request, response);
 
       // Assert
-      expect(request.jwt.payload["test"], "123");
+      expect(request.jwt?.payload["test"], "123");
     });
 
     test('Should return a response when auth header is not set', () async {

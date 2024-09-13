@@ -1,5 +1,5 @@
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:gazelle_core/gazelle_core.dart';
+import '../gazelle_jwt.dart';
 import 'gazelle_jwt_consts.dart';
 
 /// A plugin for JSON Web Token (JWT) authentication in Gazelle.
@@ -67,42 +67,35 @@ class GazelleJwtPlugin implements GazellePlugin {
               request,
               GazelleResponse(
                 statusCode: GazelleHttpStatusCode.error.unauthorized_401,
-                body: missingAuthHeaderMessage,
+                body: kMissingAuthHeaderMessage,
               )
             );
           }
 
-          if (!authHeader.startsWith(bearerSchema)) {
+          if (!authHeader.startsWith(kBearerSchema)) {
             return (
               request,
               GazelleResponse(
                 statusCode: GazelleHttpStatusCode.error.unauthorized_401,
-                body: badBearerSchemaMessage,
+                body: kBadBearerSchemaMessage,
               )
             );
           }
 
-          final token = authHeader.replaceAll(bearerSchema, "");
+          final token = authHeader.replaceAll(kBearerSchema, "");
           final jwt = verify(token);
           if (jwt == null) {
             return (
               request,
               GazelleResponse(
                 statusCode: GazelleHttpStatusCode.error.unauthorized_401,
-                body: invalidTokenMessage,
+                body: kInvalidTokenMessage,
               )
             );
           }
 
           return (
-            GazelleRequest(
-              uri: request.uri,
-              method: request.method,
-              pathParameters: request.pathParameters,
-              metadata: {
-                jwtKeyword: jwt,
-              },
-            ),
+            request..setJwt(jwt),
             response,
           );
         },
