@@ -73,7 +73,7 @@ void main() {
 
       // Assert
       expect(response.statusCode, GazelleHttpStatusCode.error.unauthorized_401);
-      expect(response.body, missingAuthHeaderMessage);
+      expect(response.body, kMissingAuthHeaderMessage);
     });
 
     test('Should return a response when header schema is invalid', () async {
@@ -101,7 +101,7 @@ void main() {
 
       // Assert
       expect(response.statusCode, GazelleHttpStatusCode.error.unauthorized_401);
-      expect(response.body, badBearerSchemaMessage);
+      expect(response.body, kBadBearerSchemaMessage);
     });
 
     test('Should return a response when token is invalid', () async {
@@ -129,7 +129,7 @@ void main() {
 
       // Assert
       expect(response.statusCode, GazelleHttpStatusCode.error.unauthorized_401);
-      expect(response.body, invalidTokenMessage);
+      expect(response.body, kInvalidTokenMessage);
     });
 
     test('Should integrate with gazelle core', () async {
