@@ -1,4 +1,4 @@
-part of 'resources.dart';
+part of 'constants.dart';
 
 abstract class TestStrings {
 

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:gazelle_cli/commands/codegen/analyze_entities.dart';
 import 'package:test/test.dart';
-import '../../commons/constants/resources.dart';
+import '../../commons/constants/constants.dart';
 
 
 void main() {

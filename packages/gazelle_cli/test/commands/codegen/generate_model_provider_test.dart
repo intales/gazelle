@@ -4,7 +4,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:gazelle_cli/commands/codegen/analyze_entities.dart';
 import 'package:gazelle_cli/commands/codegen/generate_model_provider.dart';
 import 'package:test/test.dart';
-import '../../commons/constants/resources.dart';
+import '../../commons/constants/constants.dart';
 
 
 void main() {
