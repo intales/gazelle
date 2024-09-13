@@ -1,3 +1,9 @@
+## 0.7.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FIX**(gazelle_core): request metadata ([#61](https://github.com/intales/gazelle/issues/61)).
+
 ## 0.6.0+1
 
  - Update a dependency to the latest release.
