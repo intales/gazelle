@@ -10,6 +10,7 @@ void main() {
       // Arrange
       final path = "tmp/load_project_configuration_tests";
       final directory = Directory(path);
+      String projectName = path.split("/").last;
 
       if (directory.existsSync()) {
         directory.deleteSync(recursive: true);
@@ -18,14 +19,17 @@ void main() {
 
       // Act
       final project = await createProject(
-        projectName: "test_project",
+        projectName: projectName,
         path: path,
       );
       final result =
           await loadProjectConfiguration(path: "$project/server/lib");
 
       // Assert
-      expect(result.name, "test_project");
+      expect(
+        result.name,
+        projectName,
+      );
 
       // Tear down
       directory.deleteSync(recursive: true);

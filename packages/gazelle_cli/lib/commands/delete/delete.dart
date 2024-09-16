@@ -54,7 +54,7 @@ class DeleteCommand extends Command {
       spinner.success(
         "$result project is deleted\n",
       );
-    } on DeletingProjectError catch (e) {
+    } on DeleteProjectError catch (e) {
       spinner.fail(e.message);
       exit(2);
     } on Exception catch (e) {

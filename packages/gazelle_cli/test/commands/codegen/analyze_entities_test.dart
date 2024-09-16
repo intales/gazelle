@@ -2,34 +2,8 @@ import 'dart:io';
 
 import 'package:gazelle_cli/commands/codegen/analyze_entities.dart';
 import 'package:test/test.dart';
+import '../../commons/constants/constants.dart';
 
-const _userClass = """
-class User {
-  final String id;
-  final String username;
-
-  const User({
-    required this.id,
-    required this.username,
-  });
-}
-""";
-
-const _postClass = """
-import 'user.dart';
-
-class Post {
-  final String id;
-  final String content;
-  final User user;
-
-  const Post({
-    required this.id,
-    required this.content,
-    required this.user,
-  });
-}
-""";
 
 void main() {
   group('Analyze tests', () {
@@ -43,10 +17,10 @@ void main() {
       entitiesDirectory.createSync(recursive: true);
       final userFile = File("$entitiesDirectoryPath/user.dart")
         ..createSync(recursive: true)
-        ..writeAsStringSync(_userClass);
+        ..writeAsStringSync(TestStrings.analyzeEntitiesUserClass);
       final postFile = File("$entitiesDirectoryPath/post.dart")
         ..createSync(recursive: true)
-        ..writeAsStringSync(_postClass);
+        ..writeAsStringSync(TestStrings.analyzeEntitiesPostClass);
 
       // Act
       final result = await analyzeEntities(entitiesDirectory);
