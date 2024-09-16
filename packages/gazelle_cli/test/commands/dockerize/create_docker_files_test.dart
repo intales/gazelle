@@ -5,11 +5,10 @@ import 'package:test/test.dart';
 
 void main() {
   group("CreateDockerFiles tests", () {
+    // Arrange
+    const mainFilePath = "bin/main.dart";
+    const exposedPort = 8080;
     test("Should return Dockerfile contents", () {
-      // Arrange
-      const mainFilePath = "bin/main.dart";
-      const exposedPort = 8080;
-
       // Act
       final result = generateDockerFileContent(
         mainFilePath: mainFilePath,
@@ -32,9 +31,6 @@ void main() {
       }
 
       await Directory(path).create(recursive: true);
-
-      const mainFilePath = "bin/main.dart";
-      const exposedPort = 8080;
 
       // Act
       await createDockerFiles(
