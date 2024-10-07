@@ -53,5 +53,46 @@ void main() {
       // Assert
       expect(result.values, [value, value_2]);
     });
+
+    test('Should return the string representing the header', () {
+      // Arrange
+      const header = GazelleHttpHeader.accept;
+      const value = "a";
+      const value_2 = "d";
+      const expected = "Accept: a, d";
+
+      // Act
+      final result = header.addValue(value).addValue(value_2);
+
+      // Assert
+      expect(result.toString(), expected);
+    });
+
+    group('fromString factory', () {
+      test('Should return predefined header for known header string', () {
+        final header = GazelleHttpHeader.fromString('Accept');
+        expect(header.header, equals(GazelleHttpHeader.accept.header));
+        expect(header.values, isEmpty);
+      });
+
+      test('Should be case-insensitive for known headers', () {
+        final header = GazelleHttpHeader.fromString('cOnTeNt-TyPe');
+        expect(header.header, equals(GazelleHttpHeader.contentType.header));
+      });
+
+      test('Should create custom header for unknown header string', () {
+        final header = GazelleHttpHeader.fromString('X-Custom-Header');
+        expect(header, isNot(equals(GazelleHttpHeader.accept)));
+        expect(header.header, equals('X-Custom-Header'));
+        expect(header.values, isEmpty);
+      });
+
+      test('Should add provided values to the header', () {
+        final values = ['value1', 'value2'];
+        final header = GazelleHttpHeader.fromString('Accept', values: values);
+        expect(header.header, equals('Accept'));
+        expect(header.values, equals(values));
+      });
+    });
   });
 }
