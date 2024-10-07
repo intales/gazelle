@@ -94,17 +94,6 @@ class GazelleApp {
     return sslCertificate != null ? "https://$path" : "http://$path";
   }
 
-  /// Retrieves a plugin of the specified type from the context.
-  ///
-  /// Throws an exception if the plugin is not found.
-  ///
-  /// Example:
-  /// ```dart
-  /// final app = GazelleApp();
-  /// final authPlugin = app.getPlugin<AuthenticationPlugin>();
-  /// ```
-  T getPlugin<T extends GazellePlugin>() => _context.getPlugin<T>();
-
   /// Starts the HTTP server.
   ///
   /// Binds the server to the specified [address] and [port], and listens for
