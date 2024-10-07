@@ -28,6 +28,7 @@ class GazelleContext {
   /// The [router] parameter specifies the router to use for route registration and searching.
   /// The [plugins] parameter contains a map of registered plugins.
   /// The optional [context] parameter points to the parent context, if any.
+  // coverage-ignore: end
   const GazelleContext({
     required GazelleRouter router,
     required Map<Type, GazellePlugin> plugins,

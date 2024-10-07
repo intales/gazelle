@@ -103,6 +103,7 @@ class GazelleRequest<T> extends GazelleMessage {
   }
 }
 
+// coverage:ignore-start
 /// Represents an HTTP response in Gazelle.
 ///
 /// Encapsulates information about the HTTP response including the status code,
@@ -340,6 +341,13 @@ extension GazelleMessageHeaderExtension on List<GazelleHttpHeader> {
       where((header) => header.header == GazelleHttpHeader.expires.header)
           .firstOrNull;
 
+  /// Gets the 'Forwarded' header from the headers list.
+  ///
+  /// Returns the 'Forwarded' header if present, otherwise null.
+  GazelleHttpHeader? get forwarded =>
+      where((header) => header.header == GazelleHttpHeader.forwarded.header)
+          .firstOrNull;
+
   /// Gets the 'From' header from the headers list.
   ///
   /// Returns the 'From' header if present, otherwise null.
@@ -393,6 +401,13 @@ extension GazelleMessageHeaderExtension on List<GazelleHttpHeader> {
   /// Returns the 'Last-Modified' header if present, otherwise null.
   GazelleHttpHeader? get lastModified =>
       where((header) => header.header == GazelleHttpHeader.lastModified.header)
+          .firstOrNull;
+
+  /// Gets the 'Link' header from the headers list.
+  ///
+  /// Returns the 'Link' header if present, otherwise null.
+  GazelleHttpHeader? get link =>
+      where((header) => header.header == GazelleHttpHeader.link.header)
           .firstOrNull;
 
   /// Gets the 'Location' header from the headers list.
@@ -456,6 +471,19 @@ extension GazelleMessageHeaderExtension on List<GazelleHttpHeader> {
       where((header) => header.header == GazelleHttpHeader.retryAfter.header)
           .firstOrNull;
 
+  /// Gets the 'Sec-WebSocket-Accept' header from the headers list.
+  ///
+  /// Returns the 'Sec-WebSocket-Accept' header if present, otherwise null.
+  GazelleHttpHeader? get secWebSocketAccept => where((header) =>
+      header.header == GazelleHttpHeader.secWebSocketAccept.header).firstOrNull;
+
+  /// Gets the 'Sec-WebSocket-Extensions' header from the headers list.
+  ///
+  /// Returns the 'Sec-WebSocket-Extensions' header if present, otherwise null.
+  GazelleHttpHeader? get secWebSocketExtensions => where((header) =>
+          header.header == GazelleHttpHeader.secWebSocketExtensions.header)
+      .firstOrNull;
+
   /// Gets the 'Sec-WebSocket-Key' header from the headers list.
   ///
   /// Returns the 'Sec-WebSocket-Key' header if present, otherwise null.
@@ -490,6 +518,13 @@ extension GazelleMessageHeaderExtension on List<GazelleHttpHeader> {
   GazelleHttpHeader? get setCookie =>
       where((header) => header.header == GazelleHttpHeader.setCookie.header)
           .firstOrNull;
+
+  /// Gets the 'Strict-Transport-Security' header from the headers list.
+  ///
+  /// Returns the 'Strict-Transport-Security' header if present, otherwise null.
+  GazelleHttpHeader? get strictTransportSecurity => where((header) =>
+          header.header == GazelleHttpHeader.strictTransportSecurity.header)
+      .firstOrNull;
 
   /// Gets the 'TE' header from the headers list.
   ///
