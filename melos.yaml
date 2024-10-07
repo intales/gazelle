@@ -9,6 +9,7 @@ scripts:
     exec: dart test .
   test_coverage:
     run: |
+      rm -rf ./coverage
       dart test --coverage=./coverage
       dart pub global run coverage:format_coverage --in="./coverage/test" --out="./coverage/lcov.info" --lcov --report-on="./lib"
       dart pub global run combine_coverage --repo-path="../../"
